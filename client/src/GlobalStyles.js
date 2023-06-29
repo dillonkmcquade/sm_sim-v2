@@ -28,4 +28,7 @@ export const GlobalStyles = createGlobalStyle`
   #root, #__next {
     isolation: isolate;
   }
+  .react-reveal{
+  animation-fill-mode: backwards !important;
+  }
 `;

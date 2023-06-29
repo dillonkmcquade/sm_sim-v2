@@ -21,7 +21,7 @@ export default function Home() {
         </Fade>
       </Hero>
       <ResearchStocks>
-        <Slide bottom>
+        <Slide bottom cascade>
           <GreetingHead>Research up to 17,000 different stocks</GreetingHead>
           <GreetingText>
             Get real market data, analyze and compare stocks, and learn about
@@ -33,7 +33,7 @@ export default function Home() {
         </Slide>
       </ResearchStocks>
       <StackedCoins>
-        <Slide bottom>
+        <Slide bottom cascade>
           <GreetingHead>Create an account</GreetingHead>
           <GreetingText>
             Track your portfolio, purchases, and sales by creating an account
