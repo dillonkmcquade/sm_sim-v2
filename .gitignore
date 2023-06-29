@@ -8,6 +8,8 @@ node_modules
 # testing
 coverage
 
+__tests__
+
 # production
 build
 
