@@ -21,10 +21,13 @@ export default function Header() {
 
 const Wrapper = styled.header`
   display: flex;
+  position: fixed;
   justify-content: center;
   height: 56px;
   width: 100vw;
   border-bottom: 1px solid white;
+  background-color: #000000;
+  z-index: 10;
 `;
 const NavContainer = styled.nav`
   height: 100%;
