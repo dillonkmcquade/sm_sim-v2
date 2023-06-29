@@ -11,6 +11,9 @@ export const GlobalStyles = createGlobalStyle`
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     font-family: futura-pt,"system-ui",Helvetica Neue,"sans-serif";
+    background-color: black;
+    color: #eceff4;
+    font-size: 14px;
   }
   img, picture, video, canvas, svg {
     display: block;
