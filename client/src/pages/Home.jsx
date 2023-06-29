@@ -15,6 +15,10 @@ export default function Home() {
       </Hero>
       <ResearchStocks>
         <GreetingHead>Research up to 17,000 different stocks</GreetingHead>
+        <GreetingText>
+          Get real market data, analyze and compare stocks, and learn about
+          publicly traded companies
+        </GreetingText>
         <Link to="/research">
           <GetStarted>Research</GetStarted>
         </Link>
@@ -66,9 +70,9 @@ const GetStarted = styled.button`
     rgba(0, 212, 255, 1) 100%
   );
   color: #000000;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   border: none;
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: 1rem;
   cursor: pointer;
   transition: scale ease-in-out 300ms;
