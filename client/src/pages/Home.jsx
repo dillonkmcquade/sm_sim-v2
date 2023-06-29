@@ -1,36 +1,47 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import Slide from "react-reveal/Slide";
+import Fade from "react-reveal/Fade";
+
 export default function Home() {
   return (
     <Wrapper>
       <Hero>
-        <GreetingHead>Practice your investing skills without risk</GreetingHead>
-        <GreetingText>
-          Research, buy, and sell stocks while tracking your portfolio. Use
-          real-life data to practice your investing skills at no risk!
-        </GreetingText>
-        <Link to="/dashboard">
-          <GetStarted>Get Started</GetStarted>
-        </Link>
+        <Fade>
+          <GreetingHead>
+            Practice your investing skills without risk
+          </GreetingHead>
+          <GreetingText>
+            Research, buy, and sell stocks while tracking your portfolio. Use
+            real-life data to practice your investing skills at no risk!
+          </GreetingText>
+          <Link to="/dashboard">
+            <GetStarted>Get Started</GetStarted>
+          </Link>
+        </Fade>
       </Hero>
       <ResearchStocks>
-        <GreetingHead>Research up to 17,000 different stocks</GreetingHead>
-        <GreetingText>
-          Get real market data, analyze and compare stocks, and learn about
-          publicly traded companies
-        </GreetingText>
-        <Link to="/research">
-          <GetStarted>Research</GetStarted>
-        </Link>
+        <Slide bottom>
+          <GreetingHead>Research up to 17,000 different stocks</GreetingHead>
+          <GreetingText>
+            Get real market data, analyze and compare stocks, and learn about
+            publicly traded companies
+          </GreetingText>
+          <Link to="/research">
+            <GetStarted>Research</GetStarted>
+          </Link>
+        </Slide>
       </ResearchStocks>
       <StackedCoins>
-        <GreetingHead>Create an account</GreetingHead>
-        <GreetingText>
-          Track your portfolio, purchases, and sales by creating an account
-        </GreetingText>
-        <Link to="/signup">
-          <GetStarted>Sign up</GetStarted>
-        </Link>
+        <Slide bottom>
+          <GreetingHead>Create an account</GreetingHead>
+          <GreetingText>
+            Track your portfolio, purchases, and sales by creating an account
+          </GreetingText>
+          <Link to="/signup">
+            <GetStarted>Sign up</GetStarted>
+          </Link>
+        </Slide>
       </StackedCoins>
     </Wrapper>
   );
