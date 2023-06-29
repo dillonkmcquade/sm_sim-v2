@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import { GlobalStyles as GlobalStyle } from "./GlobalStyles.js";
-import { GlobalStyles } from "@mui/material";
+import { GlobalStyles } from "./GlobalStyles.js";
 
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -15,7 +14,6 @@ export default function App() {
 
   return (
     <>
-      <GlobalStyle />
       <GlobalStyles />
       <Header />
       {menuVisible && <Menu />}
