@@ -53,9 +53,9 @@ const MenuOption = styled(NavLink)`
   color: white;
   transition: all ease-in-out 400ms;
 
-  &:hover {
-    border: 2px solid white;
-  }
+  /* &:hover {
+    border: 1px solid white;
+  } */
 
   &.active {
     border-bottom: 2px solid white;
