@@ -2,8 +2,10 @@ import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Slide from "react-reveal/Slide";
 import Fade from "react-reveal/Fade";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Home() {
+  const { loginWithRedirect } = useAuth0();
   return (
     <Wrapper>
       <Hero>
@@ -38,9 +40,7 @@ export default function Home() {
           <GreetingText>
             Track your portfolio, purchases, and sales by creating an account
           </GreetingText>
-          <Link to="/signup">
-            <GetStarted>Sign up</GetStarted>
-          </Link>
+          <GetStarted onClick={() => loginWithRedirect()}>Sign up</GetStarted>
         </Slide>
       </StackedCoins>
     </Wrapper>
