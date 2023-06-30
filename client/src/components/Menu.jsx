@@ -2,23 +2,37 @@ import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { styled } from "styled-components";
 import { MenuContext } from "../context/MenuContext";
-import { UserContext } from "../context/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
+import { CircularProgress } from "@mui/material";
 
 export default function Menu() {
   const { menuVisible, setMenuVisible } = useContext(MenuContext);
-  const { currentUser } = useContext(UserContext);
+  const { error, loginWithRedirect, user, isAuthenticated, isLoading, logout } =
+    useAuth0();
+  if (error) {
+    <h1>{error.message}</h1>;
+  }
+  if (isLoading) {
+    return <CircularProgress />;
+  }
   return (
     <Nav onClick={() => setMenuVisible(!menuVisible)}>
       <MenuOption to="/dashboard">Dashboard</MenuOption>
       <MenuOption to="/research">Research</MenuOption>
-      {currentUser ? (
+      {isAuthenticated ? (
         <>
           <MenuOption to="/portfolio">Portfolio</MenuOption>
           <MenuOption to="/profile">Profile</MenuOption>
-          <MenuOption to="/">Sign out</MenuOption>
+          <AuthRedirect
+            onClick={() =>
+              logout({ logoutParams: { returnTo: "http://localhost:3000" } })
+            }
+          >
+            Sign out
+          </AuthRedirect>
         </>
       ) : (
-        <MenuOption to="/signin">Sign In</MenuOption>
+        <AuthRedirect onClick={() => loginWithRedirect()}>Sign In</AuthRedirect>
       )}
     </Nav>
   );
@@ -51,6 +65,26 @@ const MenuOption = styled(NavLink)`
   padding: 0.5rem 1rem;
   text-decoration: none;
   color: white;
+  transition: all ease-in-out 400ms;
+
+  /* &:hover {
+    border: 1px solid white;
+  } */
+
+  &.active {
+    border-bottom: 2px solid white;
+  }
+`;
+
+const AuthRedirect = styled.button`
+  font-size: 1.6rem;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  background-color: black;
+  cursor: pointer;
+  color: white;
+  border: none;
+  text-align: left;
   transition: all ease-in-out 400ms;
 
   /* &:hover {
