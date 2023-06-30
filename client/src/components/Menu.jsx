@@ -47,6 +47,7 @@ const Nav = styled.nav`
   display: flex;
   flex-direction: column;
   animation: fadeIn ease-in-out 250ms;
+  z-index: 1000;
 
   @keyframes fadeIn {
     0% {
