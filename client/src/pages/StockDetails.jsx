@@ -1,26 +1,16 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import { styled } from "styled-components";
-// import { ResponsiveStream } from "@nivo/stream";
-import useTickerAggregateData from "../hooks/useTickerAggregateData";
-import useTickerNewsData from "../hooks/useTickerNewsData";
-
+import useAggregateData from "../hooks/useTickerAggregateData";
+import useNewsData from "../hooks/useTickerNewsData";
 import NewsArticle from "../components/NewsArticle";
+import LineChart from "../components/LineChart";
 
 export default function StockDetails() {
   const { id } = useParams();
-
-  const { currentTicker, isLoading, error } = useTickerAggregateData(id);
-  const { news, isLoadingNews } = useTickerNewsData(id);
-
-  const [currentPrice, setCurrentPrice] = useState(() => {
-    return currentTicker[currentTicker.length - 1].c.toFixed(2);
-  });
-
-  const [previousDayPrice, setPreviousDayPrice] = useState(() => {
-    return currentTicker[currentTicker.length - 2].c.toFixed(2);
-  });
+  const { currentTicker, currentPrice, previousDayPrice } =
+    useAggregateData(id);
+  const { news } = useNewsData(id);
 
   return !currentTicker ? (
     <Wrapper>
@@ -32,12 +22,14 @@ export default function StockDetails() {
       <CurrentPrice
         color={currentPrice > previousDayPrice ? "#027326" : "#b5050e"}
       >
-        ${currentTicker[currentTicker.length - 1].c}
+        ${currentTicker[currentTicker.length - 1].Close}
         <SecondaryText>
           (${currentPrice > previousDayPrice && "+"}
           {(currentPrice - previousDayPrice).toFixed(2)})
         </SecondaryText>
       </CurrentPrice>
+      <LineChart id={id} data={currentTicker} />
+      <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
         {news &&
           news.map((article) => (
@@ -70,3 +62,7 @@ const SecondaryText = styled.span`
 `;
 
 const NewsContainer = styled.div``;
+
+const NewsTitle = styled.h3`
+  margin-left: 1rem;
+`;
