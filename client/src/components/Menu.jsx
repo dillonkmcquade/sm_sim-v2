@@ -7,7 +7,7 @@ import { CircularProgress } from "@mui/material";
 
 export default function Menu() {
   const { menuVisible, setMenuVisible } = useContext(MenuContext);
-  const { error, loginWithRedirect, user, isAuthenticated, isLoading, logout } =
+  const { error, loginWithRedirect, isAuthenticated, isLoading, logout } =
     useAuth0();
   if (error) {
     <h1>{error.message}</h1>;
