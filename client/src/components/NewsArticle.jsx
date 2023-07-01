@@ -33,6 +33,7 @@ const Wrapper = styled.div`
 const ArticleMain = styled.div`
   width: 100%;
   display: flex;
+  justify-content: space-between;
   margin: 0.2rem 0 1rem 0;
 `;
 

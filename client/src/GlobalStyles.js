@@ -19,6 +19,17 @@ export const GlobalStyles = createGlobalStyle`
     display: block;
     max-width: 100%;
   }
+  div {
+    animation: fadeIn ease-in-out 500ms;
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  }
   input, button, textarea, select {
     font: inherit;
   }
