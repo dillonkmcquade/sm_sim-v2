@@ -28,6 +28,7 @@ export default function useTickerNewsData(ticker) {
       }
     } catch (err) {
       console.error(err);
+      setIsLoadingNews(false);
     } finally {
       setIsLoadingNews(false);
     }

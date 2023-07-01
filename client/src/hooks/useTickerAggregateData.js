@@ -34,11 +34,10 @@ export default function useAggregateData(ticker) {
 
   async function getTickerData() {
     setIsLoading(true);
-
     try {
       const { REACT_APP_POLYGON_KEY } = process.env;
       const request = await fetch(
-        `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/month/${
+        `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/week/${
           Date.now() - 7889400000
         }/${Date.now()}?adjusted=true&sort=asc&limit=180&apiKey=${REACT_APP_POLYGON_KEY}`
       );

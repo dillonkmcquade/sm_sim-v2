@@ -8,13 +8,13 @@ import LineChart from "../components/LineChart";
 
 export default function StockDetails() {
   const { id } = useParams();
-  const { currentTicker, currentPrice, previousDayPrice } =
+  const { isLoading, currentTicker, currentPrice, previousDayPrice } =
     useAggregateData(id);
-  const { news } = useNewsData(id);
+  const { news, isLoadingNews } = useNewsData(id);
 
-  return !currentTicker ? (
+  return isLoading || !currentTicker ? (
     <Wrapper>
-      <CircularProgress sx={{ color: "#000000" }} />
+      <CircularProgress />
     </Wrapper>
   ) : (
     <Wrapper>
@@ -31,7 +31,7 @@ export default function StockDetails() {
       <LineChart id={id} data={currentTicker} />
       <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
-        {news &&
+        {!isLoadingNews &&
           news.map((article) => (
             <NewsArticle article={article} key={article.id} />
           ))}
