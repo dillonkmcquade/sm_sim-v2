@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 import useAggregateData from "../hooks/useTickerAggregateData";
@@ -13,6 +13,7 @@ import Button from "../components/Button";
 import { WidthContext } from "../context/WidthContext";
 
 export default function StockDetails() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { isLoading, currentTicker, currentPrice, previousDayPrice } =
     useAggregateData(id);
@@ -25,6 +26,7 @@ export default function StockDetails() {
     </Wrapper>
   ) : (
     <Wrapper>
+      <Back to={"/research"}>Back</Back>
       <TickerName>{id}</TickerName>
       <CurrentPrice
         color={currentPrice > previousDayPrice ? "#027326" : "#b5050e"}
@@ -35,9 +37,15 @@ export default function StockDetails() {
           {(currentPrice - previousDayPrice).toFixed(2)})
         </SecondaryText>
       </CurrentPrice>
+
       <LineChart id={id} data={currentTicker} />
+
+      <Stats></Stats>
+
       <ButtonContainer width={width}>
-        <Button bradius="4px">Buy</Button>
+        <Button bradius="4px" handler={() => navigate(`/transaction/${id}`)}>
+          Buy
+        </Button>
         <Button
           bg="black"
           hovercolor="black"
@@ -45,10 +53,12 @@ export default function StockDetails() {
           hoverbg="white"
           bradius="4px"
           border="1px solid white"
+          handler={() => navigate(`/transaction/${id}`)}
         >
           Sell
         </Button>
       </ButtonContainer>
+
       <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
         {isLoadingNews ? (
@@ -107,5 +117,18 @@ const ButtonContainer = styled.div`
     max-width: 500px;
     position: static;
     border-top: none;
+  }
+`;
+
+const Stats = styled.div``;
+
+const Back = styled(Link)`
+  text-decoration: none;
+  margin: 0.3rem 0 0 0.3rem;
+  color: #b48ead;
+  font-size: 1.1rem;
+
+  &:hover {
+    color: #81a1c1;
   }
 `;
