@@ -13,7 +13,7 @@ export default function Research() {
   const submitSearch = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const request = await fetch(`/getTickers/${searchInput}`);
+    const request = await fetch(`/getTickers/${searchInput.toUpperCase()}`);
     const response = await request.json();
     if (response.status === 200) {
       setLoading(false);
