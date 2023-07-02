@@ -70,7 +70,7 @@ export default function useAggregateData(ticker) {
     if (!currentTicker) {
       getTickerData();
     }
-  }, [currentTicker]);
+  }, [currentTicker, ticker]);
   return {
     currentPrice,
     previousDayPrice,

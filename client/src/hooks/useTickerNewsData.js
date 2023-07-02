@@ -38,6 +38,6 @@ export default function useTickerNewsData(ticker) {
     if (!news) {
       getTickerData();
     }
-  }, [news]);
+  }, [news, ticker]);
   return { news, isLoadingNews };
 }

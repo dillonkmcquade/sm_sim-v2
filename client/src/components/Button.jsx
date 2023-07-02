@@ -36,7 +36,7 @@ const StyledButton = styled.button`
   border-radius: ${(props) => props.bradius || "1rem"};
   cursor: pointer;
   transition: scale ease-in-out 300ms;
-  transition: all ease-in 500ms;
+  transition: background ease-in 500ms;
   min-width: 100px;
 
   &:active {
