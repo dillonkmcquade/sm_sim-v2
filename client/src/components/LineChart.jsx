@@ -1,17 +1,9 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { ResponsiveLine } from "@nivo/line";
+import { WidthContext } from "../context/WidthContext";
 
 export default function LineChart({ id, data }) {
-  const [width, setWidth] = useState(window.screen.width);
-
-  //conditionally display bottom axis and change line/pointer size
-  useEffect(() => {
-    const onWindowResize = () => {
-      setWidth(window.screen.width);
-    };
-    window.addEventListener("resize", onWindowResize);
-    return () => window.removeEventListener("resize", onWindowResize);
-  }, []);
+  const { width } = useContext(WidthContext);
 
   //Convert unix timestamp to 'Month DD' format
   const values =
@@ -29,7 +21,7 @@ export default function LineChart({ id, data }) {
   const newData = { id, color: "hsl(341, 70%, 50%)", data: values };
 
   return (
-    <div style={{ height: "100%", color: "black" }}>
+    <div style={{ height: "50vh", color: "black" }}>
       <ResponsiveLine
         data={[newData]}
         margin={{ top: 50, right: 80, bottom: 50, left: 60 }}

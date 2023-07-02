@@ -1,16 +1,23 @@
+import { useContext } from "react";
 import { useParams } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
 import { styled } from "styled-components";
+
 import useAggregateData from "../hooks/useTickerAggregateData";
 import useNewsData from "../hooks/useTickerNewsData";
+
+import { CircularProgress } from "@mui/material";
 import NewsArticle from "../components/NewsArticle";
 import LineChart from "../components/LineChart";
+import Button from "../components/Button";
+
+import { WidthContext } from "../context/WidthContext";
 
 export default function StockDetails() {
   const { id } = useParams();
   const { isLoading, currentTicker, currentPrice, previousDayPrice } =
     useAggregateData(id);
   const { news, isLoadingNews } = useNewsData(id);
+  const { width } = useContext(WidthContext);
 
   return isLoading || !currentTicker ? (
     <Wrapper>
@@ -29,12 +36,28 @@ export default function StockDetails() {
         </SecondaryText>
       </CurrentPrice>
       <LineChart id={id} data={currentTicker} />
+      <ButtonContainer width={width}>
+        <Button bradius="4px">Buy</Button>
+        <Button
+          bg="black"
+          hovercolor="black"
+          color="white"
+          hoverbg="white"
+          bradius="4px"
+          border="1px solid white"
+        >
+          Sell
+        </Button>
+      </ButtonContainer>
       <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
-        {!isLoadingNews &&
+        {isLoadingNews ? (
+          <CircularProgress />
+        ) : (
           news.map((article) => (
             <NewsArticle article={article} key={article.id} />
-          ))}
+          ))
+        )}
       </NewsContainer>
     </Wrapper>
   );
@@ -43,7 +66,9 @@ export default function StockDetails() {
 const Wrapper = styled.div`
   position: relative;
   top: 56px;
-  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 150px;
 `;
 const TickerName = styled.h1`
   color: white;
@@ -65,4 +90,22 @@ const NewsContainer = styled.div``;
 
 const NewsTitle = styled.h3`
   margin-left: 1rem;
+`;
+
+const ButtonContainer = styled.div`
+  width: 100vw;
+  background-color: black;
+  border-top: 1px solid white;
+  position: fixed;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.5rem;
+  bottom: 0;
+
+  @media only screen and (min-width: 500px) {
+    align-self: center;
+    max-width: 500px;
+    position: static;
+    border-top: none;
+  }
 `;

@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { MenuProvider } from "./context/MenuContext";
 import { Auth0Provider } from "@auth0/auth0-react";
 import App from "./App";
+import { WidthProvider } from "./context/WidthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,9 +17,11 @@ root.render(
           redirect_uri: window.location.origin,
         }}
       >
-        <MenuProvider>
-          <App />
-        </MenuProvider>
+        <WidthProvider>
+          <MenuProvider>
+            <App />
+          </MenuProvider>
+        </WidthProvider>
       </Auth0Provider>
     </BrowserRouter>
   </React.StrictMode>
