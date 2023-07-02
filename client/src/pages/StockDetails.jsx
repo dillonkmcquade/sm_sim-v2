@@ -15,7 +15,7 @@ import { WidthContext } from "../context/WidthContext";
 export default function StockDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { isLoading, currentTicker, currentPrice, previousDayPrice } =
+  const { isLoading, error, currentTicker, currentPrice, previousDayPrice } =
     useAggregateData(id);
   const { news, isLoadingNews } = useNewsData(id);
   const { width } = useContext(WidthContext);

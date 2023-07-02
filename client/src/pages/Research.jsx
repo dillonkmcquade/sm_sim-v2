@@ -1,15 +1,35 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField } from "@mui/material";
+import { Alert, AlertTitle, CircularProgress, TextField } from "@mui/material";
 import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 export default function Research() {
   const navigate = useNavigate();
+
   const [searchInput, setSearchInput] = useState("");
-  const submitSearch = (event) => {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const submitSearch = async (event) => {
     event.preventDefault();
-    navigate(`${searchInput.toUpperCase()}`);
+    setLoading(true);
+    const request = await fetch(`/getTickers/${searchInput}`);
+    const response = await request.json();
+    if (response.status === 200) {
+      setLoading(false);
+      navigate(`${searchInput.toUpperCase()}`);
+    } else {
+      setLoading(false);
+      setError(response.message);
+    }
   };
+
+  const handleChange = (event) => {
+    event.preventDefault();
+    setSearchInput(event.target.value);
+    setError("");
+  };
+
   return (
     <Wrapper>
       <Title>Search Stocks</Title>
@@ -17,15 +37,32 @@ export default function Research() {
         <WhiteBorderTextField
           id="searchField"
           variant="outlined"
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={handleChange}
           type="text"
           size="small"
           InputProps={{
             startAdornment: <SearchIcon />,
+            endAdornment: loading && (
+              <CircularProgress size="16px" sx={{ color: "white" }} />
+            ),
           }}
           label="Search by ticker... e.g. AAPL"
         />
       </SearchForm>
+      {error && (
+        <Alert
+          severity="error"
+          sx={{
+            backgroundColor: "rgb(22, 11, 11)",
+            width: "80vw",
+            borderRadius: "1rem",
+            margin: "1rem auto",
+          }}
+        >
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
     </Wrapper>
   );
 }

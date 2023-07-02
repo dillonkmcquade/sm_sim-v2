@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function useAggregateData(ticker) {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
 
@@ -60,6 +62,9 @@ export default function useAggregateData(ticker) {
             modifiedData[modifiedData.length - 2].Close.toFixed(2)
           );
           window.localStorage.setItem(ticker, JSON.stringify(modifiedData));
+        } else {
+          setError();
+          navigate("/research");
         }
       } catch (err) {
         setError(err);
