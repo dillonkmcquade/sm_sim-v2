@@ -4,6 +4,8 @@ import Slide from "react-reveal/Slide";
 import Fade from "react-reveal/Fade";
 import { useAuth0 } from "@auth0/auth0-react";
 
+import Button from "../components/Button";
+
 export default function Home() {
   const { loginWithRedirect } = useAuth0();
   return (
@@ -18,7 +20,7 @@ export default function Home() {
             real-life data to practice your investing skills at no risk!
           </GreetingText>
           <Link to="/dashboard">
-            <GetStarted>Get Started</GetStarted>
+            <Button>Get Started</Button>
           </Link>
         </Fade>
       </Hero>
@@ -30,7 +32,7 @@ export default function Home() {
             publicly traded companies
           </GreetingText>
           <Link to="/research">
-            <GetStarted>Research</GetStarted>
+            <Button>Research</Button>
           </Link>
         </Slide>
       </ResearchStocks>
@@ -40,7 +42,7 @@ export default function Home() {
           <GreetingText>
             Track your portfolio, purchases, and sales by creating an account
           </GreetingText>
-          <GetStarted onClick={() => loginWithRedirect()}>Sign up</GetStarted>
+          <Button handler={() => loginWithRedirect()}>Sign up</Button>
         </Slide>
       </StackedCoins>
     </Wrapper>
@@ -71,36 +73,6 @@ const GreetingText = styled.h3`
   margin: 1rem 0;
   line-height: 2;
   max-width: 80vw;
-`;
-
-const GetStarted = styled.button`
-  background: linear-gradient(
-    90deg,
-    rgba(152, 148, 230, 1) 0%,
-    rgba(121, 9, 119, 1) 100%,
-    rgba(0, 212, 255, 1) 100%
-  );
-  color: #000000;
-  font-size: 1.2rem;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 1rem;
-  cursor: pointer;
-  transition: scale ease-in-out 300ms;
-  transition: background ease-in-out 1000ms;
-
-  &:active {
-    scale: 0.9;
-  }
-
-  &:hover {
-    background: linear-gradient(
-      90deg,
-      rgba(152, 148, 230, 0.8) 0%,
-      rgba(121, 9, 119, 0.8) 100%,
-      rgba(0, 212, 255, 0.8) 100%
-    );
-  }
 `;
 
 const StackedCoins = styled.div`
