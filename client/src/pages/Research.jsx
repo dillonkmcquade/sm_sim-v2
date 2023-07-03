@@ -77,7 +77,7 @@ export default function Research() {
     event.preventDefault();
     setInputText(event.target.value);
 
-    if (event.target.value.length > 3) {
+    if (event.target.value.length > 2) {
       debouncedSearch();
     } else {
       setResults(null);
@@ -139,7 +139,7 @@ export default function Research() {
               ref={index === isSelected ? ref : null}
               key={Math.random()}
               tabIndex={0}
-              onClick={() => navigate(`/research/${result.ticker}`)}
+              onClick={() => navigate(result.ticker)}
             >
               <Ticker>{result.ticker}</Ticker>
               <Name>{result.name}</Name>
