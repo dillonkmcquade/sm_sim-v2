@@ -75,7 +75,7 @@ export default function LineChart({ id, data, small }) {
         useMesh={true}
         legends={[
           {
-            anchor: !small && "bottom-right",
+            anchor: !small ? "bottom-right" : "top-left",
             direction: "column",
             justify: false,
             translateX: 100,

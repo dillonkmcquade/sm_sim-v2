@@ -38,7 +38,9 @@ export default function StockDetails() {
         </SecondaryText>
       </CurrentPrice>
 
-      <LineChart id={id} data={currentTicker} />
+      <div style={{ height: "70vh" }}>
+        <LineChart id={id} data={currentTicker} />
+      </div>
 
       <Stats></Stats>
 
