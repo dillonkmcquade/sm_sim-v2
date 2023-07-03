@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Alert,
   AlertTitle,
@@ -9,6 +9,7 @@ import {
 import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useDebounce } from "../hooks/useDebounce.js";
 
 export default function Research() {
   const [results, setResults] = useState(null);
@@ -16,13 +17,10 @@ export default function Research() {
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
 
-  const submitSearch = async (input) => {
+  const submitSearch = async () => {
     setLoading(true);
-    if (input.length < 2) {
-      return;
-    }
     try {
-      const request = await fetch(`/search?name=${input}`);
+      const request = await fetch(`/search?name=${inputText}`);
       const response = await request.json();
       if (response.status === 200) {
         setLoading(false);
@@ -33,41 +31,24 @@ export default function Research() {
       }
     } catch (error) {
       setError(error.message);
+      setResults(null);
     }
   };
-
   //only query backend once typing has stopped
-  const debounce = function (fn, t) {
-    let timer;
-    return function (...args) {
-      if (timer !== undefined) {
-        console.log("debounced");
-        clearTimeout(timer);
-      }
-      timer = setTimeout(() => {
-        return fn(...args);
-      }, t);
-    };
-  };
 
-  const debouncedSubmit = debounce(submitSearch, 300);
+  const debouncedSubmit = useDebounce(submitSearch);
 
   const handleChange = (event) => {
-    event.preventDefault();
     setInputText(event.target.value);
+
     if (event.target.value.length > 1) {
-      debouncedSubmit(event.target.value);
+      debouncedSubmit();
     } else {
       setResults(null);
     }
+
     setError("");
   };
-
-  useEffect(() => {
-    if (inputText === "") {
-      setResults(null);
-    }
-  }, [inputText]);
 
   return (
     <Wrapper>
@@ -76,8 +57,8 @@ export default function Research() {
         <WhiteBorderTextField
           id="searchField"
           variant="outlined"
-          value={inputText}
           onChange={handleChange}
+          value={inputText}
           type="text"
           size="small"
           InputProps={{
