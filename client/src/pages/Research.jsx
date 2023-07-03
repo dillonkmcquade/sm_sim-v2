@@ -1,52 +1,98 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Alert, AlertTitle, CircularProgress, TextField } from "@mui/material";
+import { useState, useEffect } from "react";
+import {
+  Alert,
+  AlertTitle,
+  CircularProgress,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
-export default function Research() {
-  const navigate = useNavigate();
+import ClearIcon from "@mui/icons-material/Clear";
 
-  const [searchInput, setSearchInput] = useState("");
+export default function Research() {
+  const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [inputText, setInputText] = useState("");
 
-  const submitSearch = async (event) => {
-    event.preventDefault();
+  const submitSearch = async (input) => {
     setLoading(true);
-    const request = await fetch(`/getTickers/${searchInput.toUpperCase()}`);
-    const response = await request.json();
-    if (response.status === 200) {
-      setLoading(false);
-      navigate(`${searchInput.toUpperCase()}`);
-    } else {
-      setLoading(false);
-      setError(response.message);
+    if (input.length < 2) {
+      return;
+    }
+    try {
+      const request = await fetch(`/search?name=${input}`);
+      const response = await request.json();
+      if (response.status === 200) {
+        setLoading(false);
+        setResults(response.results);
+      } else {
+        setLoading(false);
+        setError(response.message);
+      }
+    } catch (error) {
+      setError(error.message);
     }
   };
 
+  //only query backend once typing has stopped
+  const debounce = function (fn, t) {
+    let timer;
+    return function (...args) {
+      if (timer !== undefined) {
+        console.log("debounced");
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        return fn(...args);
+      }, t);
+    };
+  };
+
+  const debouncedSubmit = debounce(submitSearch, 300);
+
   const handleChange = (event) => {
     event.preventDefault();
-    setSearchInput(event.target.value);
+    setInputText(event.target.value);
+    if (event.target.value.length > 1) {
+      debouncedSubmit(event.target.value);
+    } else {
+      setResults(null);
+    }
     setError("");
   };
+
+  useEffect(() => {
+    if (inputText === "") {
+      setResults(null);
+    }
+  }, [inputText]);
 
   return (
     <Wrapper>
       <Title>Search Stocks</Title>
-      <SearchForm onSubmit={submitSearch}>
+      <SearchForm>
         <WhiteBorderTextField
           id="searchField"
           variant="outlined"
+          value={inputText}
           onChange={handleChange}
           type="text"
           size="small"
           InputProps={{
             startAdornment: <SearchIcon />,
-            endAdornment: loading && (
+            endAdornment: loading ? (
               <CircularProgress size="16px" sx={{ color: "white" }} />
+            ) : (
+              results && (
+                <IconButton onClick={() => setInputText("")}>
+                  <ClearIcon size="16px" sx={{ color: "white" }} />
+                </IconButton>
+              )
             ),
           }}
-          label="Search by ticker... e.g. AAPL"
+          label="Search"
         />
       </SearchForm>
       {error && (
@@ -63,6 +109,7 @@ export default function Research() {
           {error}
         </Alert>
       )}
+      {results && results.map((result) => <p>{result.name}</p>)}
     </Wrapper>
   );
 }
