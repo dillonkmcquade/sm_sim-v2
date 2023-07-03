@@ -29,8 +29,12 @@ export default function Research() {
   const handleKeyDown = (event) => {
     switch (event.key) {
       case "Enter": {
-        const result = results[isSelected];
-        navigate(result.ticker);
+        if (results && results.length > 2) {
+          const result = results[isSelected];
+          navigate(result.ticker);
+        } else {
+          setError("Nothing selected");
+        }
         return;
       }
       case "ArrowUp": {
@@ -62,8 +66,6 @@ export default function Research() {
       const response = await request.json();
       if (response.status === 200) {
         setResults(response.results);
-      } else {
-        setError(response.message);
       }
       setLoading(false);
     } catch (error) {
@@ -80,7 +82,7 @@ export default function Research() {
     event.preventDefault();
     setInputText(event.target.value);
 
-    if (event.target.value.length > 2) {
+    if (event.target.value.length > 1) {
       debouncedSearch();
     } else {
       setResults(null);
@@ -96,20 +98,6 @@ export default function Research() {
   return (
     <Wrapper>
       <Title>Search Stocks</Title>
-      {error && (
-        <Alert
-          severity="error"
-          sx={{
-            backgroundColor: "rgb(22, 11, 11)",
-            width: "80vw",
-            borderRadius: "1rem",
-            margin: "1rem auto",
-          }}
-        >
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      )}
       <SearchForm onSubmit={(event) => event.preventDefault()}>
         <WhiteBorderTextField
           id="searchField"
@@ -149,6 +137,23 @@ export default function Research() {
             </SearchResult>
           ))}
       </SearchForm>
+
+      <div style={{ height: "20vh" }}>
+        {error && (
+          <Alert
+            severity="error"
+            sx={{
+              backgroundColor: "rgb(22, 11, 11)",
+              width: "80vw",
+              borderRadius: "1rem",
+              margin: "1rem auto",
+            }}
+          >
+            <AlertTitle>Error</AlertTitle>
+            {error}
+          </Alert>
+        )}
+      </div>
 
       <Title>Recently Viewed</Title>
       {recentlyViewed.length && (

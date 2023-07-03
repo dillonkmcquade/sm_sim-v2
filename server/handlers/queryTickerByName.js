@@ -32,9 +32,26 @@ const queryTickerByName = async (req, res) => {
       { $limit: 10 },
       { $project: { ticker: 1, name: 1 } },
     ];
-    const data = await tickers.aggregate(agg).toArray();
+    let data = await tickers.aggregate(agg).toArray();
     if (data.length === 0) {
-      return res.status(400).json({ status: 400, message: "Ticker not found" });
+      data = await tickers
+        .aggregate([
+          {
+            $search: {
+              index: "ticker-names",
+              autocomplete: {
+                query: name,
+                path: "ticker",
+              },
+            },
+          },
+          { $limit: 10 },
+          { $project: { ticker: 1, name: 1 } },
+        ])
+        .toArray();
+    }
+    if (data.length === 0) {
+      return res.status(400).json({ status: 400, message: "Not found" });
     }
     res.status(200).json({
       status: 200,
