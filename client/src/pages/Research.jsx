@@ -58,16 +58,15 @@ export default function Research() {
       const request = await fetch(`/search?name=${inputText}`);
       const response = await request.json();
       if (response.status === 200) {
-        setLoading(false);
         setResults(response.results);
       } else {
-        setLoading(false);
         setError(response.message);
       }
+      setLoading(false);
     } catch (error) {
       setError(error.message);
       setResults(null);
-    } finally {
+      setLoading(false);
     }
   };
 
