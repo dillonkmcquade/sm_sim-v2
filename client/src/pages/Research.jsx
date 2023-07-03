@@ -11,6 +11,7 @@ import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDebounce } from "../hooks/useDebounce.js";
+import TickerCard from "../components/TickerCard.jsx";
 
 export default function Research() {
   const [results, setResults] = useState(null);
@@ -149,11 +150,16 @@ export default function Research() {
           ))}
       </SearchForm>
 
+      <Title>Recently Viewed</Title>
       {recentlyViewed.length && (
         <RecentlyViewed>
-          <Title>Recently Viewed</Title>
           {recentlyViewed.map((key) => (
-            <p onClick={() => navigate(key)}>{key}</p>
+            <TickerCard
+              key={key}
+              ticker={key}
+              data={JSON.parse(localStorage[key])}
+              handler={() => navigate(key)}
+            ></TickerCard>
           ))}
         </RecentlyViewed>
       )}
@@ -162,7 +168,6 @@ export default function Research() {
 }
 const Wrapper = styled.div`
   position: relative;
-
   color: #d8dee9;
   top: 56px;
 `;
@@ -234,4 +239,7 @@ const Name = styled.div`
   transition: none !important;
 `;
 
-const RecentlyViewed = styled.div``;
+const RecentlyViewed = styled.div`
+  display: flex;
+  overflow: auto;
+`;

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { WidthContext } from "../context/WidthContext";
 
-export default function LineChart({ id, data }) {
+export default function LineChart({ id, data, small }) {
   const { width } = useContext(WidthContext);
 
   //Convert unix timestamp to 'Month DD' format
@@ -21,10 +21,10 @@ export default function LineChart({ id, data }) {
   const newData = { id, color: "hsl(341, 70%, 50%)", data: values };
 
   return (
-    <div style={{ height: "50vh", color: "black" }}>
+    <div style={{ height: "80%", color: "black" }}>
       <ResponsiveLine
         data={[newData]}
-        margin={{ top: 50, right: 80, bottom: 50, left: 60 }}
+        margin={!small && { top: 50, right: 80, bottom: 50, left: 60 }}
         enableGridX={false}
         enableGridY={false}
         enableSlices="x"
@@ -54,14 +54,18 @@ export default function LineChart({ id, data }) {
                 legendPosition: "middle",
               }
         }
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: "USD",
-          legendOffset: -40,
-          legendPosition: "middle",
-        }}
+        axisLeft={
+          small
+            ? null
+            : {
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: "USD",
+                legendOffset: -40,
+                legendPosition: "middle",
+              }
+        }
         pointSize={width < 600 ? 5 : 10}
         lineWidth={width < 600 ? 3 : 7}
         pointColor={{ theme: "background" }}
@@ -71,7 +75,7 @@ export default function LineChart({ id, data }) {
         useMesh={true}
         legends={[
           {
-            anchor: "bottom-right",
+            anchor: !small && "bottom-right",
             direction: "column",
             justify: false,
             translateX: 100,
