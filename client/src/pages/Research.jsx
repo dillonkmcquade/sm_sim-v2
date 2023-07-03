@@ -18,7 +18,9 @@ export default function Research() {
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
   const [isSelected, setIsSelected] = useState(0);
-
+  const recentlyViewed = Object.keys(window.localStorage).filter(
+    (key) => !key.includes("news")
+  );
   const navigate = useNavigate();
   const ref = useRef(null);
 
@@ -135,7 +137,7 @@ export default function Research() {
         {results &&
           results.map((result, index) => (
             <SearchResult
-              isselected={index === isSelected && "#0f1410"}
+              isselected={index === isSelected ? "#0f1410" : undefined}
               ref={index === isSelected ? ref : null}
               key={Math.random()}
               tabIndex={0}
@@ -146,6 +148,15 @@ export default function Research() {
             </SearchResult>
           ))}
       </SearchForm>
+
+      {recentlyViewed.length && (
+        <RecentlyViewed>
+          <Title>Recently Viewed</Title>
+          {recentlyViewed.map((key) => (
+            <p onClick={() => navigate(key)}>{key}</p>
+          ))}
+        </RecentlyViewed>
+      )}
     </Wrapper>
   );
 }
@@ -222,3 +233,5 @@ const Name = styled.div`
   animation: none !important;
   transition: none !important;
 `;
+
+const RecentlyViewed = styled.div``;
