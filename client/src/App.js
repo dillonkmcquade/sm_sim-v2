@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles.js";
@@ -13,9 +13,38 @@ import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
 
 import { MenuContext } from "./context/MenuContext.js";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function App() {
   const { menuVisible } = useContext(MenuContext);
+  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    const hasBeenCreated = window.localStorage.getItem("user");
+    const createUser = async () => {
+      // create user if does not already exist
+      try {
+        const accessToken = await getAccessTokenSilently();
+        const request = await fetch("/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ user }),
+        });
+        const response = await request.json();
+        if (response.status === 200) {
+          window.localStorage.setItem("user", JSON.stringify(true));
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    if (isAuthenticated && !hasBeenCreated) {
+      createUser();
+    }
+  }, [user]);
 
   return (
     <>

@@ -15,6 +15,7 @@ root.render(
         clientId="WiYBN3Xgh7Xb4P92grbyAX1gsET62VHQ"
         authorizationParams={{
           redirect_uri: window.location.origin,
+          audience: "my-api",
         }}
       >
         <WidthProvider>

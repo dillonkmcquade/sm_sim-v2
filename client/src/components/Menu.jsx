@@ -9,6 +9,13 @@ export default function Menu() {
   const { menuVisible, setMenuVisible } = useContext(MenuContext);
   const { error, loginWithRedirect, isAuthenticated, isLoading, logout } =
     useAuth0();
+
+  const handleSignIn = async () => {
+    if (!isAuthenticated) {
+      await loginWithRedirect();
+    }
+  };
+
   if (error) {
     <h1>{error.message}</h1>;
   }
@@ -32,7 +39,7 @@ export default function Menu() {
           </AuthRedirect>
         </>
       ) : (
-        <AuthRedirect onClick={() => loginWithRedirect()}>Sign In</AuthRedirect>
+        <AuthRedirect onClick={handleSignIn}>Sign In</AuthRedirect>
       )}
     </Nav>
   );
