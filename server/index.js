@@ -5,6 +5,7 @@ const { getTickers } = require("./handlers/getTickers");
 const { getTickerById } = require("./handlers/getTickerById");
 const { queryTickerByName } = require("./handlers/queryTickerByName");
 const { createUser } = require("./handlers/createUser");
+const { getUser } = require("./handlers/getUser");
 require("dotenv").config();
 
 const server = express();
@@ -20,6 +21,7 @@ server
   .get("/getTickers", getTickers)
   .get("/getTickers/:id", getTickerById)
   .get("/search", queryTickerByName)
+  .get("/user/:_id", jwtCheck, getUser)
   .post("/user", jwtCheck, createUser)
   .get("*", (_req, res) => {
     return res.send("<h1>Does not exist</h1>");
