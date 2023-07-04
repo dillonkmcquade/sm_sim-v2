@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import useAggregateData from "../hooks/useTickerAggregateData";
@@ -15,6 +15,7 @@ export default function Transaction() {
   const { id } = useParams();
   const { currentPrice } = useAggregateData(id);
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
 
   const {
     setLoading,
@@ -68,7 +69,7 @@ export default function Transaction() {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          _id: user.sub,
+          _id: user.sub, //user UUID
           quantity,
           currentPrice,
         }),
@@ -79,14 +80,18 @@ export default function Transaction() {
       }
     } catch (error) {
       errorMessage(error.message);
+    } finally {
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     }
   };
 
   return (
     <Wrapper>
-      <h3>Available to trade: ${balance}</h3>
-      <p>{id}</p>
-      <p>${currentPrice}</p>
+      <h3>Available to trade: ${balance.toFixed(2)}</h3>
+      <p>Chosen share: {id}</p>
+      <p>Actual price: ${Number(currentPrice).toFixed(2)}</p>
       <label htmlFor="qty">Please select number of shares</label>
       <input
         value={quantity}
@@ -117,7 +122,7 @@ export default function Transaction() {
         {loading ? <CircularProgress /> : "Confirm Transaction"}
       </Button>
       {error && <Alert severity="error">{error}</Alert>}
-      {confirmed && <Alert severity="success">Purchase Confirmed</Alert>}
+      {confirmed && <Alert severity="success">Transaction Confirmed</Alert>}
     </Wrapper>
   );
 }

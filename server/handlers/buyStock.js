@@ -29,9 +29,10 @@ const buyStock = async (req, res) => {
     }
 
     const newHolding = { ticker: id, quantity, purchasePrice: currentPrice };
+    const amountToSubtract = Number(currentPrice) * quantity;
     const update = await users.updateOne(
       { _id },
-      { $push: { holdings: newHolding } }
+      { $inc: { balance: -amountToSubtract }, $push: { holdings: newHolding } }
     );
 
     if (update.matchedCount === 0 || update.modifiedCount === 0) {
