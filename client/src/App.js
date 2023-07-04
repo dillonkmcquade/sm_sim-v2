@@ -20,7 +20,7 @@ export default function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
-    const hasBeenCreated = window.localStorage.getItem("user");
+    const hasBeenCreated = window.sessionStorage.getItem("user");
     const createUser = async () => {
       // create user if does not already exist
       try {
@@ -35,7 +35,7 @@ export default function App() {
         });
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
-          window.localStorage.setItem("user", JSON.stringify(true));
+          window.sessionStorage.setItem("user", JSON.stringify(true));
         }
       } catch (error) {
         console.error(error.message);

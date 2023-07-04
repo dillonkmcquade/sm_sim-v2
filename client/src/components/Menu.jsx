@@ -18,7 +18,7 @@ export default function Menu() {
 
   const handleLogout = async () => {
     logout({ logoutParams: { returnTo: "http://localhost:3000" } });
-    window.localStorage.removeItem("user");
+    window.sessionStorage.removeItem("user");
   };
 
   if (error) {

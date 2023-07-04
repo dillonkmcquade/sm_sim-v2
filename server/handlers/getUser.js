@@ -10,7 +10,7 @@ const options = {
 const getUser = async (req, res) => {
   const { _id } = req.params;
   const client = new MongoClient(MONGO_URI, options);
-  if (!user) {
+  if (!_id) {
     return res
       .status(400)
       .json({ status: 400, message: "No query string given" });

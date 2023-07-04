@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import {
   Alert,
   AlertTitle,
@@ -12,13 +12,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDebounce } from "../hooks/useDebounce.js";
 import TickerCard from "../components/TickerCard.jsx";
+import useSearchReducer from "../hooks/useSearchReducer.js";
 
 export default function Research() {
-  const [results, setResults] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [inputText, setInputText] = useState("");
-  const [isSelected, setIsSelected] = useState(0);
+  const { startSearch, success, errorMessage, clear, updateField, state } =
+    useSearchReducer();
+  const { results, error, loading, inputText, isSelected } = state;
+
   const recentlyViewed = Object.keys(window.localStorage).filter(
     (key) => !key.includes("news")
   );
@@ -29,28 +29,28 @@ export default function Research() {
   const handleKeyDown = (event) => {
     switch (event.key) {
       case "Enter": {
-        if (results && results.length > 2) {
+        if (results && results.length > 0) {
           const result = results[isSelected];
           navigate(result.ticker);
         } else {
-          setError("Nothing selected");
+          errorMessage("no results selected");
         }
         return;
       }
       case "ArrowUp": {
         if (isSelected > 0) {
-          setIsSelected(isSelected - 1);
+          updateField("isSelected", isSelected - 1);
         }
         break;
       }
       case "ArrowDown": {
         if (isSelected < results.length - 1) {
-          setIsSelected(isSelected + 1);
+          updateField("isSelected", isSelected + 1);
         }
         break;
       }
       case "Escape": {
-        clearSearch();
+        clear();
         break;
       }
       default:
@@ -60,18 +60,17 @@ export default function Research() {
 
   //query to backend
   const search = async () => {
-    setLoading(true);
+    startSearch();
     try {
       const request = await fetch(`/search?name=${inputText}`);
       const response = await request.json();
       if (response.status === 200) {
-        setResults(response.results);
+        success(response.results);
+      } else {
+        errorMessage(response.message);
       }
-      setLoading(false);
     } catch (error) {
-      setError(error.message);
-      setResults(null);
-      setLoading(false);
+      errorMessage(error.message);
     }
   };
 
@@ -80,19 +79,11 @@ export default function Research() {
 
   const handleChange = (event) => {
     event.preventDefault();
-    setInputText(event.target.value);
+    updateField("inputText", event.target.value);
 
     if (event.target.value.length > 1) {
       debouncedSearch();
-    } else {
-      setResults(null);
     }
-    setError("");
-  };
-
-  const clearSearch = function () {
-    setResults(null);
-    setInputText("");
   };
 
   return (
@@ -107,15 +98,14 @@ export default function Research() {
           value={inputText}
           type="text"
           size="small"
-          tabIndex="0"
           autoFocus={true}
           InputProps={{
             startAdornment: <SearchIcon />,
             endAdornment: loading ? (
               <CircularProgress size="16px" sx={{ color: "white" }} />
             ) : (
-              results && (
-                <IconButton onClick={clearSearch}>
+              inputText && (
+                <IconButton onClick={clear}>
                   <ClearIcon size="16px" sx={{ color: "white" }} />
                 </IconButton>
               )
@@ -156,18 +146,17 @@ export default function Research() {
       </div>
 
       <Title>Recently Viewed</Title>
-      {recentlyViewed.length && (
-        <RecentlyViewed>
-          {recentlyViewed.map((key) => (
-            <TickerCard
-              key={key}
-              ticker={key}
-              data={JSON.parse(localStorage[key])}
-              handler={() => navigate(key)}
-            ></TickerCard>
-          ))}
-        </RecentlyViewed>
-      )}
+
+      <RecentlyViewed>
+        {recentlyViewed.map((key) => (
+          <TickerCard
+            key={key}
+            ticker={key}
+            data={JSON.parse(localStorage[key])}
+            handler={() => navigate(key)}
+          ></TickerCard>
+        ))}
+      </RecentlyViewed>
     </Wrapper>
   );
 }

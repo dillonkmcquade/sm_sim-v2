@@ -6,9 +6,8 @@ export default function useAggregateData(ticker) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
 
-  const cachedData = window.localStorage.getItem(ticker);
-
   const [currentPrice, _setCurrentPrice] = useState(() => {
+    const cachedData = window.localStorage.getItem(ticker);
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
       return parsedData[parsedData.length - 1].Close.toFixed(2);
@@ -18,6 +17,8 @@ export default function useAggregateData(ticker) {
   });
 
   const [previousDayPrice, _setPreviousDayPrice] = useState(() => {
+    const cachedData = window.localStorage.getItem(ticker);
+
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
       return parsedData[parsedData.length - 2].Close.toFixed(2);
@@ -27,6 +28,7 @@ export default function useAggregateData(ticker) {
   });
 
   const [currentTicker, setCurrentTicker] = useState(() => {
+    const cachedData = window.localStorage.getItem(ticker);
     if (cachedData) {
       return JSON.parse(cachedData);
     } else {
