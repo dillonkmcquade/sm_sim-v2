@@ -6,6 +6,7 @@ const { getTickerById } = require("./handlers/getTickerById");
 const { queryTickerByName } = require("./handlers/queryTickerByName");
 const { createUser } = require("./handlers/createUser");
 const { getUser } = require("./handlers/getUser");
+const { buyStock } = require("./handlers/buyStock");
 require("dotenv").config();
 
 const server = express();
@@ -23,6 +24,7 @@ server
   .get("/search", queryTickerByName)
   .get("/user/:_id", jwtCheck, getUser)
   .post("/user", jwtCheck, createUser)
+  .patch("/buy/:id", jwtCheck, buyStock)
   .get("*", (_req, res) => {
     return res.send("<h1>Does not exist</h1>");
   });

@@ -35,7 +35,7 @@ export default function App() {
         });
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
-          window.sessionStorage.setItem("user", JSON.stringify(true));
+          window.sessionStorage.setItem("user", JSON.stringify(response.data));
         }
       } catch (error) {
         console.error(error.message);

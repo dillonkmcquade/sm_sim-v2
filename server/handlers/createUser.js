@@ -11,9 +11,7 @@ const createUser = async (req, res) => {
   const { user } = req.body;
   const client = new MongoClient(MONGO_URI, options);
   if (!user) {
-    return res
-      .status(400)
-      .json({ status: 400, message: "No query string given" });
+    return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
     await client.connect();
@@ -21,18 +19,21 @@ const createUser = async (req, res) => {
     const users = database.collection("users");
     const duplicate = await users.findOne({ _id: user.sub });
     if (duplicate) {
-      return res.status(200).json({ status: 200, message: "User exists" });
+      return res
+        .status(200)
+        .json({ status: 200, data: duplicate, message: "User exists" });
     }
-    await users.insertOne({
+    const newUser = {
       _id: user.sub,
       balance: 1000000,
       holdings: [],
       ...user,
-    });
+    };
+    await users.insertOne(newUser);
     return res.status(201).json({
       status: 201,
       message: "User created",
-      data: user,
+      data: newUser,
     });
   } catch (error) {
     console.error(error.message);
