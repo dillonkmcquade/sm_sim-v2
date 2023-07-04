@@ -19,25 +19,27 @@ const createUser = async (req, res) => {
     await client.connect();
     const database = client.db(DB_NAME);
     const users = database.collection("users");
-    const makeUser = await users.insertOne({
+    const duplicate = await users.findOne({ _id: user.sub });
+    if (duplicate) {
+      res.status(200).json({ status: 200, message: "User exists" });
+    }
+    await users.insertOne({
       _id: user.sub,
       balance: 1000000,
       holdings: [],
       ...user,
     });
-    if (!makeUser.acknowledged) {
-      res.status(200).json({ status: 200, message: "User authenticated" });
-    }
-    res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       message: "User created",
       data: user,
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });
     console.error(error.message);
+  } finally {
+    client.close();
   }
-  client.close();
 };
 
 module.exports = { createUser };

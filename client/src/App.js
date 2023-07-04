@@ -34,7 +34,7 @@ export default function App() {
           body: JSON.stringify({ user }),
         });
         const response = await request.json();
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
           window.localStorage.setItem("user", JSON.stringify(true));
         }
       } catch (error) {
