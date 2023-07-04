@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
     const users = database.collection("users");
     const duplicate = await users.findOne({ _id: user.sub });
     if (duplicate) {
-      res.status(200).json({ status: 200, message: "User exists" });
+      return res.status(200).json({ status: 200, message: "User exists" });
     }
     await users.insertOne({
       _id: user.sub,
@@ -35,8 +35,8 @@ const createUser = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.status(500).json({ status: 500, message: "Server error" });
     console.error(error.message);
+    res.status(500).json({ status: 500, message: "Server error" });
   } finally {
     client.close();
   }

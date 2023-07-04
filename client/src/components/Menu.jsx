@@ -16,6 +16,11 @@ export default function Menu() {
     }
   };
 
+  const handleLogout = async () => {
+    logout({ logoutParams: { returnTo: "http://localhost:3000" } });
+    window.localStorage.removeItem("user");
+  };
+
   if (error) {
     <h1>{error.message}</h1>;
   }
@@ -30,13 +35,7 @@ export default function Menu() {
         <>
           <MenuOption to="/portfolio">Portfolio</MenuOption>
           <MenuOption to="/profile">Profile</MenuOption>
-          <AuthRedirect
-            onClick={() =>
-              logout({ logoutParams: { returnTo: "http://localhost:3000" } })
-            }
-          >
-            Sign out
-          </AuthRedirect>
+          <AuthRedirect onClick={handleLogout}>Sign out</AuthRedirect>
         </>
       ) : (
         <AuthRedirect onClick={handleSignIn}>Sign In</AuthRedirect>
