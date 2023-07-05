@@ -56,7 +56,6 @@ export default function Transaction() {
           0
         );
 
-        console.log(numOfShares);
         if (numOfShares >= 0) {
           setShares(numOfShares);
         }
