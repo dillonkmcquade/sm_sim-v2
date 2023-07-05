@@ -24,7 +24,7 @@ const getUser = async (req, res) => {
       return res.status(404).json({ status: 404, message: "User not found" });
     }
     return res.status(200).json({
-      status: 201,
+      status: 200,
       data: user,
     });
   } catch (error) {

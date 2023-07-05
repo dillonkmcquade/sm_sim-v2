@@ -19,7 +19,7 @@ export default function Home() {
             Research, buy, and sell stocks while tracking your portfolio. Use
             real-life data to practice your investing skills at no risk!
           </GreetingText>
-          <Link to="/dashboard">
+          <Link to="/research">
             <Button>Get Started</Button>
           </Link>
         </Fade>

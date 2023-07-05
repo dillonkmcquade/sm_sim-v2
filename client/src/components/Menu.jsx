@@ -29,7 +29,7 @@ export default function Menu() {
   }
   return (
     <Nav onClick={() => setMenuVisible(!menuVisible)}>
-      <MenuOption to="/dashboard">Dashboard</MenuOption>
+      {isAuthenticated && <MenuOption to="/dashboard">Dashboard</MenuOption>}
       <MenuOption to="/research">Research</MenuOption>
       {isAuthenticated ? (
         <>
