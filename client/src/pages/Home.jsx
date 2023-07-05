@@ -42,7 +42,17 @@ export default function Home() {
           <GreetingText>
             Track your portfolio, purchases, and sales by creating an account
           </GreetingText>
-          <Button handler={() => loginWithRedirect()}>Sign up</Button>
+          <Button
+            handler={() =>
+              loginWithRedirect({
+                authorizationParams: {
+                  screen_hint: "signup",
+                },
+              })
+            }
+          >
+            Sign up
+          </Button>
         </Slide>
       </StackedCoins>
     </Wrapper>
