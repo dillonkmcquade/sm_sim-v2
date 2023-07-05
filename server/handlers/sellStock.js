@@ -28,16 +28,18 @@ const sellStock = async (req, res) => {
       return res.status(404).json({ status: 200, message: "user not found" });
     }
 
+    const newTransaction = {
+      ticker: id,
+      quantity: -quantity,
+      price: currentPrice,
+    };
     const amountToSubtract = Number(currentPrice) * quantity;
     const update = await users.updateOne(
       { _id },
       {
-        $inc: {
-          balance: amountToSubtract,
-          "holdings.$[xxx].quantity": -quantity,
-        },
-      },
-      { arrayFilters: [{ "xxx.ticker": id }] }
+        $inc: { balance: -amountToSubtract },
+        $push: { holdings: newTransaction },
+      }
     );
 
     if (update.matchedCount === 0 || update.modifiedCount === 0) {

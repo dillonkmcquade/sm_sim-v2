@@ -14,7 +14,7 @@ import Alert from "../components/Alert.jsx";
 export default function Transaction() {
   const { id, transactionType } = useParams();
   const { currentPrice } = useAggregateData(id);
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
 
   const {
@@ -44,15 +44,22 @@ export default function Transaction() {
         });
         const { data } = await response.json();
         setBalance(data.balance);
+
         const numOfShares = data.holdings.reduce(
           (accumulator, currentValue) => {
             if (currentValue.ticker === id) {
-              return accumulator + Number(currentValue.quantity);
+              return accumulator + currentValue.quantity;
+            } else {
+              return accumulator + 0;
             }
           },
           0
         );
-        setShares(numOfShares);
+
+        console.log(numOfShares);
+        if (numOfShares >= 0) {
+          setShares(numOfShares);
+        }
         if (data.balance <= 0) {
           errorMessage("Insufficient funds");
         }
@@ -153,18 +160,23 @@ export default function Transaction() {
         <Detail>
           <div>Actual price:</div>
           <div>
-            <Bold>${Number(currentPrice).toFixed(2)}</Bold>
+            <Bold>${Number(currentPrice).toFixed(5)}</Bold>
           </div>
         </Detail>
         <Detail>
           <div>Total:</div>
           <div>
-            <Bold>${total.toFixed(2)}</Bold>
+            <Bold>${total.toFixed(5)}</Bold>
           </div>
         </Detail>
       </TransactionDetails>
       <Button
-        disabled={loading || confirmed || balance <= 0}
+        disabled={
+          loading ||
+          confirmed ||
+          balance <= 0 ||
+          (action === "sell" && shares === 0)
+        }
         bradius="0"
         bg={loading ? " #5c5c63" : undefined}
         handler={submit}
@@ -202,7 +214,7 @@ const Detail = styled.div`
 `;
 const QtySelect = styled.input`
   margin: 1rem 0;
-  max-width: 10vw;
+  max-width: 15vw;
 `;
 
 const TransactionDetails = styled.div`
