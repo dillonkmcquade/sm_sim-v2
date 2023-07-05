@@ -27,7 +27,7 @@ export default function Transaction() {
   } = usePurchaseReducer(id, currentPrice);
   const { confirmed, quantity, action, loading, error } = state;
 
-  const [alignment, setAlignment] = useState("Buy");
+  const [alignment, setAlignment] = useState("buy");
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
@@ -77,13 +77,12 @@ export default function Transaction() {
       const parsed = await response.json();
       if (parsed.status === 200) {
         success();
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (error) {
       errorMessage(error.message);
-    } finally {
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
     }
   };
 
@@ -115,7 +114,7 @@ export default function Transaction() {
         </BuyOrSell>
       </ToggleButtonGroup>
       <Button
-        disabled={loading}
+        disabled={loading || confirmed}
         bg={loading ? " #5c5c63" : undefined}
         handler={submit}
       >
