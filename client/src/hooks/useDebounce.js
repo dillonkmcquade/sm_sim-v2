@@ -1,7 +1,7 @@
 import { useRef, useMemo, useEffect } from "react";
 import { debounce } from "../utils/debounce.js";
 
-export const useDebounce = (callback) => {
+export const useDebounce = (callback, t) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export const useDebounce = (callback) => {
       ref.current?.();
     };
 
-    return debounce(func, 500);
+    return debounce(func, t);
   }, []);
 
   return debouncedCallback;

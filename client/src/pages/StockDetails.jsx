@@ -45,7 +45,10 @@ export default function StockDetails() {
       <Stats></Stats>
 
       <ButtonContainer width={width}>
-        <Button bradius="4px" handler={() => navigate(`/transaction/${id}`)}>
+        <Button
+          bradius="4px"
+          handler={() => navigate(`/transaction/buy/${id}`)}
+        >
           Buy
         </Button>
         <Button
@@ -55,7 +58,7 @@ export default function StockDetails() {
           hoverbg="white"
           bradius="4px"
           border="1px solid white"
-          handler={() => navigate(`/transaction/${id}`)}
+          handler={() => navigate(`/transaction/sell/${id}`)}
         >
           Sell
         </Button>

@@ -9,6 +9,7 @@ export default function Button({
   color,
   bradius,
   border,
+  disabled,
 }) {
   return (
     <StyledButton
@@ -19,6 +20,7 @@ export default function Button({
       hovercolor={hovercolor}
       border={border}
       onClick={handler}
+      disabled={disabled}
     >
       {children}
     </StyledButton>
@@ -34,13 +36,13 @@ const StyledButton = styled.button`
   border: ${(props) => props.border || "none"};
   padding: 0.75rem;
   border-radius: ${(props) => props.bradius || "1rem"};
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   transition: scale ease-in-out 300ms;
   transition: background ease-in 500ms;
   min-width: 100px;
 
   &:active {
-    scale: 0.9;
+    scale: ${(props) => (props.disabled ? "1" : 0.9)};
   }
 
   &:hover {
@@ -48,7 +50,5 @@ const StyledButton = styled.button`
       props.hoverbg ||
       "linear-gradient(90deg,rgba(152, 148, 230, 0.8) 0%,rgba(121, 9, 119, 0.8) 100%,rgba(0, 212, 255, 0.8) 100%)"};
     color: ${(props) => props.hovercolor};
-
-: 
   }
 `;

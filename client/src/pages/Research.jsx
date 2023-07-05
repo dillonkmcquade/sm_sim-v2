@@ -74,8 +74,8 @@ export default function Research() {
     }
   };
 
-  //only query backend once typing has stopped 500ms delay
-  const debouncedSearch = useDebounce(search);
+  //only query backend once typing has stopped 300ms delay
+  const debouncedSearch = useDebounce(search, 300);
 
   const handleChange = (event) => {
     event.preventDefault();

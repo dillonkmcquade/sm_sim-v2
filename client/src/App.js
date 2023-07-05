@@ -56,7 +56,10 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/research/:id" element={<StockDetails />} />
         <Route path="/research" element={<Research />} />
-        <Route path="/transaction/:id" element={<Transaction />} />
+        <Route
+          path="/transaction/:transactionType/:id"
+          element={<Transaction />}
+        />
         <Route path="*" element={<h1>404</h1>} />
       </Routes>
     </>

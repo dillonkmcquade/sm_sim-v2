@@ -1,11 +1,9 @@
 import { useReducer } from "react";
 
-const initFunc = (id, currentPrice) => {
+const initFunc = (transactionType) => {
   const initialState = {
-    ticker: id,
-    price: currentPrice,
     quantity: 1,
-    action: "buy",
+    action: transactionType,
     loading: false,
     error: "",
     confirmed: false,
@@ -28,8 +26,8 @@ const reducer = (state, action) => {
       throw new Error("Error");
   }
 };
-export default function usePurchaseReducer(id, currentPrice) {
-  const [state, dispatch] = useReducer(reducer, initFunc(id, currentPrice));
+export default function usePurchaseReducer(transactionType) {
+  const [state, dispatch] = useReducer(reducer, initFunc(transactionType));
 
   const setLoading = () => {
     dispatch({ type: "loading" });
