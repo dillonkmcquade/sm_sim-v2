@@ -51,11 +51,11 @@ export default function Dashboard() {
 
   const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
 
+  //filter holdings to just unique stock names
   const getUniques = useMemo(() => {
     const unique = [
       ...new Set(currentUser.holdings.map((item) => item.ticker)),
     ];
-
     return unique;
   }, [currentUser]);
 
@@ -95,8 +95,8 @@ export default function Dashboard() {
             currency: "USD",
           })}
         </p>
-        <h1>Holdings</h1>
-        <div>
+        <Title>Holdings</Title>
+        <Holdings>
           {getUniques.map((holding) => (
             <TickerCard
               handler={() => navigate(`/research/${holding}`)}
@@ -104,7 +104,7 @@ export default function Dashboard() {
               ticker={holding}
             />
           ))}
-        </div>
+        </Holdings>
       </Wrapper>
     )
   );
@@ -117,11 +117,17 @@ const Wrapper = styled.div`
   height: 100vh;
 `;
 
-const PortfolioValue = styled.h1`
+const Title = styled.h1`
   margin: 0 1rem 0 1rem;
 `;
+const PortfolioValue = styled(Title)``;
 
 const Profit = styled.p`
   color: ${(props) => props.color};
   margin: 0 0 1rem 1rem;
+`;
+
+const Holdings = styled.div`
+  display: flex;
+  overflow: auto;
 `;

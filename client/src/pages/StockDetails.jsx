@@ -27,7 +27,7 @@ export default function StockDetails() {
     </Wrapper>
   ) : (
     <Wrapper>
-      <Back to={"/research"}>Back</Back>
+      <Back onClick={() => window.history.back()}>Back</Back>
       <TickerName>{id}</TickerName>
       <CurrentPrice color={quote.d > 0 ? "#027326" : "#b5050e"}>
         {quote.c.toLocaleString("en-US", {
@@ -182,11 +182,12 @@ const RangeOption = styled.div`
   }
 `;
 
-const Back = styled(Link)`
+const Back = styled.p`
   text-decoration: none;
   margin: 0.3rem 0 0 0.3rem;
   color: #b48ead;
   font-size: 1.1rem;
+  cursor: pointer;
 
   &:hover {
     color: #81a1c1;
