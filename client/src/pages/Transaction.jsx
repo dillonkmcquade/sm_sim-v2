@@ -2,18 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
-import useAggregateData from "../hooks/useTickerAggregateData";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { CircularProgress } from "@mui/material";
 
 import usePurchaseReducer from "../hooks/usePurchaseReducer.js";
+import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert.jsx";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
-  const { currentPrice } = useAggregateData(id);
   const { user, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
 
@@ -25,10 +24,11 @@ export default function Transaction() {
     changeAction,
     state,
   } = usePurchaseReducer(transactionType);
+
   const { confirmed, quantity, action, loading, error } = state;
+  const { quote } = useQuote(id);
   const [alignment, setAlignment] = useState(transactionType);
   const [balance, setBalance] = useState(0);
-  const [total, setTotal] = useState(Number(currentPrice));
   const [shares, setShares] = useState(0);
 
   useEffect(() => {
@@ -80,10 +80,9 @@ export default function Transaction() {
 
   //changing quantity via number input
   const handleChange = (event) => {
-    if (event.target.value * currentPrice > balance) {
+    if (event.target.value * quote.c > balance) {
       return;
     } else {
-      setTotal(event.target.value * Number(currentPrice));
       updateQuantity(Number(event.target.value));
     }
   };
@@ -102,7 +101,7 @@ export default function Transaction() {
         body: JSON.stringify({
           _id: user.sub, //user UUID
           quantity,
-          currentPrice,
+          currentPrice: quote.c,
         }),
       });
       const parsed = await response.json();
@@ -117,7 +116,9 @@ export default function Transaction() {
     }
   };
 
-  return (
+  return !quote ? (
+    <CircularProgress />
+  ) : (
     <Wrapper>
       <Back to={`/research/${id}`}>Back</Back>
       <h3>Available to trade: ${balance.toFixed(2)}</h3>
@@ -128,7 +129,7 @@ export default function Transaction() {
         type="number"
         id="qty"
         min={1}
-        max={action === "sell" ? shares : Math.floor(balance / currentPrice)}
+        max={action === "sell" ? shares : Math.floor(balance / quote.c)}
         onChange={handleChange}
       />
       <ToggleButtonGroup
@@ -160,13 +161,13 @@ export default function Transaction() {
         <Detail>
           <div>Actual price:</div>
           <div>
-            <Bold>${Number(currentPrice).toFixed(5)}</Bold>
+            <Bold>${Number(quote.c).toFixed(5)}</Bold>
           </div>
         </Detail>
         <Detail>
           <div>Total:</div>
           <div>
-            <Bold>${total.toFixed(5)}</Bold>
+            <Bold>${(quantity * quote.c).toFixed(5)}</Bold>
           </div>
         </Detail>
       </TransactionDetails>

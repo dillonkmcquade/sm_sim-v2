@@ -4,7 +4,6 @@ import { WidthContext } from "../context/WidthContext";
 
 export default function LineChart({ id, data, small }) {
   const { width } = useContext(WidthContext);
-
   const values =
     data &&
     data.c.map((idx, index) => {
