@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function useAggregateData(ticker) {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
 
@@ -66,6 +65,7 @@ export default function useAggregateData(ticker) {
           window.localStorage.setItem(ticker, JSON.stringify(modifiedData));
         } else {
           setError();
+          const navigate = useNavigate();
           navigate("/research");
         }
       } catch (err) {
@@ -78,6 +78,7 @@ export default function useAggregateData(ticker) {
       getTickerData();
     }
   }, [currentTicker, ticker]);
+
   return {
     currentPrice,
     previousDayPrice,

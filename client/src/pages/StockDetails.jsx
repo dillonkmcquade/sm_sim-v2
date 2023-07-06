@@ -30,9 +30,16 @@ export default function StockDetails() {
       <Back to={"/research"}>Back</Back>
       <TickerName>{id}</TickerName>
       <CurrentPrice color={quote.d > 0 ? "#027326" : "#b5050e"}>
-        ${quote.c}
+        {quote.c.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })}
         <SecondaryText>
-          ${quote.d}(%{quote.dp})
+          {quote.d.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}
+          (%{quote.dp})
         </SecondaryText>
       </CurrentPrice>
       <div style={{ height: "70vh" }}>

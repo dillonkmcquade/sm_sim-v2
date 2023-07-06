@@ -44,7 +44,7 @@ export default function App() {
     if (isAuthenticated && !hasBeenCreated) {
       createUser();
     }
-  }, [user]);
+  }, [getAccessTokenSilently, isAuthenticated, user]);
 
   return (
     <>

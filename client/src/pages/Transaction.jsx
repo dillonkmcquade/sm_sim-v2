@@ -67,7 +67,7 @@ export default function Transaction() {
       }
     };
     fetchBalance();
-  }, []);
+  }, [getAccessTokenSilently, user, id, errorMessage]);
 
   //toggling buy/sell buttons
   const toggleAction = (event, newAlignment) => {
@@ -121,7 +121,13 @@ export default function Transaction() {
   ) : (
     <Wrapper>
       <Back to={`/research/${id}`}>Back</Back>
-      <h3>Available to trade: ${balance.toFixed(2)}</h3>
+      <h3>
+        Available to trade:{" "}
+        {balance.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })}
+      </h3>
       <p>Chosen share: {id}</p>
       <label htmlFor="qty">Please select number of shares</label>
       <QtySelect
