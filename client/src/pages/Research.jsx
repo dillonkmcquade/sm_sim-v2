@@ -152,7 +152,6 @@ export default function Research() {
           <TickerCard
             key={key}
             ticker={key}
-            data={JSON.parse(localStorage[key])}
             handler={() => navigate(key)}
           ></TickerCard>
         ))}

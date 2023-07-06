@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import useAggregateData from "../hooks/useTickerAggregateData";
@@ -119,6 +119,7 @@ export default function Transaction() {
 
   return (
     <Wrapper>
+      <Back to={`/research/${id}`}>Back</Back>
       <h3>Available to trade: ${balance.toFixed(2)}</h3>
       <p>Chosen share: {id}</p>
       <label htmlFor="qty">Please select number of shares</label>
@@ -227,4 +228,15 @@ const TransactionDetails = styled.div`
 const Bold = styled.span`
   font-weight: bold;
   color: #dcf5e7;
+`;
+
+const Back = styled(Link)`
+  text-decoration: none;
+  margin: 0.3rem 0 0 0.3rem;
+  color: #b48ead;
+  font-size: 1.1rem;
+
+  &:hover {
+    color: #81a1c1;
+  }
 `;

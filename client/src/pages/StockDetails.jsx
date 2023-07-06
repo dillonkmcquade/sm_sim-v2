@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
-import useAggregateData from "../hooks/useTickerAggregateData";
 import useNewsData from "../hooks/useTickerNewsData";
 
 import { CircularProgress } from "@mui/material";
@@ -11,16 +10,18 @@ import LineChart from "../components/LineChart";
 import Button from "../components/Button";
 
 import { WidthContext } from "../context/WidthContext";
+import useHistoricalData from "../hooks/useHistoricalData";
+import useQuote from "../hooks/useQuote";
 
 export default function StockDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { isLoading, currentTicker, currentPrice, previousDayPrice } =
-    useAggregateData(id);
+  const { quote } = useQuote(id);
+  const { data, loading, state, dispatch } = useHistoricalData(id);
   const { news, isLoadingNews } = useNewsData(id);
   const { width } = useContext(WidthContext);
-
-  return isLoading || !currentTicker ? (
+  const { range } = state;
+  return !quote ? (
     <Wrapper>
       <CircularProgress />
     </Wrapper>
@@ -28,22 +29,51 @@ export default function StockDetails() {
     <Wrapper>
       <Back to={"/research"}>Back</Back>
       <TickerName>{id}</TickerName>
-      <CurrentPrice
-        color={currentPrice > previousDayPrice ? "#027326" : "#b5050e"}
-      >
-        ${currentTicker[currentTicker.length - 1].Close}
+      <CurrentPrice color={quote.d > 0 ? "#027326" : "#b5050e"}>
+        ${quote.c}
         <SecondaryText>
-          (${currentPrice > previousDayPrice && "+"}
-          {(currentPrice - previousDayPrice).toFixed(2)})
+          ${quote.d}(%{quote.dp})
         </SecondaryText>
       </CurrentPrice>
-
       <div style={{ height: "70vh" }}>
-        <LineChart id={id} data={currentTicker} />
+        {loading || !data ? (
+          <CircularProgress />
+        ) : (
+          <LineChart id={id} data={data} />
+        )}
       </div>
-
-      <Stats></Stats>
-
+      <RangeToggle>
+        <RangeOption
+          className={range === "1D" && "active"}
+          onClick={() => dispatch({ type: "1D" })}
+        >
+          1D
+        </RangeOption>
+        <RangeOption
+          className={range === "1W" && "active"}
+          onClick={() => dispatch({ type: "1W" })}
+        >
+          1W
+        </RangeOption>
+        <RangeOption
+          className={range === "1M" && "active"}
+          onClick={() => dispatch({ type: "1M" })}
+        >
+          1M
+        </RangeOption>
+        <RangeOption
+          className={range === "3M" && "active"}
+          onClick={() => dispatch({ type: "3M" })}
+        >
+          3M
+        </RangeOption>
+        <RangeOption
+          className={range === "6M" && "active"}
+          onClick={() => dispatch({ type: "6M" })}
+        >
+          6M
+        </RangeOption>
+      </RangeToggle>
       <ButtonContainer width={width}>
         <Button
           bradius="4px"
@@ -63,7 +93,6 @@ export default function StockDetails() {
           Sell
         </Button>
       </ButtonContainer>
-
       <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
         {isLoadingNews ? (
@@ -125,7 +154,26 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const Stats = styled.div``;
+const RangeToggle = styled.div`
+  position: relative;
+  top: -4rem;
+  display: flex;
+  width: 75vw;
+  margin: 0 auto;
+  justify-content: space-evenly;
+`;
+const RangeOption = styled.div`
+  color: white;
+  border-radius: 50%;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  cursor: pointer;
+
+  &.active {
+    background-color: white;
+    color: black;
+  }
+`;
 
 const Back = styled(Link)`
   text-decoration: none;

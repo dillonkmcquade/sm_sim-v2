@@ -1,18 +1,21 @@
-import useAggregateData from "../hooks/useTickerAggregateData.js";
 import LineChart from "../components/LineChart.jsx";
 import { styled } from "styled-components";
+import useQuote from "../hooks/useQuote.js";
+import useHistoricalData from "../hooks/useHistoricalData.js";
 
-export default function TickerCard({ handler, data, ticker }) {
-  const { currentPrice, previousDayPrice } = useAggregateData(ticker);
+export default function TickerCard({ handler, ticker }) {
+  const { quote } = useQuote(ticker);
+  const { data } = useHistoricalData(ticker);
   return (
-    <Wrapper onClick={handler}>
-      <Title>{ticker}</Title>
+    quote &&
+    data && (
+      <Wrapper onClick={handler}>
+        <Title>{ticker}</Title>
 
-      <Price color={currentPrice > previousDayPrice ? "#027326" : "#b5050e"}>
-        ${currentPrice}
-      </Price>
-      <LineChart small="true" id={ticker} data={data} />
-    </Wrapper>
+        <Price color={quote.d > 0 ? "#027326" : "#b5050e"}>${quote.c}</Price>
+        <LineChart small="true" id={ticker} data={data} />
+      </Wrapper>
+    )
   );
 }
 

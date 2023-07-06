@@ -5,16 +5,10 @@ import { WidthContext } from "../context/WidthContext";
 export default function LineChart({ id, data, small }) {
   const { width } = useContext(WidthContext);
 
-  //Convert unix timestamp to 'Month DD' format
   const values =
     data &&
-    data.map((idx) => {
-      const time = new Date(idx.Time)
-        .toDateString()
-        .split(" ")
-        .slice(1, 3)
-        .join(" ");
-      return { y: idx.Close, x: time };
+    data.c.map((idx, index) => {
+      return { x: new Date(data.t[index]), y: idx };
     });
 
   //final data in required format for nivo linechart {id, color, data}
@@ -41,19 +35,7 @@ export default function LineChart({ id, data, small }) {
         yFormat=" >-.2f"
         axisTop={null}
         axisRight={null}
-        axisBottom={
-          width < 600
-            ? null
-            : {
-                tickSize: 5,
-                tickValues: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: "",
-                legendOffset: 36,
-                legendPosition: "middle",
-              }
-        }
+        axisBottom={null}
         axisLeft={
           small
             ? null
