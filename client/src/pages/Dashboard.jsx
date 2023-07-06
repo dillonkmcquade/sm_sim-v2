@@ -2,9 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
+
 import { getTotalValue, getInvestedValue } from "../utils/getTotalValue";
+
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
+import { CircularProgress } from "@mui/material";
 
 export default function Dashboard() {
   const { getAccessTokenSilently, user } = useAuth0();
@@ -31,7 +34,9 @@ export default function Dashboard() {
           },
         });
         const { data } = await response.json();
-        const total = await getTotalValue(data);
+
+        const total = await getTotalValue(data); //This is why we are caching
+
         const modifiedObj = { ...data, total, timestamp: Date.now() };
         setCurrentUser(modifiedObj);
         window.localStorage.setItem("account", JSON.stringify(modifiedObj));
@@ -52,61 +57,61 @@ export default function Dashboard() {
   const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
 
   //filter holdings to just unique stock names
-  const getUniques = useMemo(() => {
-    const unique = [
-      ...new Set(currentUser.holdings.map((item) => item.ticker)),
-    ];
+  const getUniques = (data) => {
+    const unique = [...new Set(data.map((item) => item.ticker))];
     return unique;
-  }, [currentUser]);
+  };
 
-  return (
-    currentUser && (
-      <Wrapper>
-        <PortfolioValue>
-          {Number(currentUser.total + currentUser.balance).toLocaleString(
-            "en-US",
-            { style: "currency", currency: "USD" }
-          )}
-        </PortfolioValue>
-        <Profit
-          color={currentUser.total - investedValue > 0 ? "#027326" : "#b5050e"}
-        >
-          {Number(currentUser.total - investedValue).toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-          })}{" "}
-          all time
-        </Profit>
+  return !currentUser ? (
+    <Wrapper>
+      <CircularProgress />
+    </Wrapper>
+  ) : (
+    <Wrapper>
+      <PortfolioValue>
+        {Number(currentUser.total + currentUser.balance).toLocaleString(
+          "en-US",
+          { style: "currency", currency: "USD" }
+        )}
+      </PortfolioValue>
+      <Profit
+        color={currentUser.total - investedValue > 0 ? "#027326" : "#b5050e"}
+      >
+        {Number(currentUser.total - investedValue).toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })}{" "}
+        all time
+      </Profit>
 
-        <div style={{ height: "500px", color: "black" }}>
-          <PieChart data={currentUser} />
-        </div>
-        <p>
-          Total Value of all holdings:{" "}
-          {currentUser.total.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-          })}
-        </p>
-        <p>
-          Available cash:{" "}
-          {currentUser.balance.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-          })}
-        </p>
-        <Title>Holdings</Title>
-        <Holdings>
-          {getUniques.map((holding) => (
-            <TickerCard
-              handler={() => navigate(`/research/${holding}`)}
-              key={holding}
-              ticker={holding}
-            />
-          ))}
-        </Holdings>
-      </Wrapper>
-    )
+      <div style={{ height: "500px", color: "black" }}>
+        <PieChart data={currentUser} />
+      </div>
+      <p>
+        Total Value of all holdings:{" "}
+        {currentUser.total.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })}
+      </p>
+      <p>
+        Available cash:{" "}
+        {currentUser.balance.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })}
+      </p>
+      <Title>Holdings</Title>
+      <Holdings>
+        {getUniques(currentUser.holdings).map((holding) => (
+          <TickerCard
+            handler={() => navigate(`/research/${holding}`)}
+            key={holding}
+            ticker={holding}
+          />
+        ))}
+      </Holdings>
+    </Wrapper>
   );
 }
 

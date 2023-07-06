@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 import useNewsData from "../hooks/useTickerNewsData";
