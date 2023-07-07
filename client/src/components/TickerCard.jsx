@@ -23,15 +23,17 @@ const Wrapper = styled.div`
   height: 35vh;
   width: 80vw;
   min-width: 80vw;
-  padding: 1rem;
+  padding: 1rem 1rem 4rem 1rem;
   border: 2px solid white;
   border-radius: 1rem;
   cursor: pointer;
   margin: 1rem;
+  color: black;
 `;
 
 const Title = styled.h1`
   font-size: 1.1rem;
+  color: white;
 `;
 const Price = styled.p`
   color: ${(props) => props.color};

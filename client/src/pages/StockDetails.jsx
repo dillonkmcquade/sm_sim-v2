@@ -42,7 +42,7 @@ export default function StockDetails() {
           (%{quote.dp})
         </SecondaryText>
       </CurrentPrice>
-      <div style={{ height: "70vh" }}>
+      <div style={{ height: "70vh", color: "black" }}>
         {loading || !data ? (
           <CircularProgress />
         ) : (
@@ -163,7 +163,6 @@ const ButtonContainer = styled.div`
 
 const RangeToggle = styled.div`
   position: relative;
-  top: -4rem;
   display: flex;
   width: 75vw;
   margin: 0 auto;
