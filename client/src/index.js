@@ -8,22 +8,20 @@ import { WidthProvider } from "./context/WidthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Auth0Provider
-        domain="dev-twp4lk0d7utxiu7i.us.auth0.com"
-        clientId="WiYBN3Xgh7Xb4P92grbyAX1gsET62VHQ"
-        authorizationParams={{
-          redirect_uri: window.location.origin,
-          audience: "my-api",
-        }}
-      >
-        <WidthProvider>
-          <MenuProvider>
-            <App />
-          </MenuProvider>
-        </WidthProvider>
-      </Auth0Provider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <Auth0Provider
+      domain="dev-twp4lk0d7utxiu7i.us.auth0.com"
+      clientId="WiYBN3Xgh7Xb4P92grbyAX1gsET62VHQ"
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: "my-api",
+      }}
+    >
+      <WidthProvider>
+        <MenuProvider>
+          <App />
+        </MenuProvider>
+      </WidthProvider>
+    </Auth0Provider>
+  </BrowserRouter>
 );

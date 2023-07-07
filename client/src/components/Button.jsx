@@ -10,6 +10,7 @@ export default function Button({
   bradius,
   border,
   disabled,
+  style,
 }) {
   return (
     <StyledButton
@@ -21,6 +22,7 @@ export default function Button({
       border={border}
       onClick={handler}
       disabled={disabled}
+      style={style}
     >
       {children}
     </StyledButton>

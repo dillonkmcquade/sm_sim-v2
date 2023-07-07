@@ -69,7 +69,7 @@ export default function Transaction() {
     if (!error) {
       fetchBalance();
     }
-  }, [getAccessTokenSilently, user, id, errorMessage, error]);
+  }, [getAccessTokenSilently, user, id, error]);
 
   //toggling buy/sell buttons
   const toggleAction = (event, newAlignment) => {

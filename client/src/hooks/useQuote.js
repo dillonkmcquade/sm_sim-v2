@@ -6,10 +6,8 @@ export default function useQuote(ticker) {
 
     //return null if data is 5 minutes old, triggering refetch
     if (cached && Date.now() / 1000 - parsed.t < 300) {
-      console.log("using cached");
       return parsed;
     } else {
-      console.log("REFETCH!", ticker);
       return null;
     }
   });
@@ -40,6 +38,6 @@ export default function useQuote(ticker) {
     if (!quote) {
       getQuote();
     }
-  }, [quote, ticker]);
+  }, [ticker]);
   return { quote, loadingQuote };
 }

@@ -37,7 +37,7 @@ const sellStock = async (req, res) => {
     const update = await users.updateOne(
       { _id },
       {
-        $inc: { balance: -amountToSubtract },
+        $inc: { balance: amountToSubtract },
         $push: { holdings: newTransaction },
       }
     );

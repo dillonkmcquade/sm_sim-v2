@@ -39,8 +39,8 @@ export default function Dashboard() {
         if (data.holdings.length === 0) return;
         const total = await getTotalValue(data); //This is why we are caching
         const modifiedObj = { ...data, total, timestamp: Date.now() };
-        setCurrentUser(modifiedObj);
         window.sessionStorage.setItem("user", JSON.stringify(modifiedObj));
+        setCurrentUser(modifiedObj);
       } catch (err) {
         console.error(err.message);
       }
@@ -50,13 +50,13 @@ export default function Dashboard() {
     //This could get costly if the portfolio is large. Therefore we will
     //limit this by doing it once, caching it, and updating every 15 mins
     if (
-      forceUpdate ||
       !currentUser ||
+      forceUpdate ||
       Date.now() - currentUser.timestamp > 300000
     ) {
       getUser();
     }
-  }, [forceUpdate, getAccessTokenSilently, user]);
+  }, [forceUpdate]);
 
   const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
 
@@ -146,13 +146,14 @@ export default function Dashboard() {
       </Holdings>
       <Title>Watch List</Title>
       <WatchList>
-        {currentUser.watchList.map((item) => (
-          <TickerCard
-            key={item}
-            ticker={item}
-            handler={() => navigate(`/research/${item}`)}
-          />
-        ))}
+        {currentUser.watchList &&
+          currentUser.watchList.map((item) => (
+            <TickerCard
+              key={item}
+              ticker={item}
+              handler={() => navigate(`/research/${item}`)}
+            />
+          ))}
       </WatchList>
     </Wrapper>
   );

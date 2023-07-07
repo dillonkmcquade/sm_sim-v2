@@ -9,6 +9,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { CircularProgress } from "@mui/material";
 import { getTotalValue } from "./utils/getTotalValue.js";
 
+const Profile = lazy(() => import("./pages/Profile.jsx"));
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
 const StockDetails = lazy(() => import("./pages/StockDetails.jsx"));
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/research/:id" element={<StockDetails />} />
           <Route path="/research" element={<Research />} />
+          <Route path="/profile" element={<Profile />} />
           <Route
             path="/transaction/:transactionType/:id"
             element={<Transaction />}

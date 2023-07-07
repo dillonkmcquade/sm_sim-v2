@@ -33,6 +33,7 @@ export default function StockDetails() {
   const { range } = state;
   const [isWatched, setIsWatched] = useState(() => {
     const user = window.sessionStorage.getItem("user");
+    if (user && !JSON.parse(user).watchList) return;
 
     if (user && JSON.parse(user).watchList.includes(id)) {
       return true;
@@ -148,7 +149,7 @@ export default function StockDetails() {
       </ButtonContainer>
       <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
-        {isLoadingNews ? (
+        {isLoadingNews || !news ? (
           <CircularProgress />
         ) : (
           news.map((article) => (
