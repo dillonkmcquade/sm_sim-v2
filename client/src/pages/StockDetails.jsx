@@ -1,9 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 import { CircularProgress } from "@mui/material";
 import { IconButton } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { VisibilityOutlined } from "@mui/icons-material";
+
 import NewsArticle from "../components/NewsArticle";
 import LineChart from "../components/LineChart";
 import Button from "../components/Button";
@@ -12,16 +15,71 @@ import { WidthContext } from "../context/WidthContext";
 import useHistoricalData from "../hooks/useHistoricalData";
 import useQuote from "../hooks/useQuote";
 import useNewsData from "../hooks/useTickerNewsData";
+import { useDebounce } from "../hooks/useDebounce";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function StockDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+
+  //custom hooks
   const { quote } = useQuote(id);
   const { data, loading, state, dispatch } = useHistoricalData(id);
   const { news, isLoadingNews } = useNewsData(id);
   const { width } = useContext(WidthContext);
+
+  //state
   const { range } = state;
+  const [isWatched, setIsWatched] = useState(() => {
+    const user = window.sessionStorage.getItem("user");
+
+    if (user && JSON.parse(user).watchList.includes(id)) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  const updateWatched = async () => {
+    try {
+      const accessToken = await getAccessTokenSilently();
+      const response = await fetch(`/toggleWatchList`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: user.sub, ticker: id, isWatched }),
+      });
+      const parsed = await response.json();
+      if (parsed.status === 200) {
+        const user = window.sessionStorage.getItem("user");
+        const parsedUser = JSON.parse(user);
+        window.sessionStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...parsedUser,
+            watchList: parsed.data,
+          })
+        );
+        return;
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const debouncedUpdateWatch = useDebounce(updateWatched, 500);
+  const toggleWatched = () => {
+    if (isAuthenticated) {
+      setIsWatched(!isWatched);
+      debouncedUpdateWatch();
+    }
+  };
+
   const ranges = ["1D", "1W", "1M", "3M", "6M"];
+
   return !quote ? (
     <Wrapper>
       <CircularProgress />
@@ -30,6 +88,15 @@ export default function StockDetails() {
     <Wrapper>
       <Back onClick={() => window.history.back()}>Back</Back>
       <TickerName>{id}</TickerName>
+      <div>
+        <IconButton onClick={() => toggleWatched()}>
+          {isWatched ? (
+            <VisibilityIcon sx={{ color: "white" }} />
+          ) : (
+            <VisibilityOutlined sx={{ color: "white" }} />
+          )}
+        </IconButton>
+      </div>
       <CurrentPrice color={quote.d > 0 ? "#027326" : "#b5050e"}>
         {quote.c.toLocaleString("en-US", {
           style: "currency",

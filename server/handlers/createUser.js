@@ -27,6 +27,7 @@ const createUser = async (req, res) => {
       _id: user.sub,
       balance: 1000000,
       holdings: [],
+      watchList: [],
       ...user,
     };
     await users.insertOne(newUser);

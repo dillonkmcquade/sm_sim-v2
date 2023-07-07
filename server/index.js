@@ -8,6 +8,7 @@ const { createUser } = require("./handlers/createUser");
 const { getUser } = require("./handlers/getUser");
 const { buyStock } = require("./handlers/buyStock");
 const { sellStock } = require("./handlers/sellStock");
+const { toggleWatchList } = require("./handlers/toggleWatchList");
 require("dotenv").config();
 
 const server = express();
@@ -27,6 +28,7 @@ server
   .post("/user", jwtCheck, createUser)
   .patch("/buy/:id", jwtCheck, buyStock)
   .patch("/sell/:id", jwtCheck, sellStock)
+  .patch("/toggleWatchList", jwtCheck, toggleWatchList)
   .get("*", (_req, res) => {
     return res.send("<h1>Does not exist</h1>");
   });

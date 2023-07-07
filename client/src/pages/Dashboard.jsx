@@ -144,6 +144,16 @@ export default function Dashboard() {
           ))
         )}
       </Holdings>
+      <Title>Watch List</Title>
+      <WatchList>
+        {currentUser.watchList.map((item) => (
+          <TickerCard
+            key={item}
+            ticker={item}
+            handler={() => navigate(`/research/${item}`)}
+          />
+        ))}
+      </WatchList>
     </Wrapper>
   );
 }
@@ -191,3 +201,5 @@ const Bold = styled.span`
 const Name = styled.span`
   color: #ebcb8b;
 `;
+
+const WatchList = styled(Holdings)``;
