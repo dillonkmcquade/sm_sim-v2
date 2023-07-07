@@ -66,8 +66,10 @@ export default function Transaction() {
         errorMessage(error.message);
       }
     };
-    fetchBalance();
-  }, [getAccessTokenSilently, user, id, errorMessage]);
+    if (!error) {
+      fetchBalance();
+    }
+  }, [getAccessTokenSilently, user, id, errorMessage, error]);
 
   //toggling buy/sell buttons
   const toggleAction = (event, newAlignment) => {
