@@ -23,6 +23,6 @@ export default function useQuote(ticker) {
     if (!quote) {
       getQuote();
     }
-  }, [loadingQuote, quote, ticker]);
+  }, [quote, ticker]);
   return { quote, loadingQuote };
 }

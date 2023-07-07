@@ -29,7 +29,10 @@ export default function Menu() {
     return <CircularProgress />;
   }
   return (
-    <Nav onClick={() => setMenuVisible(!menuVisible)}>
+    <Nav
+      display={menuVisible ? "flex" : "none"}
+      onClick={() => setMenuVisible(!menuVisible)}
+    >
       {isAuthenticated && <MenuOption to="/dashboard">Dashboard</MenuOption>}
       <MenuOption to="/research">Research</MenuOption>
       {isAuthenticated ? (
@@ -51,7 +54,7 @@ const Nav = styled.nav`
   background-color: #000000;
   width: 100vw;
   height: calc(100vh - 56px);
-  display: flex;
+  display: ${(props) => props.display};
   flex-direction: column;
   animation: fadeIn ease-in-out 250ms;
   z-index: 1000;

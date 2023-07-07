@@ -52,7 +52,7 @@ export default function Dashboard() {
     if (!cached || Date.now() - cached.timestamp > 300000) {
       getUser();
     }
-  }, [getAccessTokenSilently, setCurrentUser, user]);
+  }, [getAccessTokenSilently, user]);
 
   const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
 

@@ -4,7 +4,7 @@ export default function useTickerNewsData(ticker) {
   const [isLoadingNews, setIsLoadingNews] = useState(false);
 
   const [news, setNews] = useState(() => {
-    const cachedData = window.localStorage.getItem(`${ticker}news`);
+    const cachedData = window.localStorage.getItem(`${ticker}`);
     if (cachedData) {
       return JSON.parse(cachedData);
     } else {
@@ -24,7 +24,7 @@ export default function useTickerNewsData(ticker) {
         if (response.results) {
           setNews(response.results);
           window.localStorage.setItem(
-            `${ticker}news`,
+            `${ticker}`,
             JSON.stringify(response.results)
           );
         }

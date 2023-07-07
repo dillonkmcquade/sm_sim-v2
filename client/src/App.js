@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles.js";
@@ -12,11 +12,9 @@ import Transaction from "./pages/Transaction.jsx";
 import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
 
-import { MenuContext } from "./context/MenuContext.js";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export default function App() {
-  const { menuVisible } = useContext(MenuContext);
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
@@ -50,7 +48,7 @@ export default function App() {
     <>
       <GlobalStyles />
       <Header />
-      {menuVisible && <Menu />}
+      <Menu />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />

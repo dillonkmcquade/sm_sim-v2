@@ -20,7 +20,7 @@ export default function Research() {
   const { results, error, loading, inputText, isSelected } = state;
 
   const recentlyViewed = Object.keys(window.localStorage).filter(
-    (key) => !key.includes("news") && key !== "account"
+    (key) => key !== "account"
   );
   const navigate = useNavigate();
   const ref = useRef(null);
