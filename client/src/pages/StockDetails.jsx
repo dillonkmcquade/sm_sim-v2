@@ -122,6 +122,7 @@ export default function StockDetails() {
         {ranges.map((rangeType) => (
           <RangeOption
             className={range === rangeType && "active"}
+            key={rangeType}
             onClick={() => dispatch({ type: rangeType })}
           >
             {rangeType}

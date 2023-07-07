@@ -56,10 +56,10 @@ const Nav = styled.nav`
   height: calc(100vh - 56px);
   display: ${(props) => props.display};
   flex-direction: column;
-  animation: fadeIn ease-in-out 250ms;
+  animation: fadeInFromTop ease-in-out 250ms;
   z-index: 1000;
 
-  @keyframes fadeIn {
+  @keyframes fadeInFromTop {
     0% {
       bottom: 100vh;
       opacity: 0;
