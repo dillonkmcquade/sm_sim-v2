@@ -31,7 +31,7 @@ export default function Research() {
       case "Enter": {
         if (results && results.length > 0) {
           const result = results[isSelected];
-          navigate(result.ticker);
+          navigate(result.symbol);
         } else {
           errorMessage("no results selected");
         }
@@ -75,7 +75,7 @@ export default function Research() {
   };
 
   //only query backend once typing has stopped 300ms delay
-  const debouncedSearch = useDebounce(search, 300);
+  const debouncedSearch = useDebounce(search, 0);
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -120,10 +120,10 @@ export default function Research() {
               ref={index === isSelected ? ref : null}
               key={Math.random()}
               tabIndex={0}
-              onClick={() => navigate(result.ticker)}
+              onClick={() => navigate(result.symbol)}
             >
-              <Ticker>{result.ticker}</Ticker>
-              <Name>{result.name}</Name>
+              <Ticker>{result.symbol}</Ticker>
+              <Name>{result.description}</Name>
             </SearchResult>
           ))}
       </SearchForm>

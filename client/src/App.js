@@ -7,6 +7,7 @@ import Menu from "./components/Menu.jsx";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { CircularProgress } from "@mui/material";
+import { getTotalValue } from "./utils/getTotalValue.js";
 
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
@@ -33,7 +34,11 @@ export default function App() {
         });
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
-          window.sessionStorage.setItem("user", JSON.stringify(response.data));
+          const total = await getTotalValue(response.data);
+          window.sessionStorage.setItem(
+            "user",
+            JSON.stringify({ ...response.data, total, timestamp: Date.now() })
+          );
         }
       } catch (error) {
         console.error(error.message);

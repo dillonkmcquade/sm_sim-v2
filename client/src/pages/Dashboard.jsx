@@ -15,7 +15,7 @@ export default function Dashboard() {
   const { getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(() => {
-    const cachedUser = window.localStorage.getItem("account");
+    const cachedUser = window.sessionStorage.getItem("user");
     if (cachedUser) {
       return JSON.parse(cachedUser);
     } else {
@@ -38,23 +38,21 @@ export default function Dashboard() {
         const { data } = await response.json();
         if (data.holdings.length === 0) return;
         const total = await getTotalValue(data); //This is why we are caching
-
         const modifiedObj = { ...data, total, timestamp: Date.now() };
         setCurrentUser(modifiedObj);
-        window.localStorage.setItem("account", JSON.stringify(modifiedObj));
+        window.sessionStorage.setItem("user", JSON.stringify(modifiedObj));
       } catch (err) {
         console.error(err.message);
       }
     }
-    const cached = window.localStorage.getItem("account");
 
     //Currently making separate api call to get the price of each stock,
     //This could get costly if the portfolio is large. Therefore we will
     //limit this by doing it once, caching it, and updating every 15 mins
     if (
       forceUpdate ||
-      !cached ||
-      Date.now() - JSON.parse(cached).timestamp > 300000
+      !currentUser ||
+      Date.now() - currentUser.timestamp > 300000
     ) {
       getUser();
     }

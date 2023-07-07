@@ -22,15 +22,15 @@ const queryTickerByName = async (req, res) => {
     const agg = [
       {
         $search: {
-          index: "ticker-names",
+          index: "tickers",
           autocomplete: {
             query: name,
-            path: "name",
+            path: "symbol",
           },
         },
       },
       { $limit: 10 },
-      { $project: { ticker: 1, name: 1 } },
+      { $project: { symbol: 1, description: 1 } },
     ];
     let data = await tickers.aggregate(agg).toArray();
     if (data.length === 0) {
@@ -38,15 +38,15 @@ const queryTickerByName = async (req, res) => {
         .aggregate([
           {
             $search: {
-              index: "ticker-names",
+              index: "tickers",
               autocomplete: {
                 query: name,
-                path: "ticker",
+                path: "description",
               },
             },
           },
           { $limit: 10 },
-          { $project: { ticker: 1, name: 1 } },
+          { $project: { symbol: 1, description: 1 } },
         ])
         .toArray();
     }

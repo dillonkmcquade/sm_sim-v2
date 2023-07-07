@@ -1,6 +1,19 @@
 import { useEffect, useState } from "react";
 export default function useQuote(ticker) {
-  const [quote, setQuote] = useState(0);
+  const [quote, setQuote] = useState(() => {
+    const cached = window.sessionStorage.getItem(ticker);
+    const parsed = JSON.parse(cached);
+
+    //return null if data is 5 minutes old, triggering refetch
+    if (cached && Date.now() / 1000 - parsed.t < 300) {
+      console.log("using cached");
+      return parsed;
+    } else {
+      console.log("REFETCH!", ticker);
+      return null;
+    }
+  });
+
   const [loadingQuote, setLoadingQuote] = useState(false);
   useEffect(() => {
     async function getQuote() {
@@ -13,6 +26,10 @@ export default function useQuote(ticker) {
         const parsed = await response.json();
         if (parsed.c) {
           setQuote(parsed);
+          window.sessionStorage.setItem(
+            ticker,
+            JSON.stringify({ ...parsed, t: Math.floor(Date.now() / 1000) })
+          );
           setLoadingQuote(false);
         }
       } catch (error) {
