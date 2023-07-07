@@ -2,7 +2,6 @@ import { useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles.js";
-
 import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
 
@@ -53,6 +52,7 @@ export default function App() {
       <Suspense fallback={<CircularProgress />}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard/:forceUpdate" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/research/:id" element={<StockDetails />} />
           <Route path="/research" element={<Research />} />

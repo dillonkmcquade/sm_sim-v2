@@ -2,9 +2,8 @@ import { useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
-import useNewsData from "../hooks/useTickerNewsData";
-
 import { CircularProgress } from "@mui/material";
+import { IconButton } from "@mui/material";
 import NewsArticle from "../components/NewsArticle";
 import LineChart from "../components/LineChart";
 import Button from "../components/Button";
@@ -12,6 +11,7 @@ import Button from "../components/Button";
 import { WidthContext } from "../context/WidthContext";
 import useHistoricalData from "../hooks/useHistoricalData";
 import useQuote from "../hooks/useQuote";
+import useNewsData from "../hooks/useTickerNewsData";
 
 export default function StockDetails() {
   const navigate = useNavigate();
@@ -21,6 +21,7 @@ export default function StockDetails() {
   const { news, isLoadingNews } = useNewsData(id);
   const { width } = useContext(WidthContext);
   const { range } = state;
+  const ranges = ["1D", "1W", "1M", "3M", "6M"];
   return !quote ? (
     <Wrapper>
       <CircularProgress />
@@ -42,7 +43,7 @@ export default function StockDetails() {
           (%{quote.dp})
         </SecondaryText>
       </CurrentPrice>
-      <div style={{ height: "70vh", color: "black" }}>
+      <div style={{ height: "60vh", color: "black" }}>
         {loading || !data ? (
           <CircularProgress />
         ) : (
@@ -50,36 +51,14 @@ export default function StockDetails() {
         )}
       </div>
       <RangeToggle>
-        <RangeOption
-          className={range === "1D" && "active"}
-          onClick={() => dispatch({ type: "1D" })}
-        >
-          1D
-        </RangeOption>
-        <RangeOption
-          className={range === "1W" && "active"}
-          onClick={() => dispatch({ type: "1W" })}
-        >
-          1W
-        </RangeOption>
-        <RangeOption
-          className={range === "1M" && "active"}
-          onClick={() => dispatch({ type: "1M" })}
-        >
-          1M
-        </RangeOption>
-        <RangeOption
-          className={range === "3M" && "active"}
-          onClick={() => dispatch({ type: "3M" })}
-        >
-          3M
-        </RangeOption>
-        <RangeOption
-          className={range === "6M" && "active"}
-          onClick={() => dispatch({ type: "6M" })}
-        >
-          6M
-        </RangeOption>
+        {ranges.map((rangeType) => (
+          <RangeOption
+            className={range === rangeType && "active"}
+            onClick={() => dispatch({ type: rangeType })}
+          >
+            {rangeType}
+          </RangeOption>
+        ))}
       </RangeToggle>
       <ButtonContainer width={width}>
         <Button

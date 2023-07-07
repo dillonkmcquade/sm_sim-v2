@@ -110,7 +110,7 @@ export default function Transaction() {
       if (parsed.status === 200) {
         success();
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate(`/dashboard/${Date.now()}`);
         }, 1000);
       }
     } catch (error) {
