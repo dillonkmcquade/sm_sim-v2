@@ -41,9 +41,12 @@ const buyStock = async (req, res) => {
         .status(400)
         .json({ status: 400, message: "Could not update user holdings" });
     }
+    const { holdings, balance } = await users.findOne({ _id });
     return res.status(200).json({
       status: 200,
       message: "Stock purchased successfully",
+      holdings,
+      balance,
     });
   } catch (error) {
     console.error(error.message);

@@ -8,11 +8,9 @@ import { getTotalValue, getInvestedValue } from "../utils/getTotalValue";
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
 import { CircularProgress } from "@mui/material";
-import { useParams } from "react-router-dom";
 
 export default function Dashboard() {
-  const { forceUpdate } = useParams();
-  const { getAccessTokenSilently, user } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(() => {
     const cachedUser = window.sessionStorage.getItem("user");
@@ -45,18 +43,17 @@ export default function Dashboard() {
         console.error(err.message);
       }
     }
+    if (!isAuthenticated) {
+      return;
+    }
 
     //Currently making separate api call to get the price of each stock,
     //This could get costly if the portfolio is large. Therefore we will
     //limit this by doing it once, caching it, and updating every 15 mins
-    if (
-      !currentUser ||
-      forceUpdate ||
-      Date.now() - currentUser.timestamp > 300000
-    ) {
+    if (!currentUser || Date.now() - currentUser.timestamp > 300000) {
       getUser();
     }
-  }, [forceUpdate]);
+  }, [currentUser, user, isAuthenticated, getAccessTokenSilently]);
 
   const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
 

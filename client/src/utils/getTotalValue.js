@@ -19,11 +19,16 @@ const getPrices = async (user) => {
   const { REACT_APP_FINNHUB_KEY } = process.env;
   try {
     for await (const key of keys) {
-      const response = await fetch(
-        `https://finnhub.io/api/v1/quote?symbol=${key}&token=${REACT_APP_FINNHUB_KEY}`
-      );
-      const parsed = await response.json();
-      uniques[key] = parsed.c;
+      const cached = window.sessionStorage.getItem(key);
+      if (cached) {
+        uniques[key] = JSON.parse(cached).c;
+      } else {
+        const response = await fetch(
+          `https://finnhub.io/api/v1/quote?symbol=${key}&token=${REACT_APP_FINNHUB_KEY}`
+        );
+        const parsed = await response.json();
+        uniques[key] = parsed.c;
+      }
     }
   } catch (err) {
     console.error(err.message);

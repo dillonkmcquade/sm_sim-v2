@@ -38,6 +38,6 @@ export default function useQuote(ticker) {
     if (!quote) {
       getQuote();
     }
-  }, [ticker]);
+  }, [quote, ticker]);
   return { quote, loadingQuote };
 }

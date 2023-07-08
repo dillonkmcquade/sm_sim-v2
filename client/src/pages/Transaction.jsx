@@ -108,9 +108,16 @@ export default function Transaction() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
+        const user = JSON.parse(window.sessionStorage.getItem("user"));
+        const newUserObj = {
+          ...user,
+          holdings: parsed.holdings,
+          balance: parsed.balance,
+        };
+        window.sessionStorage.setItem("user", JSON.stringify(newUserObj));
         success();
         setTimeout(() => {
-          navigate(`/dashboard/${Date.now()}`);
+          navigate(`/dashboard`);
         }, 1000);
       }
     } catch (error) {
