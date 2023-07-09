@@ -36,7 +36,6 @@ export default function Menu() {
       <MenuOption to="/research">Research</MenuOption>
       {isAuthenticated ? (
         <>
-          <MenuOption to="/portfolio">Portfolio</MenuOption>
           <MenuOption to="/profile">Profile</MenuOption>
           <AuthRedirect onClick={handleLogout}>Sign out</AuthRedirect>
         </>

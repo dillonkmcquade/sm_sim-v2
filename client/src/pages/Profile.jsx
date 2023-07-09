@@ -2,18 +2,18 @@ import { useContext, useState } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 
-import usePurchaseReducer from "../hooks/usePurchaseReducer";
+import useProfileReducer from "../hooks/useProfileReducer";
 import Alert from "../components/Alert";
 import { CircularProgress } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 import { UserContext } from "../context/UserContext";
 
 export default function Profile() {
-  const { getAccessTokenSilently } = useAuth0();
-  const { setLoading, success, errorMessage, state } = usePurchaseReducer(null);
-  const { confirmed, error, loading } = state;
-  const [formData, setFormData] = useState({});
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { getAccessTokenSilently, logout } = useAuth0();
+  const { setLoading, success, errorMessage, dispatch, state } =
+    useProfileReducer();
+  const { formData, confirmed, error, loading } = state;
+  const { currentUser } = useContext(UserContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,8 +30,7 @@ export default function Profile() {
       });
       const { status } = await response.json();
       if (status === 200) {
-        setCurrentUser({ ...currentUser, ...formData });
-        return success();
+        return success({ ...currentUser, ...formData });
       }
     } catch (error) {
       errorMessage(error.message);
@@ -39,23 +38,29 @@ export default function Profile() {
   };
 
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.id]: event.target.value });
+    dispatch({
+      type: "field",
+      field: "formData",
+      payload: { ...formData, [event.target.id]: event.target.value },
+    });
   };
 
   const handleDeactivate = async () => {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`/user/${currentUser._id}`, {
+      const response = await fetch(`/user`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify({ _id: currentUser._id }),
       });
       const data = await response.json();
       if (data.status === 204) {
-        return success();
+        success();
+        return logout();
       }
     } catch (error) {
       errorMessage(error.message);
@@ -71,7 +76,7 @@ export default function Profile() {
         <ProfileDetails onSubmit={handleSubmit}>
           <UnstyledFieldSet>
             <NameField>
-              <label htmlFor="name">Name: </label>
+              <label htmlFor="name">Full Name: </label>
               <input
                 type="text"
                 id="name"
@@ -93,8 +98,28 @@ export default function Profile() {
               <input
                 type="email"
                 id="email"
-                placeholder="No email on record"
+                placeholder="yourEmail@email.com"
                 defaultValue={currentUser.email}
+                onChange={handleChange}
+              />
+            </EmailField>
+            <EmailField>
+              <label htmlFor="address">Address: </label>
+              <input
+                type="address"
+                id="address"
+                placeholder="81 Address Rd."
+                defaultValue={currentUser.address}
+                onChange={handleChange}
+              />
+            </EmailField>
+            <EmailField>
+              <label htmlFor="phone">Phone: </label>
+              <input
+                type="tel"
+                id="telephone"
+                placeholder="Ex. 860-575-1337"
+                defaultValue={currentUser.telephone}
                 onChange={handleChange}
               />
             </EmailField>

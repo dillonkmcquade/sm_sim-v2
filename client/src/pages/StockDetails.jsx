@@ -17,6 +17,7 @@ import useQuote from "../hooks/useQuote";
 import useNewsData from "../hooks/useTickerNewsData";
 import { useDebounce } from "../hooks/useDebounce";
 import { useAuth0 } from "@auth0/auth0-react";
+import { UserContext } from "../context/UserContext";
 
 export default function StockDetails() {
   const navigate = useNavigate();
@@ -28,15 +29,13 @@ export default function StockDetails() {
   const { data, loading, state, currentDay, dispatch } = useHistoricalData(id);
   const { news, isLoadingNews } = useNewsData(id);
   const { width } = useContext(WidthContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   //state
   const { range } = state;
   const [isWatched, setIsWatched] = useState(() => {
-    const user = window.sessionStorage.getItem("user");
-    if (user && !JSON.parse(user).watchList) return;
-
-    if (user && JSON.parse(user).watchList.includes(id)) {
-      return true;
+    if (currentUser) {
+      return currentUser.watchList.includes(id);
     } else {
       return false;
     }
@@ -55,15 +54,7 @@ export default function StockDetails() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
-        const user = window.sessionStorage.getItem("user");
-        const parsedUser = JSON.parse(user);
-        window.sessionStorage.setItem(
-          "user",
-          JSON.stringify({
-            ...parsedUser,
-            watchList: parsed.data,
-          })
-        );
+        setCurrentUser({ ...currentUser, watchList: parsed.data });
         return;
       }
     } catch (error) {
@@ -78,6 +69,8 @@ export default function StockDetails() {
       debouncedUpdateWatch();
     }
   };
+
+  //Markets closed on weekends, so we don't show data < 1M on weekends
   const ranges =
     currentDay === 6 || currentDay === 0
       ? ["1M", "3M", "6M"]
@@ -90,16 +83,16 @@ export default function StockDetails() {
   ) : (
     <Wrapper>
       <Back onClick={() => window.history.back()}>Back</Back>
-      <TickerName>{id}</TickerName>
-      <div>
+      <TickerName>
+        {id}
         <IconButton onClick={() => toggleWatched()}>
           {isWatched ? (
-            <VisibilityIcon sx={{ color: "white" }} />
+            <VisibilityIcon fontSize="small" sx={{ color: "white" }} />
           ) : (
-            <VisibilityOutlined sx={{ color: "white" }} />
+            <VisibilityOutlined fontSize="small" sx={{ color: "white" }} />
           )}
         </IconButton>
-      </div>
+      </TickerName>
       <CurrentPrice color={quote.d > 0 ? "#027326" : "#b5050e"}>
         {quote.c.toLocaleString("en-US", {
           style: "currency",
