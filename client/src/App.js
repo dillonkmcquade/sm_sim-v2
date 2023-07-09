@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, lazy, Suspense, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles.js";
@@ -8,6 +8,7 @@ import Menu from "./components/Menu.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CircularProgress } from "@mui/material";
 import { getTotalValue } from "./utils/getTotalValue.js";
+import { UserContext } from "./context/UserContext.js";
 
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const Home = lazy(() => import("./pages/Home.jsx"));
@@ -18,9 +19,9 @@ const Transaction = lazy(() => import("./pages/Transaction.jsx"));
 
 export default function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   useEffect(() => {
-    const hasBeenCreated = window.sessionStorage.getItem("user");
     const createUser = async () => {
       // create user if does not already exist
       try {
@@ -36,19 +37,16 @@ export default function App() {
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
           const total = await getTotalValue(response.data);
-          window.sessionStorage.setItem(
-            "user",
-            JSON.stringify({ ...response.data, total, timestamp: Date.now() })
-          );
+          setCurrentUser({ ...response.data, total, timestamp: Date.now() });
         }
       } catch (error) {
         console.error(error.message);
       }
     };
-    if (isAuthenticated && !hasBeenCreated) {
+    if (isAuthenticated && !currentUser) {
       createUser();
     }
-  }, [getAccessTokenSilently, isAuthenticated, user]);
+  }, [getAccessTokenSilently, isAuthenticated, user, currentUser]);
 
   return (
     <>

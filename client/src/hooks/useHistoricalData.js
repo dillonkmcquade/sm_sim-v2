@@ -2,9 +2,9 @@ import { useEffect, useState, useReducer } from "react";
 
 const currentTime = Date.now() / 1000;
 const initialState = {
-  resolution: "30",
-  range: "1D",
-  from: Math.floor(currentTime - 86400),
+  resolution: "D",
+  range: "1M",
+  from: Math.floor(currentTime - 2629800),
   loading: false,
 };
 
@@ -62,6 +62,7 @@ export default function useHistoricalData(ticker) {
   const [data, setData] = useState(null);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { resolution, from, loading } = state;
+  const currentDay = new Date().getDay();
 
   useEffect(() => {
     const fetchCandleData = async () => {
@@ -84,5 +85,5 @@ export default function useHistoricalData(ticker) {
     fetchCandleData();
   }, [resolution, from, ticker]);
 
-  return { state, data, loading, dispatch };
+  return { currentDay, state, data, loading, dispatch };
 }

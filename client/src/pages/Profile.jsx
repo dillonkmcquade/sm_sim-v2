@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 
@@ -6,24 +6,21 @@ import usePurchaseReducer from "../hooks/usePurchaseReducer";
 import Alert from "../components/Alert";
 import { CircularProgress } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
+import { UserContext } from "../context/UserContext";
 
 export default function Profile() {
   const { getAccessTokenSilently } = useAuth0();
   const { setLoading, success, errorMessage, state } = usePurchaseReducer(null);
   const { confirmed, error, loading } = state;
-  const user = JSON.parse(window.sessionStorage.getItem("user"));
   const [formData, setFormData] = useState({});
-
-  if (!user) {
-    window.history.back();
-  }
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch("/user/update", {
+      const response = await fetch(`/user/update/${currentUser._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -31,8 +28,9 @@ export default function Profile() {
         },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
-      if (data.status === 200) {
+      const { status } = await response.json();
+      if (status === 200) {
+        setCurrentUser({ ...currentUser, ...formData });
         return success();
       }
     } catch (error) {
@@ -48,7 +46,7 @@ export default function Profile() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`/user/${user.sub}`, {
+      const response = await fetch(`/user/${currentUser._id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -65,11 +63,10 @@ export default function Profile() {
   };
 
   return (
-    user && (
+    currentUser && (
       <Wrapper>
         <Head>
-          <ProfilePhoto src={user.picture} />
-          <Name>{user.name}</Name>
+          <ProfilePhoto src={currentUser.picture} />
         </Head>
         <ProfileDetails onSubmit={handleSubmit}>
           <UnstyledFieldSet>
@@ -78,7 +75,7 @@ export default function Profile() {
               <input
                 type="text"
                 id="name"
-                defaultValue={user.name}
+                defaultValue={currentUser.name}
                 onChange={handleChange}
               />
             </NameField>
@@ -87,7 +84,7 @@ export default function Profile() {
               <input
                 type="text"
                 id="nickname"
-                defaultValue={user.nickname}
+                defaultValue={currentUser.nickname}
                 onChange={handleChange}
               />
             </NickNameField>
@@ -96,7 +93,8 @@ export default function Profile() {
               <input
                 type="email"
                 id="email"
-                defaultValue={user.email || "N/a"}
+                placeholder="No email on record"
+                defaultValue={currentUser.email}
                 onChange={handleChange}
               />
             </EmailField>
@@ -135,19 +133,17 @@ const Wrapper = styled.div`
 `;
 
 const ProfilePhoto = styled.img`
-  width: 100px;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
   object-fit: cover;
   border-radius: 50%;
 `;
 
 const Head = styled.div`
   display: flex;
-  height: 15vh;
-`;
-const Name = styled.h3`
-  height: 25px;
-  position: relative;
-  top: 85px;
+  justify-content: center;
+  padding: 1rem;
 `;
 
 const ProfileDetails = styled.form``;

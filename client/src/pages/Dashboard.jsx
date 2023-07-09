@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { getTotalValue, getInvestedValue } from "../utils/getTotalValue";
+import { getUniques } from "../utils/filterHoldings";
 
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
 import { CircularProgress } from "@mui/material";
+import { UserContext } from "../context/UserContext";
+import FourOhFour from "../components/FourOhFour";
 
 export default function Dashboard() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(() => {
-    const cachedUser = window.sessionStorage.getItem("user");
-    if (cachedUser) {
-      return JSON.parse(cachedUser);
-    } else {
-      return null;
-    }
-  });
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   //get user object from backend
   useEffect(() => {
@@ -37,7 +33,6 @@ export default function Dashboard() {
         if (data.holdings.length === 0) return;
         const total = await getTotalValue(data); //This is why we are caching
         const modifiedObj = { ...data, total, timestamp: Date.now() };
-        window.sessionStorage.setItem("user", JSON.stringify(modifiedObj));
         setCurrentUser(modifiedObj);
       } catch (err) {
         console.error(err.message);
@@ -56,12 +51,6 @@ export default function Dashboard() {
   }, [currentUser, user, isAuthenticated, getAccessTokenSilently]);
 
   const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
-
-  //filter holdings to just unique stock names
-  const getUniques = (data) => {
-    const unique = [...new Set(data.map((item) => item.ticker))];
-    return unique;
-  };
 
   return !currentUser ? (
     <Wrapper>
@@ -127,30 +116,30 @@ export default function Dashboard() {
       <Title>Holdings</Title>
       <Holdings>
         {currentUser.holdings.length === 0 ? (
-          <p>
-            No holdings at this moment, please allow 5 minutes for new
-            transactions to process
-          </p>
+          <FourOhFour>Nothing here yet.</FourOhFour>
         ) : (
           getUniques(currentUser.holdings).map((holding) => (
             <TickerCard
-              handler={() => navigate(`/research/${holding}`)}
-              key={holding}
-              ticker={holding}
+              handler={() => navigate(`/research/${holding.ticker}`)}
+              key={holding.ticker}
+              ticker={holding.ticker}
             />
           ))
         )}
       </Holdings>
       <Title>Watch List</Title>
       <WatchList>
-        {currentUser.watchList &&
+        {currentUser.watchList.length > 0 ? (
           currentUser.watchList.map((item) => (
             <TickerCard
               key={item}
               ticker={item}
               handler={() => navigate(`/research/${item}`)}
             />
-          ))}
+          ))
+        ) : (
+          <FourOhFour>Nothing here yet.</FourOhFour>
+        )}
       </WatchList>
     </Wrapper>
   );

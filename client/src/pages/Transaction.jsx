@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
@@ -10,6 +10,7 @@ import usePurchaseReducer from "../hooks/usePurchaseReducer.js";
 import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert.jsx";
+import { UserContext } from "../context/UserContext.js";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -30,6 +31,8 @@ export default function Transaction() {
   const [alignment, setAlignment] = useState(transactionType);
   const [balance, setBalance] = useState(0);
   const [shares, setShares] = useState(0);
+
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   useEffect(() => {
     //fetch most recent balance
@@ -89,7 +92,7 @@ export default function Transaction() {
     }
   };
 
-  //patch to /buy/:id endpoint
+  //patch to /${action}/:id endpoint
   const submit = async () => {
     try {
       setLoading();
@@ -108,13 +111,12 @@ export default function Transaction() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
-        const user = JSON.parse(window.sessionStorage.getItem("user"));
         const newUserObj = {
-          ...user,
+          ...currentUser,
           holdings: parsed.holdings,
           balance: parsed.balance,
         };
-        window.sessionStorage.setItem("user", JSON.stringify(newUserObj));
+        setCurrentUser(newUserObj);
         success();
         setTimeout(() => {
           navigate(`/dashboard`);

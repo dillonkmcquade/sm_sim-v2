@@ -25,7 +25,7 @@ export default function StockDetails() {
 
   //custom hooks
   const { quote } = useQuote(id);
-  const { data, loading, state, dispatch } = useHistoricalData(id);
+  const { data, loading, state, currentDay, dispatch } = useHistoricalData(id);
   const { news, isLoadingNews } = useNewsData(id);
   const { width } = useContext(WidthContext);
 
@@ -78,8 +78,10 @@ export default function StockDetails() {
       debouncedUpdateWatch();
     }
   };
-
-  const ranges = ["1D", "1W", "1M", "3M", "6M"];
+  const ranges =
+    currentDay === 6 || currentDay === 0
+      ? ["1M", "3M", "6M"]
+      : ["1D", "1W", "1M", "3M", "6M"];
 
   return !quote ? (
     <Wrapper>

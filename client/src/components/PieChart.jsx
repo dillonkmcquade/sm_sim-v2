@@ -1,30 +1,15 @@
 import { ResponsivePie } from "@nivo/pie";
+import { getUniques } from "../utils/filterHoldings";
 
 export default function PieChart({ data }) {
   //Format data to satisfy nivo
   const formatted = (data) => {
-    const uniques = {};
-    data.holdings.forEach((holding) => {
-      if (!uniques[holding.ticker]) {
-        uniques[holding.ticker] = 0;
-      }
-    });
-
-    const keys = Object.keys(uniques);
-
-    const newData = keys.map((key) => {
-      const value = data.holdings.reduce((accumulator, currentValue) => {
-        if (currentValue.ticker === key) {
-          return Number(currentValue.quantity) + accumulator;
-        } else {
-          return 0 + accumulator;
-        }
-      }, 0);
-
+    const uniques = getUniques(data.holdings);
+    const newData = uniques.map((key) => {
       return {
-        id: key,
-        value,
-        label: key,
+        id: key.ticker,
+        value: key.quantity,
+        label: key.ticker,
         color: `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(
           Math.random() * 255
         )}, ${Math.floor(Math.random() * 255)})`,

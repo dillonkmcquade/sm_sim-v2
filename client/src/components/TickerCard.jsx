@@ -11,7 +11,6 @@ export default function TickerCard({ handler, ticker }) {
     data && (
       <Wrapper onClick={handler}>
         <Title>{ticker}</Title>
-
         <Price color={quote.d > 0 ? "#027326" : "#b5050e"}>${quote.c}</Price>
         <LineChart small="true" id={ticker} data={data} />
       </Wrapper>
