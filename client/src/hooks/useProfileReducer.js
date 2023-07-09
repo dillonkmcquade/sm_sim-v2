@@ -21,7 +21,13 @@ const reducer = (state, action) => {
     case "success":
       return { ...state, loading: false, confirmed: true, formData: {} };
     case "error":
-      return { ...state, loading: false, error: action.payload };
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        formData: {},
+        confirmed: false,
+      };
     default:
       throw new Error("Error");
   }

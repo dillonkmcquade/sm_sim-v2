@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 
@@ -31,6 +31,8 @@ export default function Profile() {
       const { status } = await response.json();
       if (status === 200) {
         return success({ ...currentUser, ...formData });
+      } else {
+        errorMessage("Nothing to change");
       }
     } catch (error) {
       errorMessage(error.message);
@@ -127,7 +129,7 @@ export default function Profile() {
           <ButtonContainer>
             <Button
               variant="contained"
-              disabled={loading}
+              disabled={loading || confirmed}
               color="success"
               type="submit"
             >

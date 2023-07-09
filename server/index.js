@@ -10,6 +10,7 @@ const { buyStock } = require("./handlers/buyStock");
 const { sellStock } = require("./handlers/sellStock");
 const { toggleWatchList } = require("./handlers/toggleWatchList");
 const { updateUser } = require("./handlers/updateUser");
+const { deleteUser } = require("./handlers/deleteUser");
 require("dotenv").config();
 
 const server = express();
@@ -25,8 +26,9 @@ server
   .get("/getTickers", getTickers)
   .get("/getTickers/:id", getTickerById)
   .get("/search", queryTickerByName)
-  .get("/user/:_id", jwtCheck, getUser)
   .post("/user", jwtCheck, createUser)
+  .delete("user", jwtCheck, deleteUser)
+  .get("/user/:_id", jwtCheck, getUser)
   .patch("/user/update/:_id", jwtCheck, updateUser)
   .patch("/buy/:id", jwtCheck, buyStock)
   .patch("/sell/:id", jwtCheck, sellStock)
