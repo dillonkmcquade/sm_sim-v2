@@ -22,7 +22,7 @@ export default function Menu() {
 
   const handleLogout = async () => {
     window.sessionStorage.removeItem("user");
-    logout({ logoutParams: { returnTo: "http://localhost:3000" } });
+    logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
   if (error) {
