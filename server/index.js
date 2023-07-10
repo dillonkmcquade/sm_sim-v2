@@ -23,6 +23,14 @@ const jwtCheck = auth({
 server
   .use(express.json())
   .use(morgan("dev"))
+  .use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  })
   .get("/getTickers", getTickers)
   .get("/getTickers/:id", getTickerById)
   .get("/search", queryTickerByName)
