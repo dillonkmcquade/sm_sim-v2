@@ -7,6 +7,7 @@ export default function Alert({ severity, children }) {
         backgroundColor:
           severity === "success" ? "rgb(12, 19, 13)" : "rgb(22, 11, 11)",
         margin: "1rem 0",
+        width: "100%",
       }}
     >
       {children}
