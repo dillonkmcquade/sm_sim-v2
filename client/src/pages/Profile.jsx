@@ -56,18 +56,20 @@ export default function Profile() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`/user`, {
+      const response = await fetch("/user", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ _id: currentUser._id }),
       });
       const data = await response.json();
-      if (data.status === 204) {
-        success();
-        return logout();
+      if (data.status === 200) {
+        success(null);
+        return logout({ logoutParams: { returnTo: "http://localhost:3000" } });
+      } else {
+        errorMessage(data.message);
       }
     } catch (error) {
       errorMessage(error.message);
@@ -105,6 +107,7 @@ export default function Profile() {
               <input
                 type="email"
                 id="email"
+                required
                 placeholder="yourEmail@email.com"
                 defaultValue={currentUser.email}
                 onChange={handleChange}
@@ -158,18 +161,22 @@ export default function Profile() {
               color="error"
               onClick={() => setOpen(!open)}
             >
-              Deactivate Account
+              Delete Account
             </Button>
           </ButtonContainer>
           <Dialog open={open} onClose={logout}>
             <DialogContent>
               <DialogContentText>
-                Are you sure you want to deactivate your account?
+                Are you sure you want to delete your account? All of your watch
+                lists, holdings, and account balance will be deleted.
+              </DialogContentText>
+              <DialogContentText color="error">
+                {error && error}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button color="error" onClick={handleDeactivate}>
-                Deactivate account
+                Delete account
               </Button>
               <Button color="success" onClick={() => setOpen(!open)}>
                 Cancel

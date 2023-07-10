@@ -82,10 +82,7 @@ export default function Dashboard() {
 
       <div style={{ height: "500px", color: "black" }}>
         {currentUser.holdings.length === 0 ? (
-          <p style={{ color: "white" }}>
-            No holdings at this moment, please allow 5 minutes for new
-            transactions to process
-          </p>
+          <FourOhFour />
         ) : (
           <PieChart data={currentUser} />
         )}

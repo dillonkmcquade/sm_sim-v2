@@ -26,13 +26,16 @@ server
   .get("/getTickers", getTickers)
   .get("/getTickers/:id", getTickerById)
   .get("/search", queryTickerByName)
+
+  //Auth required
   .post("/user", jwtCheck, createUser)
-  .delete("user", jwtCheck, deleteUser)
+  .delete("/user", jwtCheck, deleteUser)
   .get("/user/:_id", jwtCheck, getUser)
   .patch("/user/update/:_id", jwtCheck, updateUser)
   .patch("/buy/:id", jwtCheck, buyStock)
   .patch("/sell/:id", jwtCheck, sellStock)
   .patch("/toggleWatchList", jwtCheck, toggleWatchList)
+
   .get("*", (_req, res) => {
     return res.send("<h1>Does not exist</h1>");
   });
