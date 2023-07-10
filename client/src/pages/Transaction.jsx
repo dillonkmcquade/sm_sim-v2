@@ -33,18 +33,22 @@ export default function Transaction() {
   const [alignment, setAlignment] = useState(transactionType);
   const [shares, setShares] = useState(0);
   const { balance } = currentUser;
+  const { REACT_APP_SERVER_URL } = process.env;
 
   useEffect(() => {
     //fetch most recent balance
     const fetchBalance = async () => {
       try {
         const accessToken = await getAccessTokenSilently();
-        const response = await fetch(`/user/${user.sub}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${REACT_APP_SERVER_URL}/user/${user.sub}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         const { data } = await response.json();
         setCurrentUser({ ...currentUser, balance: data.balance });
 
@@ -97,7 +101,7 @@ export default function Transaction() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`/${action}/${id}`, {
+      const response = await fetch(`${REACT_APP_SERVER_URL}/${action}/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,

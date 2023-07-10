@@ -60,7 +60,10 @@ export default function Research() {
   const search = async () => {
     startSearch();
     try {
-      const request = await fetch(`/search?name=${inputText}`);
+      const { REACT_APP_SERVER_URL } = process.env;
+      const request = await fetch(
+        `${REACT_APP_SERVER_URL}/search?name=${inputText}`
+      );
       const response = await request.json();
       if (response.status === 200) {
         success(response.results);

@@ -19,20 +19,24 @@ export default function Profile() {
   const { formData, confirmed, error, loading } = state;
   const { currentUser } = useContext(UserContext);
   const [open, setOpen] = useState(false);
+  const { REACT_APP_SERVER_URL } = process.env;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`/user/update/${currentUser._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${REACT_APP_SERVER_URL}/user/update/${currentUser._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const { status } = await response.json();
       if (status === 200) {
         return success({ ...currentUser, ...formData });
@@ -56,7 +60,7 @@ export default function Profile() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch("/user", {
+      const response = await fetch(`${REACT_APP_SERVER_URL}/user`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

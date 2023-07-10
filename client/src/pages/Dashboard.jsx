@@ -21,14 +21,18 @@ export default function Dashboard() {
   useEffect(() => {
     async function getUser() {
       try {
+        const { REACT_APP_SERVER_URL } = process.env;
         const accessToken = await getAccessTokenSilently();
-        const response = await fetch(`/user/${user.sub}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${REACT_APP_SERVER_URL}/user/${user.sub}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         const { data } = await response.json();
         if (data.holdings.length === 0) return;
         const total = await getTotalValue(data.holdings); //potentially expensive function call
