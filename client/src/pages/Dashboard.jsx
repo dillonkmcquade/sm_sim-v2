@@ -56,7 +56,7 @@ export default function Dashboard() {
 
   return !currentUser ? (
     <Wrapper>
-      <CircularProgress />
+      <CircularProgress sx={{ color: "#027326" }} />
     </Wrapper>
   ) : (
     <Wrapper>

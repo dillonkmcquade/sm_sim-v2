@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import {
   Alert,
   AlertTitle,
@@ -23,7 +22,6 @@ export default function Research() {
     (key) => key !== "account"
   );
   const navigate = useNavigate();
-  const ref = useRef(null);
 
   //some nice to have features for selecting w/ keyboard
   const handleKeyDown = (event) => {
@@ -116,10 +114,9 @@ export default function Research() {
         {results &&
           results.map((result, index) => (
             <SearchResult
-              isselected={index === isSelected ? "#0f1410" : undefined}
-              ref={index === isSelected ? ref : null}
               key={Math.random()}
               tabIndex={0}
+              onMouseOver={() => updateField("isSelected", index)}
               onClick={() => navigate(result.symbol)}
             >
               <Ticker>{result.symbol}</Ticker>
@@ -213,9 +210,7 @@ const SearchResult = styled.div`
   border-bottom: 1px solid gray;
   cursor: pointer;
   width: 100%;
-  background-color: ${(props) => props.isselected};
   animation: none !important;
-  transition: none !important
 
   &:hover {
     background-color: #0f1410;

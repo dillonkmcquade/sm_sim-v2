@@ -149,7 +149,7 @@ export default function Profile() {
               }}
             >
               {loading ? (
-                <CircularProgress />
+                <CircularProgress sx={{ color: "#027326" }} />
               ) : confirmed ? (
                 "Saved"
               ) : (

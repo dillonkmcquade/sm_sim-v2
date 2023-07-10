@@ -78,11 +78,12 @@ export default function StockDetails() {
 
   return !quote ? (
     <Wrapper>
-      <CircularProgress color="success" />
+      <CircularProgress sx={{ color: "#027326" }} />
     </Wrapper>
   ) : (
     <Wrapper>
       <Back onClick={() => window.history.back()}>Back</Back>
+
       <TickerName>
         {id}
         <IconButton onClick={() => toggleWatched()}>
@@ -93,6 +94,7 @@ export default function StockDetails() {
           )}
         </IconButton>
       </TickerName>
+
       <CurrentPrice color={quote.d > 0 ? "#027326" : "#e80e19"}>
         {quote.c.toLocaleString("en-US", {
           style: "currency",
@@ -106,13 +108,15 @@ export default function StockDetails() {
           (%{quote.dp})
         </SecondaryText>
       </CurrentPrice>
-      <div style={{ height: "60vh", color: "black" }}>
-        {loading || !data ? (
-          <CircularProgress />
+
+      <ChartWrapper>
+        {!data || loading ? (
+          <CircularProgress sx={{ color: "#027326" }} />
         ) : (
           <LineChart id={id} data={data} />
         )}
-      </div>
+      </ChartWrapper>
+
       <RangeToggle>
         {ranges.map((rangeType) => (
           <RangeOption
@@ -124,6 +128,7 @@ export default function StockDetails() {
           </RangeOption>
         ))}
       </RangeToggle>
+
       <ButtonContainer width={width}>
         <Button
           bradius="4px"
@@ -145,6 +150,7 @@ export default function StockDetails() {
           Sell
         </Button>
       </ButtonContainer>
+
       <NewsTitle>News from {id}</NewsTitle>
       <NewsContainer>
         {isLoadingNews || !news ? (
@@ -165,9 +171,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 150px;
+  margin: 0 auto;
   @media (min-width: 500px) {
     max-width: 1400px;
-    margin: 0 auto;
   }
 `;
 const TickerName = styled.h1`
@@ -246,4 +252,12 @@ const Back = styled.p`
   &:hover {
     color: #81a1c1;
   }
+`;
+
+const ChartWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  color: black;
 `;

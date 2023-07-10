@@ -130,7 +130,7 @@ export default function Transaction() {
   };
 
   return !quote || !currentUser ? (
-    <CircularProgress />
+    <CircularProgress sx={{ color: "#027326" }} />
   ) : (
     <Wrapper>
       <Back to={`/research/${id}`}>Back</Back>
@@ -201,7 +201,11 @@ export default function Transaction() {
         bg={loading ? " #5c5c63" : undefined}
         handler={submit}
       >
-        {loading ? <CircularProgress /> : "Confirm Transaction"}
+        {loading ? (
+          <CircularProgress sx={{ color: "#027326" }} />
+        ) : (
+          "Confirm Transaction"
+        )}
       </Button>
       {error && <Alert severity="error">{error}</Alert>}
       {confirmed && <Alert severity="success">Transaction Confirmed</Alert>}
