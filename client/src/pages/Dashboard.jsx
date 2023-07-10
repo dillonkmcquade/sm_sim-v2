@@ -31,7 +31,7 @@ export default function Dashboard() {
         });
         const { data } = await response.json();
         if (data.holdings.length === 0) return;
-        const total = await getTotalValue(data); //This is why we are caching
+        const total = await getTotalValue(data.holdings); //potentially expensive function call
         const modifiedObj = { ...data, total, timestamp: Date.now() };
         setCurrentUser(modifiedObj);
       } catch (err) {

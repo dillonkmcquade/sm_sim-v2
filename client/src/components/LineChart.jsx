@@ -1,5 +1,6 @@
 import { useContext, useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
+import { linearGradientDef } from "@nivo/core";
 import { WidthContext } from "../context/WidthContext";
 
 export default function LineChart({ id, data, small }) {
@@ -14,7 +15,7 @@ export default function LineChart({ id, data, small }) {
   }, [data]);
 
   //final data in required format for nivo linechart {id, color, data}
-  const newData = { id, color: "hsl(341, 70%, 50%)", data: format };
+  const newData = { id, color: "#2c9c4b", data: format };
 
   return (
     data && (
@@ -37,10 +38,18 @@ export default function LineChart({ id, data, small }) {
           stacked: true,
           reverse: false,
         }}
+        defs={[
+          linearGradientDef("gradientA", [
+            { offset: 1, color: "#2c9c4b" },
+            { offset: 19, color: "#2c9c4b", opacity: 0 },
+          ]),
+        ]}
+        fill={[{ match: "*", id: "gradientA" }]}
         yFormat=" >-.2f"
         axisTop={null}
         axisRight={null}
         axisBottom={null}
+        colors={(d) => d.color}
         axisLeft={
           small
             ? null
@@ -55,7 +64,6 @@ export default function LineChart({ id, data, small }) {
         }
         pointSize={width < 600 ? 5 : 10}
         lineWidth={width < 600 ? 3 : 7}
-        pointColor={{ theme: "background" }}
         pointBorderWidth={2}
         pointBorderColor={{ from: "serieColor" }}
         pointLabelYOffset={-12}
