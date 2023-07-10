@@ -79,7 +79,7 @@ const Nav = styled.nav`
   @media (min-width: 1000px) {
     width: 300px;
     right: 0;
-    border-right: 1px solid white;
+    border-left: 1px solid white;
   }
 
   @keyframes fadeInFromTop {

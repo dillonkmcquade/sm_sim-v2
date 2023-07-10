@@ -60,6 +60,10 @@ export default function Home() {
 }
 const Wrapper = styled.div`
   width: 100vw;
+  @media (min-width: 500px) {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 `;
 
 const Hero = styled.div`
@@ -72,6 +76,10 @@ const Hero = styled.div`
   background-image: linear-gradient(to bottom, rgba(117, 19, 93, 0.73), #000000),
     url("./dollar-bills-compressed.jpg");
   background-size: contain;
+  width: 100%;
+  @media (min-width: 500px) {
+    background-size: cover;
+  }
 `;
 
 const GreetingHead = styled.h1`
@@ -99,7 +107,11 @@ const StackedCoins = styled.div`
       rgba(191, 237, 204, 0.53)
     ),
     url("./stackedCoins.jpg");
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
+  @media (min-width: 500px) {
+    background-size: cover;
+  }
 `;
 
 const ResearchStocks = styled.div`
@@ -118,4 +130,7 @@ const ResearchStocks = styled.div`
     ),
     url("./candleChart.avif");
   background-size: contain;
+  @media (min-width: 500px) {
+    background-size: cover;
+  }
 `;
