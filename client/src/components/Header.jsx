@@ -13,7 +13,12 @@ export default function Header() {
     <Wrapper>
       <IconContext.Provider value={{ color: "white", size: "36px" }}>
         <NavContainer>
-          <Logo to={isAuthenticated ? "/dashboard" : "/"}>SmSim</Logo>
+          <Logo
+            to={isAuthenticated ? "/dashboard" : "/"}
+            onClick={() => menuVisible && setMenuVisible(false)}
+          >
+            MarketSim
+          </Logo>
           <Hamburger onClick={() => setMenuVisible(!menuVisible)} />
         </NavContainer>
       </IconContext.Provider>

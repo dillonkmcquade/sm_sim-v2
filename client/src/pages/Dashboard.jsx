@@ -147,17 +147,16 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   position: relative;
   top: 56px;
-  width: 100vw;
+  width: 85vw;
   height: 100vh;
+  margin: 0 auto;
   @media (min-width: 1000px) {
     max-width: 1400px;
     margin: 0 auto;
   }
 `;
 
-const Title = styled.h1`
-  margin: 0 1rem 0 1rem;
-`;
+const Title = styled.h1``;
 const PortfolioValue = styled(Title)``;
 
 const Profit = styled.p`
@@ -173,7 +172,7 @@ const Holdings = styled.div`
 const AccountDetails = styled.div`
   border-radius: 1rem;
   border: 2px solid white;
-  margin: 1rem;
+  margin: 1rem 0;
   padding: 0.5rem;
   color: gray;
   max-width: 500px;

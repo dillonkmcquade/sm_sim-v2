@@ -32,7 +32,7 @@ export default function Button({
 const StyledButton = styled.button`
   background: ${(props) =>
     props.bg ||
-    "linear-gradient(90deg,rgba(152, 148, 230, 1) 0%,rgba(121, 9, 119, 1) 100%,rgba(0, 212, 255, 1) 100%)"};
+    "linear-gradient(90deg,rgba(152, 148, 230, 1) 0%,rgba(121, 9, 119, 1) 100%)"};
   color: ${(props) => props.color || "#000000"};
   font-size: 1.2rem;
   border: ${(props) => props.border || "none"};
@@ -51,7 +51,7 @@ const StyledButton = styled.button`
   &:hover {
     background: ${(props) =>
       props.hoverbg ||
-      "linear-gradient(90deg,rgba(152, 148, 230, 0.8) 0%,rgba(121, 9, 119, 0.8) 100%,rgba(0, 212, 255, 0.8) 100%)"};
+      "linear-gradient(90deg,rgba(152, 148, 230, 0.8) 0%,rgba(121, 9, 119, 0.8) 100%)"};
     color: ${(props) => props.hovercolor};
   }
 `;

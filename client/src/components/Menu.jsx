@@ -10,7 +10,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import DataSaverOffIcon from "@mui/icons-material/DataSaverOff";
 
 export default function Menu() {
-  const { menuVisible, setMenuVisible } = useContext(MenuContext);
+  const { menuVisible } = useContext(MenuContext);
   const { error, loginWithRedirect, isAuthenticated, isLoading, logout } =
     useAuth0();
 
@@ -32,10 +32,7 @@ export default function Menu() {
     return <CircularProgress />;
   }
   return (
-    <Nav
-      display={menuVisible ? "flex" : "none"}
-      onClick={() => setMenuVisible(!menuVisible)}
-    >
+    <Nav display={menuVisible ? "flex" : "none"}>
       {isAuthenticated && (
         <MenuOption to="/dashboard">
           <DataSaverOffIcon /> Dashboard
@@ -80,6 +77,7 @@ const Nav = styled.nav`
     width: 300px;
     right: 0;
     border-left: 1px solid white;
+    animation: fadeInFromRight ease-in-out 250ms;
   }
 
   @keyframes fadeInFromTop {
@@ -92,6 +90,16 @@ const Nav = styled.nav`
       bottom: 0;
     }
   }
+  @keyframes fadeInFromRight {
+    0% {
+      right: -300px;
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      right: 0;
+    }
+  }
 `;
 
 const MenuOption = styled(NavLink)`
@@ -102,13 +110,20 @@ const MenuOption = styled(NavLink)`
   transition: all ease-in-out 400ms;
   display: flex;
   align-items: center;
+  @media (min-width: 1000px) {
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
 
   /* &:hover {
     border: 1px solid white;
   } */
 
   &.active {
-    border-bottom: 2px solid white;
+    background-color: white;
+    color: black;
   }
 `;
 
@@ -122,6 +137,12 @@ const AuthRedirect = styled.button`
   border: none;
   text-align: left;
   transition: all ease-in-out 400ms;
+  @media (min-width: 1000px) {
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
 
   /* &:hover {
     border: 1px solid white;
