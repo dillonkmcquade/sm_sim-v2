@@ -195,6 +195,9 @@ const Wrapper = styled.div`
   top: 56px;
   width: 85vw;
   margin: 0 auto;
+  @media (min-width: 500px) {
+    max-width: 400px;
+  }
 `;
 
 const ProfilePhoto = styled.img`

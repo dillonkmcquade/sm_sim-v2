@@ -129,7 +129,7 @@ export default function Transaction() {
     }
   };
 
-  return !quote ? (
+  return !quote || !currentUser ? (
     <CircularProgress />
   ) : (
     <Wrapper>
@@ -215,6 +215,10 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 5vw;
+  @media (min-width: 500px) {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 `;
 
 const BuyOrSell = styled(ToggleButton)`
@@ -243,6 +247,7 @@ const TransactionDetails = styled.div`
   margin: 1rem 0;
   padding: 0.5rem;
   color: gray;
+  max-width: 500px;
 `;
 
 const Bold = styled.span`

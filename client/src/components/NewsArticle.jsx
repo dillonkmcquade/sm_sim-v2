@@ -21,13 +21,16 @@ export default function NewsArticle({ article }) {
 
 const Wrapper = styled.div`
   margin: 1rem auto;
-  width: 90vw;
+  width: 85vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background-color: #343835;
   border-radius: 0.5rem;
   padding: 0 1rem;
+  @media (min-width: 500px) {
+    width: 450px;
+  }
 `;
 
 const ArticleMain = styled.div`

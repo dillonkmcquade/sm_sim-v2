@@ -4,6 +4,10 @@ import { styled } from "styled-components";
 import { MenuContext } from "../context/MenuContext";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CircularProgress } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import SearchIcon from "@mui/icons-material/Search";
+import LogoutIcon from "@mui/icons-material/Logout";
+import DataSaverOffIcon from "@mui/icons-material/DataSaverOff";
 
 export default function Menu() {
   const { menuVisible, setMenuVisible } = useContext(MenuContext);
@@ -32,16 +36,32 @@ export default function Menu() {
       display={menuVisible ? "flex" : "none"}
       onClick={() => setMenuVisible(!menuVisible)}
     >
-      {isAuthenticated && <MenuOption to="/dashboard">Dashboard</MenuOption>}
-      <MenuOption to="/research">Research</MenuOption>
+      {isAuthenticated && (
+        <MenuOption to="/dashboard">
+          <DataSaverOffIcon /> Dashboard
+        </MenuOption>
+      )}
+      <MenuOption to="/research">
+        <SearchIcon /> Research
+      </MenuOption>
       {isAuthenticated ? (
         <>
-          <MenuOption to="/profile">Profile</MenuOption>
-          <AuthRedirect onClick={handleLogout}>Sign out</AuthRedirect>
+          <MenuOption to="/profile">
+            <PersonIcon /> Profile
+          </MenuOption>
+          <AuthRedirect onClick={handleLogout}>
+            <LogoutIcon /> Sign out
+          </AuthRedirect>
         </>
       ) : (
-        <AuthRedirect onClick={handleSignIn}>Sign In</AuthRedirect>
+        <AuthRedirect onClick={handleSignIn}>
+          <PersonIcon /> Sign In
+        </AuthRedirect>
       )}
+      <Image
+        src="./financial-drawing.svg"
+        alt="Person drawing financial things"
+      />
     </Nav>
   );
 }
@@ -56,6 +76,11 @@ const Nav = styled.nav`
   flex-direction: column;
   animation: fadeInFromTop ease-in-out 250ms;
   z-index: 1000;
+  @media (min-width: 1000px) {
+    width: 300px;
+    right: 0;
+    border-right: 1px solid white;
+  }
 
   @keyframes fadeInFromTop {
     0% {
@@ -75,6 +100,8 @@ const MenuOption = styled(NavLink)`
   text-decoration: none;
   color: white;
   transition: all ease-in-out 400ms;
+  display: flex;
+  align-items: center;
 
   /* &:hover {
     border: 1px solid white;
@@ -103,4 +130,10 @@ const AuthRedirect = styled.button`
   &.active {
     border-bottom: 2px solid white;
   }
+`;
+
+const Image = styled.img`
+  width: 85%;
+  padding: 1rem;
+  margin: 0 auto;
 `;

@@ -2,6 +2,7 @@ import { useContext, useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { linearGradientDef } from "@nivo/core";
 import { WidthContext } from "../context/WidthContext";
+import { styled } from "styled-components";
 
 export default function LineChart({ id, data, small }) {
   const { width } = useContext(WidthContext);
@@ -68,6 +69,26 @@ export default function LineChart({ id, data, small }) {
         pointBorderColor={{ from: "serieColor" }}
         pointLabelYOffset={-12}
         useMesh={true}
+        tooltip={({ point }) => {
+          const split = point.data.xFormatted.split(" ");
+          const formatted = `${split[1]} ${split[2]} ${split[4]}`;
+          return (
+            <Tooltip>
+              <div>
+                Time: <Bold>{formatted}</Bold>
+              </div>
+              <div>
+                Price:{" "}
+                <Bold>
+                  {point.data.y.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
+                </Bold>
+              </div>
+            </Tooltip>
+          );
+        }}
         legends={[
           {
             anchor: !small ? "bottom-right" : "top-left",
@@ -98,3 +119,16 @@ export default function LineChart({ id, data, small }) {
     )
   );
 }
+
+const Tooltip = styled.div`
+  color: white;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 9px 12px;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  max-width: 150px;
+`;
+
+const Bold = styled.span`
+  font-weight: bold;
+`;

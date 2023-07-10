@@ -78,7 +78,7 @@ export default function StockDetails() {
 
   return !quote ? (
     <Wrapper>
-      <CircularProgress />
+      <CircularProgress color="success" />
     </Wrapper>
   ) : (
     <Wrapper>
@@ -127,6 +127,7 @@ export default function StockDetails() {
       <ButtonContainer width={width}>
         <Button
           bradius="4px"
+          disabled={currentUser !== null ? false : true}
           handler={() => navigate(`/transaction/buy/${id}`)}
         >
           Buy
@@ -138,6 +139,7 @@ export default function StockDetails() {
           hoverbg="white"
           bradius="4px"
           border="1px solid white"
+          disabled={currentUser !== null ? false : true}
           handler={() => navigate(`/transaction/sell/${id}`)}
         >
           Sell
@@ -163,6 +165,10 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 150px;
+  @media (min-width: 500px) {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 `;
 const TickerName = styled.h1`
   color: white;
@@ -173,21 +179,27 @@ const TickerName = styled.h1`
 const CurrentPrice = styled.h1`
   color: ${(props) => props.color};
   font-size: 1.5rem;
-  margin-left: 1rem;
+  padding-left: 1rem;
 `;
 
 const SecondaryText = styled.span`
   font-size: 0.75rem;
 `;
 
-const NewsContainer = styled.div``;
+const NewsContainer = styled.div`
+  @media (min-width: 1400px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+`;
 
 const NewsTitle = styled.h3`
-  margin-left: 1rem;
+  padding-left: 1rem;
 `;
 
 const ButtonContainer = styled.div`
-  width: 100vw;
+  width: 100%;
   background-color: black;
   border-top: 1px solid white;
   position: fixed;
@@ -207,7 +219,7 @@ const ButtonContainer = styled.div`
 const RangeToggle = styled.div`
   position: relative;
   display: flex;
-  width: 75vw;
+  width: 100%;
   margin: 0 auto;
   justify-content: space-evenly;
 `;

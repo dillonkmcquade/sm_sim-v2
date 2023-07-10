@@ -1,21 +1,20 @@
-import { useEffect, lazy, Suspense, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles.js";
-import Header from "./components/Header.jsx";
-import Menu from "./components/Menu.jsx";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { CircularProgress } from "@mui/material";
 import { getTotalValue } from "./utils/getTotalValue.js";
 import { UserContext } from "./context/UserContext.js";
 
-const Profile = lazy(() => import("./pages/Profile.jsx"));
-const Home = lazy(() => import("./pages/Home.jsx"));
-const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
-const StockDetails = lazy(() => import("./pages/StockDetails.jsx"));
-const Research = lazy(() => import("./pages/Research.jsx"));
-const Transaction = lazy(() => import("./pages/Transaction.jsx"));
+import Header from "./components/Header.jsx";
+import Menu from "./components/Menu.jsx";
+import Home from "./pages/Home.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import StockDetails from "./pages/StockDetails.jsx";
+import Research from "./pages/Research.jsx";
+import Transaction from "./pages/Transaction.jsx";
+import Profile from "./pages/Profile.jsx";
 
 export default function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -53,20 +52,18 @@ export default function App() {
       <GlobalStyles />
       <Header />
       <Menu />
-      <Suspense fallback={<CircularProgress />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/research/:id" element={<StockDetails />} />
-          <Route path="/research" element={<Research />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route
-            path="/transaction/:transactionType/:id"
-            element={<Transaction />}
-          />
-          <Route path="*" element={<h1>404</h1>} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/research/:id" element={<StockDetails />} />
+        <Route path="/research" element={<Research />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/transaction/:transactionType/:id"
+          element={<Transaction />}
+        />
+        <Route path="*" element={<h1>404</h1>} />
+      </Routes>
     </>
   );
 }

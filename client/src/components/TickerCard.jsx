@@ -28,6 +28,10 @@ const Wrapper = styled.div`
   cursor: pointer;
   margin: 1rem;
   color: black;
+  @media (min-width: 500px) {
+    min-width: 0;
+    width: 350px;
+  }
 `;
 
 const Title = styled.h1`

@@ -164,6 +164,11 @@ const Wrapper = styled.div`
   position: relative;
   color: #d8dee9;
   top: 56px;
+  width: 85vw;
+  @media (min-width: 500px) {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 `;
 
 const Title = styled.h1`
@@ -178,7 +183,7 @@ const SearchForm = styled.form`
 `;
 
 const WhiteBorderTextField = styled(TextField)`
-  width: 85vw;
+  width: 100%;
   align-self: center;
   & label {
     color: gray;
@@ -205,11 +210,11 @@ const WhiteBorderTextField = styled(TextField)`
 `;
 
 const SearchResult = styled.div`
-  width: 85vw;
   margin: 0 auto;
   padding: 0.2rem;
   border-bottom: 1px solid gray;
   cursor: pointer;
+  width: 100%;
   background-color: ${(props) => props.isselected};
   animation: none !important;
   transition: none !important

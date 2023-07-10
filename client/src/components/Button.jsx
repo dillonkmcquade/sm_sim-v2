@@ -42,6 +42,7 @@ const StyledButton = styled.button`
   transition: scale ease-in-out 300ms;
   transition: background ease-in 500ms;
   min-width: 100px;
+  max-width: 500px;
 
   &:active {
     scale: ${(props) => (props.disabled ? "1" : 0.9)};

@@ -149,6 +149,10 @@ const Wrapper = styled.div`
   top: 56px;
   width: 100vw;
   height: 100vh;
+  @media (min-width: 1000px) {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 `;
 
 const Title = styled.h1`
@@ -172,6 +176,7 @@ const AccountDetails = styled.div`
   margin: 1rem;
   padding: 0.5rem;
   color: gray;
+  max-width: 500px;
 `;
 
 const Detail = styled.div`
