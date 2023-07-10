@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "https://sm-sim.onrender.com",
   "dependencies": {
     "@auth0/auth0-react": "^2.1.1",
     "@emotion/react": "^11.11.1",
