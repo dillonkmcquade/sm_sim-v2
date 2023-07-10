@@ -26,11 +26,11 @@ const Wrapper = styled.div`
   border: 2px solid white;
   border-radius: 1rem;
   cursor: pointer;
-  margin: 1rem;
+  margin: 1rem 2rem 1rem 0;
   color: black;
+  max-width: 350px;
   @media (min-width: 500px) {
-    min-width: 0;
-    width: 350px;
+    min-width: 350px;
   }
 `;
 

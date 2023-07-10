@@ -164,16 +164,15 @@ const Wrapper = styled.div`
   color: #d8dee9;
   top: 56px;
   width: 85vw;
+  margin: 0 auto;
   @media (min-width: 500px) {
     max-width: 1400px;
-    margin: 0 auto;
   }
 `;
 
 const Title = styled.h1`
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  margin-left: 1rem;
 `;
 
 const SearchForm = styled.form`

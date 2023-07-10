@@ -57,6 +57,8 @@ const Publisher = styled.img`
 const Title = styled.p`
   margin-right: 1rem;
   font-weight: bold;
+  max-height: 65px;
+  overflow: hidden;
 `;
 
 const ArticleFooter = styled.div`
