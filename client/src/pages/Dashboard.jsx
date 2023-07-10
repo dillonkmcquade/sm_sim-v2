@@ -50,7 +50,9 @@ export default function Dashboard() {
     }
   }, [currentUser, user, isAuthenticated, getAccessTokenSilently]);
 
-  const investedValue = currentUser ? getInvestedValue(currentUser) : 0;
+  const investedValue = currentUser
+    ? getInvestedValue(currentUser.holdings)
+    : 0;
 
   return !currentUser ? (
     <Wrapper>

@@ -1,16 +1,13 @@
-export const getInvestedValue = (currentUser) => {
-  const investedValue = currentUser.holdings.reduce(
-    (accumulator, currentValue) => {
-      return accumulator + Number(currentValue.quantity) * currentValue.price;
-    },
-    0
-  );
+export const getInvestedValue = (holdings) => {
+  const investedValue = holdings.reduce((accumulator, currentValue) => {
+    return accumulator + Number(currentValue.quantity) * currentValue.price;
+  }, 0);
   return investedValue;
 };
 
-const getPrices = async (user) => {
+const getPrices = async (holdings) => {
   const uniques = {};
-  user.holdings.forEach((holding) => {
+  holdings.forEach((holding) => {
     if (!uniques[holding.ticker]) {
       uniques[holding.ticker] = 0;
     }
@@ -36,10 +33,10 @@ const getPrices = async (user) => {
   return uniques;
 };
 
-export async function getTotalValue(user) {
-  const prices = await getPrices(user);
+export async function getTotalValue(holdings) {
+  const prices = await getPrices(holdings);
 
-  return user.holdings.reduce((accumulator, currentValue) => {
+  return holdings.reduce((accumulator, currentValue) => {
     return (
       accumulator + Number(currentValue.quantity) * prices[currentValue.ticker]
     );

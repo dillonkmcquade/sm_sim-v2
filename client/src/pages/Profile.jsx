@@ -1,11 +1,15 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import { CircularProgress } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import useProfileReducer from "../hooks/useProfileReducer";
 import Alert from "../components/Alert";
-import { CircularProgress } from "@mui/material";
-import { useAuth0 } from "@auth0/auth0-react";
 import { UserContext } from "../context/UserContext";
 
 export default function Profile() {
@@ -14,6 +18,7 @@ export default function Profile() {
     useProfileReducer();
   const { formData, confirmed, error, loading } = state;
   const { currentUser } = useContext(UserContext);
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -128,23 +133,49 @@ export default function Profile() {
           </UnstyledFieldSet>
           <ButtonContainer>
             <Button
-              variant="contained"
-              disabled={loading || confirmed}
-              color="success"
+              variant="outlined"
+              disabled={
+                loading || confirmed || Object.keys(formData).length === 0
+              }
+              color={loading ? "secondary" : "success"}
               type="submit"
+              sx={{
+                "&.Mui-disabled": {
+                  color: "#c0c0c0",
+                },
+              }}
             >
               {loading ? (
                 <CircularProgress />
               ) : confirmed ? (
-                "Confirmed"
+                "Saved"
               ) : (
                 "Save Changes"
               )}
             </Button>
-            <Button variant="outlined" color="error">
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setOpen(!open)}
+            >
               Deactivate Account
             </Button>
           </ButtonContainer>
+          <Dialog open={open} onClose={logout}>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to deactivate your account?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button color="error" onClick={handleDeactivate}>
+                Deactivate account
+              </Button>
+              <Button color="success" onClick={() => setOpen(!open)}>
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </ProfileDetails>
         {error && <Alert severity="error">{error}</Alert>}
       </Wrapper>

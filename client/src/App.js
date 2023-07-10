@@ -36,7 +36,7 @@ export default function App() {
         });
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
-          const total = await getTotalValue(response.data);
+          const total = await getTotalValue(response.data.holdings);
           setCurrentUser({ ...response.data, total, timestamp: Date.now() });
         }
       } catch (error) {

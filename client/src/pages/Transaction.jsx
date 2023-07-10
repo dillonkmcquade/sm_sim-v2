@@ -11,6 +11,7 @@ import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert.jsx";
 import { UserContext } from "../context/UserContext.js";
+import { getTotalValue } from "../utils/getTotalValue.js";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -26,13 +27,12 @@ export default function Transaction() {
     state,
   } = usePurchaseReducer(transactionType);
 
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const { confirmed, quantity, action, loading, error } = state;
   const { quote } = useQuote(id);
   const [alignment, setAlignment] = useState(transactionType);
-  const [balance, setBalance] = useState(0);
   const [shares, setShares] = useState(0);
-
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { balance } = currentUser;
 
   useEffect(() => {
     //fetch most recent balance
@@ -46,7 +46,7 @@ export default function Transaction() {
           },
         });
         const { data } = await response.json();
-        setBalance(data.balance);
+        setCurrentUser({ ...currentUser, balance: data.balance });
 
         const numOfShares = data.holdings.reduce(
           (accumulator, currentValue) => {
@@ -111,10 +111,12 @@ export default function Transaction() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
+        const newTotal = await getTotalValue(parsed.holdings);
         const newUserObj = {
           ...currentUser,
           holdings: parsed.holdings,
           balance: parsed.balance,
+          total: newTotal,
         };
         setCurrentUser(newUserObj);
         success();
