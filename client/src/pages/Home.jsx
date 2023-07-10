@@ -79,8 +79,9 @@ const GreetingHead = styled.h1`
   margin: 1rem 0;
   color: #e5e9f0;
 `;
-const GreetingText = styled.h3`
+const GreetingText = styled.h2`
   margin: 1rem 0;
+  font-size: 1rem;
   line-height: 2;
   max-width: 80vw;
 `;

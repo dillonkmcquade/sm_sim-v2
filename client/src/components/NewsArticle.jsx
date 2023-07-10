@@ -8,7 +8,7 @@ export default function NewsArticle({ article }) {
             <Publisher src={article.publisher.logo_url} />
             <Title>{article.title}</Title>
           </div>
-          <ArticleImage src={article.image_url} />
+          <ArticleImage src={article.image_url} alt={article.description} />
         </ArticleMain>
         <hr />
         <ArticleFooter>
