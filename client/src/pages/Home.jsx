@@ -70,7 +70,7 @@ const Hero = styled.div`
   text-align: center;
   height: 100vh;
   background-image: linear-gradient(to bottom, rgba(117, 19, 93, 0.73), #000000),
-    url("./bob-ghost-ZmLXBRfjSpo-unsplash.jpg");
+    url("./dollar-bills-compressed.jpg");
   background-size: contain;
 `;
 
