@@ -93,7 +93,7 @@ export default function StockDetails() {
           )}
         </IconButton>
       </TickerName>
-      <CurrentPrice color={quote.d > 0 ? "#027326" : "#b5050e"}>
+      <CurrentPrice color={quote.d > 0 ? "#027326" : "#e80e19"}>
         {quote.c.toLocaleString("en-US", {
           style: "currency",
           currency: "USD",

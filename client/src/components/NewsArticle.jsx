@@ -5,7 +5,7 @@ export default function NewsArticle({ article }) {
       <Wrapper>
         <ArticleMain>
           <div>
-            <Publisher src={article.publisher.logo_url} />
+            <Publisher src={article.publisher.logo_url} alt="Publisher logo" />
             <Title>{article.title}</Title>
           </div>
           <ArticleImage src={article.image_url} alt={article.description} />
@@ -46,7 +46,7 @@ const ArticleImage = styled.img`
 `;
 const Publisher = styled.img`
   height: 30px;
-  width: 60px;
+  object-fit: cover;
   margin-bottom: 1rem;
 `;
 

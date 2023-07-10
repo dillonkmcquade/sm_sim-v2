@@ -6,7 +6,10 @@ export default function LineChart({ id, data, small }) {
   const { width } = useContext(WidthContext);
   const format = useMemo(() => {
     return data.c.map((idx, index) => {
-      return { x: new Date(data.t[index]), y: idx };
+      return {
+        x: new Date(data.t[index] * 1000),
+        y: idx,
+      };
     });
   }, [data]);
 
@@ -24,7 +27,6 @@ export default function LineChart({ id, data, small }) {
         }
         enableGridX={false}
         enableGridY={false}
-        enableSlices="x"
         enableArea={true}
         curve="monotoneX"
         xScale={{ type: "point" }}
@@ -71,6 +73,7 @@ export default function LineChart({ id, data, small }) {
             itemHeight: 20,
             symbolSize: 12,
             symbolShape: "circle",
+            itemTextColor: "#ffffff",
             symbolBorderColor: "rgba(0, 0, 0, .5)",
             effects: [
               {
