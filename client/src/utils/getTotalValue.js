@@ -1,3 +1,6 @@
+//return invested value, calculated from user holdings
+//quantity and price derived from holdings array in DB
+//price = purchase price
 export const getInvestedValue = (holdings) => {
   const investedValue = holdings.reduce((accumulator, currentValue) => {
     return accumulator + Number(currentValue.quantity) * currentValue.price;
@@ -5,6 +8,7 @@ export const getInvestedValue = (holdings) => {
   return investedValue;
 };
 
+//create object containing {ticker: price} combinations
 const getPrices = async (holdings) => {
   const uniques = {};
   holdings.forEach((holding) => {
@@ -33,6 +37,7 @@ const getPrices = async (holdings) => {
   return uniques;
 };
 
+//returns total value of holdings
 export async function getTotalValue(holdings) {
   const prices = await getPrices(holdings);
 

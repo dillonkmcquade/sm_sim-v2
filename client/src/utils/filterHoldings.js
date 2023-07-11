@@ -1,3 +1,5 @@
+//Filter user holdings down to {ticker, quantity} array
+//
 export const getUniques = (data) => {
   const map = {};
   data.forEach((item) => {

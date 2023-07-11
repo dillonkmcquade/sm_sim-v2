@@ -28,6 +28,8 @@ export default function StockDetails() {
   const { quote } = useQuote(id);
   const { data, loading, state, currentDay, dispatch } = useHistoricalData(id);
   const { news, isLoadingNews } = useNewsData(id);
+
+  //Context
   const { width } = useContext(WidthContext);
   const { currentUser, setCurrentUser } = useContext(UserContext);
 

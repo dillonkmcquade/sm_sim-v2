@@ -1,3 +1,4 @@
+//For making debounce work in react
 import { useRef, useMemo, useEffect } from "react";
 import { debounce } from "../utils/debounce.js";
 

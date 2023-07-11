@@ -1,3 +1,6 @@
+//Fetch historical data given the specified date range, changes based on user selected range toggle
+//Range options are defined in reducer below
+
 import { useEffect, useState, useReducer } from "react";
 
 const currentTime = Date.now() / 1000;

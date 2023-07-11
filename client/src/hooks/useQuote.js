@@ -1,3 +1,5 @@
+//Fetch latest quote of specified ticker symbol, cached in sessionstorage
+
 import { useEffect, useState } from "react";
 export default function useQuote(ticker) {
   const [quote, setQuote] = useState(() => {

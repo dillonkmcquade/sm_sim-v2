@@ -1,3 +1,5 @@
+//Fetch news related to specified ticker symbol
+
 import { useEffect, useState } from "react";
 
 export default function useTickerNewsData(ticker) {
