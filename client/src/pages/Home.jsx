@@ -88,6 +88,9 @@ const GreetingHead = styled.h1`
   font-size: 2.25rem;
   margin: 1rem 0;
   color: #e5e9f0;
+  @media (min-width: 500px) {
+    font-size: 2.4rem;
+  }
 `;
 const GreetingText = styled.h2`
   margin: 1rem 0;
