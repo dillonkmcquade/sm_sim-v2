@@ -29,7 +29,7 @@ server
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
-    res.header("method", "GET, POST, PATCH, DELETE");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
     next();
   })
   .get("/getTickers", getTickers)
