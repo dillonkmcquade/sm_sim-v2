@@ -1,6 +1,5 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import Slide from "react-reveal/Slide";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Button from "../components/Button";
@@ -20,35 +19,31 @@ export default function Home() {
         </Link>
       </Hero>
       <ResearchStocks>
-        <Slide bottom>
-          <GreetingHead>Research up to 21,000 different stocks</GreetingHead>
-          <GreetingText>
-            Get real market data, analyze and compare stocks, and learn about
-            publicly traded companies
-          </GreetingText>
-          <Link to="/research">
-            <Button>Research</Button>
-          </Link>
-        </Slide>
+        <GreetingHead>Research up to 21,000 different stocks</GreetingHead>
+        <GreetingText>
+          Get real market data, analyze and compare stocks, and learn about
+          publicly traded companies
+        </GreetingText>
+        <Link to="/research">
+          <Button>Research</Button>
+        </Link>
       </ResearchStocks>
       <StackedCoins>
-        <Slide bottom>
-          <GreetingHead>Create an account</GreetingHead>
-          <GreetingText>
-            Track your portfolio, purchases, and sales by creating an account
-          </GreetingText>
-          <Button
-            handler={() =>
-              loginWithRedirect({
-                authorizationParams: {
-                  screen_hint: "signup",
-                },
-              })
-            }
-          >
-            Sign up
-          </Button>
-        </Slide>
+        <GreetingHead>Create an account</GreetingHead>
+        <GreetingText>
+          Track your portfolio, purchases, and sales by creating an account
+        </GreetingText>
+        <Button
+          handler={() =>
+            loginWithRedirect({
+              authorizationParams: {
+                screen_hint: "signup",
+              },
+            })
+          }
+        >
+          Sign up
+        </Button>
       </StackedCoins>
     </Wrapper>
   );
