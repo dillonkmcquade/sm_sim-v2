@@ -1,7 +1,8 @@
-import { Alert } from "@mui/material";
+import { Alert as AlertComponent } from "@mui/material";
+import { styled } from "styled-components";
 export default function Alert({ severity, children }) {
   return (
-    <AlertComponent
+    <MyAlert
       severity={severity}
       sx={{
         backgroundColor:
@@ -9,11 +10,11 @@ export default function Alert({ severity, children }) {
       }}
     >
       {children}
-    </AlertComponent>
+    </MyAlert>
   );
 }
 
-const AlertComponent = styled(Alert)`
+const MyAlert = styled(AlertComponent)`
   margin: 1rem 0;
   width: 100%;
 
