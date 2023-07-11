@@ -18,6 +18,7 @@ import useNewsData from "../hooks/useTickerNewsData";
 import { useDebounce } from "../hooks/useDebounce";
 import { useAuth0 } from "@auth0/auth0-react";
 import { UserContext } from "../context/UserContext";
+import Alert from "../components/Alert";
 
 export default function StockDetails() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function StockDetails() {
 
   //state
   const { range } = state;
+  const [error, setError] = useState("");
   const [isWatched, setIsWatched] = useState(() => {
     if (currentUser) {
       return currentUser.watchList.includes(id);
@@ -70,6 +72,8 @@ export default function StockDetails() {
     if (isAuthenticated) {
       setIsWatched(!isWatched);
       debouncedUpdateWatch();
+    } else {
+      setError("Must be logged in to use this feature");
     }
   };
 
@@ -78,6 +82,15 @@ export default function StockDetails() {
     currentDay === 6 || currentDay === 0
       ? ["1M", "3M", "6M"]
       : ["1D", "1W", "1M", "3M", "6M"];
+
+  const handleClick = (action) => {
+    setError("");
+    if (isAuthenticated) {
+      navigate(`/transaction/${action}/${id}`);
+    } else {
+      setError("Must be logged in to use these features");
+    }
+  };
 
   return !quote ? (
     <Wrapper>
@@ -112,6 +125,11 @@ export default function StockDetails() {
         </SecondaryText>
       </CurrentPrice>
 
+      {error && (
+        <Alert severity="warning" sx={{ margin: "0 auto" }}>
+          {error}
+        </Alert>
+      )}
       <ChartWrapper>
         {!data || loading ? (
           <CircularProgress sx={{ color: "#027326" }} />
@@ -133,11 +151,7 @@ export default function StockDetails() {
       </RangeToggle>
 
       <ButtonContainer width={width}>
-        <Button
-          bradius="4px"
-          disabled={currentUser !== null ? false : true}
-          handler={() => navigate(`/transaction/buy/${id}`)}
-        >
+        <Button bradius="4px" handler={() => handleClick("buy")}>
           Buy
         </Button>
         <Button
@@ -147,8 +161,7 @@ export default function StockDetails() {
           hoverbg="white"
           bradius="4px"
           border="1px solid white"
-          disabled={currentUser !== null ? false : true}
-          handler={() => navigate(`/transaction/sell/${id}`)}
+          handler={() => handleClick("sell")}
         >
           Sell
         </Button>
