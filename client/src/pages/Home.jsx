@@ -26,7 +26,7 @@ export default function Home() {
       </Hero>
       <ResearchStocks>
         <Slide bottom>
-          <GreetingHead>Research up to 17,000 different stocks</GreetingHead>
+          <GreetingHead>Research up to 21,000 different stocks</GreetingHead>
           <GreetingText>
             Get real market data, analyze and compare stocks, and learn about
             publicly traded companies
