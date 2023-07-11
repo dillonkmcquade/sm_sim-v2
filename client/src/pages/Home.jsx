@@ -77,6 +77,7 @@ const Hero = styled.div`
     url("https://ik.imagekit.io/qeom7wzmz/dollar-bills-compressed.jpg?updatedAt=1689104589308");
   background-size: contain;
   width: 100%;
+  animation: none;
   @media (min-width: 500px) {
     background-size: cover;
   }
@@ -109,6 +110,7 @@ const StackedCoins = styled.div`
     url("https://ik.imagekit.io/qeom7wzmz/stackedCoins.jpg?updatedAt=1689105014239");
   background-size: contain;
   background-repeat: no-repeat;
+  animation: none;
   @media (min-width: 500px) {
     background-size: cover;
   }
@@ -130,6 +132,7 @@ const ResearchStocks = styled.div`
     ),
     url("./candleChart.avif");
   background-size: contain;
+  animation: none;
   @media (min-width: 500px) {
     background-size: cover;
   }
