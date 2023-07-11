@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Slide from "react-reveal/Slide";
-import Fade from "react-reveal/Fade";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Button from "../components/Button";
@@ -11,18 +10,14 @@ export default function Home() {
   return (
     <Wrapper>
       <Hero>
-        <Fade>
-          <GreetingHead>
-            Practice your investing skills without risk
-          </GreetingHead>
-          <GreetingText>
-            Research, buy, and sell stocks while tracking your portfolio. Use
-            real-life data to practice your investing skills at no risk!
-          </GreetingText>
-          <Link to="/research">
-            <Button>Get Started</Button>
-          </Link>
-        </Fade>
+        <GreetingHead>Practice your investing skills without risk</GreetingHead>
+        <GreetingText>
+          Research, buy, and sell stocks while tracking your portfolio. Use
+          real-life data to practice your investing skills at no risk!
+        </GreetingText>
+        <Link to="/research">
+          <Button>Get Started</Button>
+        </Link>
       </Hero>
       <ResearchStocks>
         <Slide bottom>
