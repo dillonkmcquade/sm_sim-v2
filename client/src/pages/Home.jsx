@@ -74,7 +74,7 @@ const Hero = styled.div`
   text-align: center;
   height: 100vh;
   background-image: linear-gradient(to bottom, rgba(117, 19, 93, 0.73), #000000),
-    url("./dollar-bills-compressed.jpg");
+    url("https://ik.imagekit.io/qeom7wzmz/dollar-bills-compressed.jpg?updatedAt=1689104589308");
   background-size: contain;
   width: 100%;
   @media (min-width: 500px) {
