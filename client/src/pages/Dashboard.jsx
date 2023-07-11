@@ -60,7 +60,7 @@ export default function Dashboard() {
 
   return !currentUser ? (
     <Wrapper>
-      <CircularProgress sx={{ color: "#027326" }} />
+      <CircularProgress sx={{ color: "#027326", margin: "auto" }} />
     </Wrapper>
   ) : (
     <Wrapper>
