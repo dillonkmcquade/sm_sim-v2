@@ -9,9 +9,7 @@ const { sellStock } = require("./handlers/sellStock");
 const { toggleWatchList } = require("./handlers/toggleWatchList");
 const { updateUser } = require("./handlers/updateUser");
 const { deleteUser } = require("./handlers/deleteUser");
-// if (process.env.NODE_ENV === "development") {
-//   require("dotenv").config();
-// }
+require("dotenv").config();
 
 const server = express();
 
