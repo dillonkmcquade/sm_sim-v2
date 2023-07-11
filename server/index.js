@@ -1,8 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
 const { auth } = require("express-oauth2-jwt-bearer");
-const { getTickers } = require("./handlers/getTickers");
-const { getTickerById } = require("./handlers/getTickerById");
 const { queryTickerByName } = require("./handlers/queryTickerByName");
 const { createUser } = require("./handlers/createUser");
 const { getUser } = require("./handlers/getUser");
@@ -11,7 +9,9 @@ const { sellStock } = require("./handlers/sellStock");
 const { toggleWatchList } = require("./handlers/toggleWatchList");
 const { updateUser } = require("./handlers/updateUser");
 const { deleteUser } = require("./handlers/deleteUser");
-//require("dotenv").config();
+// if (process.env.NODE_ENV === "development") {
+//   require("dotenv").config();
+// }
 
 const server = express();
 
@@ -32,8 +32,6 @@ server
     res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
     next();
   })
-  .get("/getTickers", getTickers)
-  .get("/getTickers/:id", getTickerById)
   .get("/search", queryTickerByName)
 
   //Auth required
