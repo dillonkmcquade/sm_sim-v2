@@ -50,10 +50,6 @@ export default function Home() {
 }
 const Wrapper = styled.div`
   width: 100vw;
-  @media (min-width: 500px) {
-    max-width: 1400px;
-    margin: 0 auto;
-  }
 `;
 
 const Hero = styled.div`
