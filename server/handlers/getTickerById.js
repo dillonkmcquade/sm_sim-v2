@@ -24,7 +24,6 @@ const getTickerById = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });
-    console.error(error.message);
   }
   client.close();
 };

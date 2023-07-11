@@ -37,7 +37,6 @@ const createUser = async (req, res) => {
       data: newUser,
     });
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ status: 500, message: "Server error" });
   } finally {
     client.close();
