@@ -106,7 +106,7 @@ const StackedCoins = styled.div`
       #000000,
       rgba(191, 237, 204, 0.53)
     ),
-    url("./stackedCoins.jpg");
+    url("https://ik.imagekit.io/qeom7wzmz/stackedCoins.jpg?updatedAt=1689105014239");
   background-size: contain;
   background-repeat: no-repeat;
   @media (min-width: 500px) {
