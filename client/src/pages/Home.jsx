@@ -77,6 +77,7 @@ const Hero = styled.div`
     url("https://ik.imagekit.io/qeom7wzmz/dollar-bills-compressed.jpg?updatedAt=1689104589308");
   background-size: contain;
   width: 100%;
+  padding: 0 1rem;
   animation: none;
   @media (min-width: 500px) {
     background-size: cover;
@@ -84,7 +85,7 @@ const Hero = styled.div`
 `;
 
 const GreetingHead = styled.h1`
-  font-size: 2.4rem;
+  font-size: 2.25rem;
   margin: 1rem 0;
   color: #e5e9f0;
 `;
