@@ -11,7 +11,7 @@ const { sellStock } = require("./handlers/sellStock");
 const { toggleWatchList } = require("./handlers/toggleWatchList");
 const { updateUser } = require("./handlers/updateUser");
 const { deleteUser } = require("./handlers/deleteUser");
-require("dotenv").config();
+//require("dotenv").config();
 
 const server = express();
 
