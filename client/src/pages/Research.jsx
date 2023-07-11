@@ -90,43 +90,43 @@ export default function Research() {
   return (
     <Wrapper>
       <Title>Search Stocks</Title>
-      <SearchForm onSubmit={(event) => event.preventDefault()}>
-        <WhiteBorderTextField
-          id="searchField"
-          variant="outlined"
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          value={inputText}
-          type="text"
-          size="small"
-          autoFocus={true}
-          InputProps={{
-            startAdornment: <SearchIcon />,
-            endAdornment: loading ? (
-              <CircularProgress size="16px" sx={{ color: "white" }} />
-            ) : (
-              inputText && (
-                <IconButton onClick={clear}>
-                  <ClearIcon size="16px" sx={{ color: "white" }} />
-                </IconButton>
-              )
-            ),
-          }}
-          label="Search"
-        />
-        {results &&
-          results.map((result, index) => (
-            <SearchResult
-              key={Math.random()}
-              tabIndex={0}
-              onMouseOver={() => updateField("isSelected", index)}
-              onClick={() => navigate(result.symbol)}
-            >
-              <Ticker>{result.symbol}</Ticker>
-              <Name>{result.description}</Name>
-            </SearchResult>
-          ))}
-      </SearchForm>
+      <WhiteBorderTextField
+        id="searchField"
+        variant="outlined"
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        value={inputText}
+        type="text"
+        size="small"
+        autoFocus={true}
+        InputProps={{
+          startAdornment: <SearchIcon />,
+          endAdornment: loading ? (
+            <CircularProgress size="16px" sx={{ color: "white" }} />
+          ) : (
+            inputText && (
+              <IconButton onClick={clear}>
+                <ClearIcon size="16px" sx={{ color: "white" }} />
+              </IconButton>
+            )
+          ),
+        }}
+        label="Search"
+      />
+      {results &&
+        results.map((result, index) => (
+          <SearchResult
+            key={Math.random()}
+            tabIndex={0}
+            className={index === isSelected && "selected"}
+            onClick={() => {
+              return navigate(result.symbol);
+            }}
+          >
+            <Ticker>{result.symbol}</Ticker>
+            <Name>{result.description}</Name>
+          </SearchResult>
+        ))}
 
       <div style={{ height: "20vh" }}>
         {error && (
@@ -175,11 +175,6 @@ const Title = styled.h1`
   margin-bottom: 1rem;
 `;
 
-const SearchForm = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
 const WhiteBorderTextField = styled(TextField)`
   width: 100%;
   align-self: center;
@@ -208,12 +203,16 @@ const WhiteBorderTextField = styled(TextField)`
 `;
 
 const SearchResult = styled.div`
+  animation: none;
   margin: 0 auto;
   padding: 0.2rem;
   border-bottom: 1px solid gray;
   cursor: pointer;
   width: 100%;
-  animation: none !important;
+
+  &.selected {
+    background-color: #0f1410;
+  }
 
   &:hover {
     background-color: #0f1410;
