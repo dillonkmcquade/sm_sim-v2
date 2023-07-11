@@ -15,6 +15,7 @@ import StockDetails from "./pages/StockDetails.jsx";
 import Research from "./pages/Research.jsx";
 import Transaction from "./pages/Transaction.jsx";
 import Profile from "./pages/Profile.jsx";
+import { Navigate } from "react-router-dom";
 
 export default function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -55,13 +56,21 @@ export default function App() {
       <Menu />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/research/:id" element={<StockDetails />} />
         <Route path="/research" element={<Research />} />
-        <Route path="/profile" element={<Profile />} />
+
+        {/*Login Required */}
+        <Route
+          path="/dashboard"
+          element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/profile"
+          element={isAuthenticated ? <Profile /> : <Navigate to="/" />}
+        />
         <Route
           path="/transaction/:transactionType/:id"
-          element={<Transaction />}
+          element={isAuthenticated ? <Transaction /> : <Navigate to="/" />}
         />
         <Route path="*" element={<h1>404</h1>} />
       </Routes>
