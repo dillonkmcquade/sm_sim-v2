@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://sm-sim.onrender.com",
   "dependencies": {
     "@auth0/auth0-react": "^2.1.1",
     "@emotion/react": "^11.11.1",
@@ -24,8 +23,9 @@
     "styled-components": "6.0.0-rc.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "NODE_ENV=production react-scripts start",
+    "start-dev": "NODE_ENV=development react-scripts start",
+    "build": "NODE_ENV=production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
