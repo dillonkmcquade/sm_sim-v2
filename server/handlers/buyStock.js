@@ -31,6 +31,12 @@ const buyStock = async (req, res) => {
     const newHolding = { ticker: id, quantity, price: currentPrice };
     const amountToSubtract = Number(currentPrice) * quantity;
 
+    if (user.balance < amountToSubtract) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Insufficient funds" });
+    }
+
     const update = await users.updateOne(
       { _id },
       { $inc: { balance: -amountToSubtract }, $push: { holdings: newHolding } }
