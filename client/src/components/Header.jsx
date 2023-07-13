@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { IconContext } from "react-icons";
+import MenuIcon from "@mui/icons-material/Menu";
 import { MenuContext } from "../context/MenuContext";
 import { useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -11,17 +10,18 @@ export default function Header() {
   const { isAuthenticated } = useAuth0();
   return (
     <Wrapper>
-      <IconContext.Provider value={{ color: "white", size: "36px" }}>
-        <NavContainer>
-          <Logo
-            to={isAuthenticated ? "/dashboard" : "/"}
-            onClick={() => menuVisible && setMenuVisible(false)}
-          >
-            MarketSim
-          </Logo>
-          <Hamburger onClick={() => setMenuVisible(!menuVisible)} />
-        </NavContainer>
-      </IconContext.Provider>
+      <NavContainer>
+        <Logo
+          to={isAuthenticated ? "/dashboard" : "/"}
+          onClick={() => menuVisible && setMenuVisible(false)}
+        >
+          MarketSim
+        </Logo>
+        <Hamburger
+          fontSize="medium"
+          onClick={() => setMenuVisible(!menuVisible)}
+        />
+      </NavContainer>
     </Wrapper>
   );
 }
@@ -51,6 +51,9 @@ const Logo = styled(Link)`
   color: white;
 `;
 
-const Hamburger = styled(GiHamburgerMenu)`
+const Hamburger = styled(MenuIcon)`
   cursor: pointer;
+  &:active {
+    transform: rotateX(180);
+  }
 `;
