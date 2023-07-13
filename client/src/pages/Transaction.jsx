@@ -90,6 +90,7 @@ export default function Transaction() {
   //changing quantity via number input
   const handleChange = (event) => {
     if (event.target.value * quote.c > balance) {
+      errorMessage("Insufficient funds");
       return;
     } else {
       updateQuantity(event.target.value);
