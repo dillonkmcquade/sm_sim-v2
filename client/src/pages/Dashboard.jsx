@@ -66,7 +66,7 @@ export default function Dashboard() {
     <Wrapper>
       <Title>
         {" "}
-        Hello, <Name>{currentUser.name.split(" ")[0]}</Name>!
+        Hello, <Name>{currentUser.nickname || currentUser.name}</Name>!
       </Title>
       <PortfolioValue>
         {Number(currentUser.total + currentUser.balance).toLocaleString(
