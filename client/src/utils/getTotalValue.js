@@ -21,7 +21,8 @@ const getPrices = async (holdings) => {
   try {
     for await (const key of keys) {
       const cached = window.sessionStorage.getItem(key);
-      if (cached) {
+      if (cached && Date.now() / 1000 - JSON.parse(cached).t < 300) {
+        //Check for stale data
         uniques[key] = JSON.parse(cached).c;
       } else {
         const response = await fetch(

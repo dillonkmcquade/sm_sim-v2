@@ -18,8 +18,8 @@ export default function Research() {
     useSearchReducer();
   const { results, error, loading, inputText, isSelected } = state;
 
-  const recentlyViewed = Object.keys(window.localStorage).filter(
-    (key) => key !== "account"
+  const recentlyViewed = Object.keys(window.sessionStorage).filter(
+    (key) => key !== "user"
   );
   const navigate = useNavigate();
 

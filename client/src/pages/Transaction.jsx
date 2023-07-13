@@ -159,7 +159,7 @@ export default function Transaction() {
         type="number"
         id="qty"
         min={1}
-        max={action === "sell" && shares}
+        max={action === "sell" ? shares : undefined}
         onChange={handleChange}
       />
       <ToggleButtonGroup
