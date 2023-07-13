@@ -53,7 +53,4 @@ const Logo = styled(Link)`
 
 const Hamburger = styled(MenuIcon)`
   cursor: pointer;
-  &:active {
-    transform: rotateX(180);
-  }
 `;
