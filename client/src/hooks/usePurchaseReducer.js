@@ -13,7 +13,7 @@ const initFunc = (transactionType) => {
 const reducer = (state, action) => {
   switch (action.type) {
     case "quantity":
-      return { ...state, quantity: action.payload };
+      return { ...state, quantity: action.payload, error: "" };
     case "loading":
       return { ...state, loading: true, error: "" };
     case "success":

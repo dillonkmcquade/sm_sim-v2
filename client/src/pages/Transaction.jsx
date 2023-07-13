@@ -92,12 +92,18 @@ export default function Transaction() {
     if (event.target.value * quote.c > balance) {
       return;
     } else {
-      updateQuantity(Number(event.target.value));
+      updateQuantity(event.target.value);
     }
   };
 
   //patch to /${action}/:id endpoint
   const submit = async () => {
+    if (quantity < 1) {
+      return errorMessage("Invalid quantity");
+    }
+    if (action === "sell" && quantity > shares) {
+      return errorMessage("You cannot sell this many shares");
+    }
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
@@ -109,7 +115,7 @@ export default function Transaction() {
         },
         body: JSON.stringify({
           _id: user.sub, //user UUID
-          quantity,
+          quantity: Number(quantity),
           currentPrice: quote.c,
         }),
       });
@@ -152,7 +158,7 @@ export default function Transaction() {
         type="number"
         id="qty"
         min={1}
-        max={action === "sell" ? shares : Math.floor(balance / quote.c)}
+        max={action === "sell" && shares}
         onChange={handleChange}
       />
       <ToggleButtonGroup
