@@ -1,15 +1,9 @@
-const { MongoClient } = require("mongodb");
-require("dotenv").config();
-const { MONGO_URI, DB_NAME } = process.env;
+import * as mongodb from "mongodb";
+import { Response, Request } from "express";
+import { collections } from "../services/database.service";
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
-const updateUser = async (req, res) => {
+export const updateUser = async (req: Request, res: Response) => {
   const { _id } = req.params;
-  const client = new MongoClient(MONGO_URI, options);
   if (!_id) {
     return res.status(400).json({ status: 400, message: "Missing client ID" });
   }
@@ -22,11 +16,11 @@ const updateUser = async (req, res) => {
   }
 
   try {
-    await client.connect();
-    const database = client.db(DB_NAME);
-    const users = database.collection("users");
-
-    const update = await users.updateOne({ _id }, { $set: req.body });
+    const { users } = collections;
+    const update = await users.updateOne(
+      { _id: new mongodb.ObjectId(_id) },
+      { $set: req.body }
+    );
     if (update.matchedCount === 0 || update.modifiedCount === 0) {
       return res.status(404).json({
         status: 404,
@@ -34,7 +28,7 @@ const updateUser = async (req, res) => {
       });
     }
 
-    const newUser = await users.findOne({ _id });
+    const newUser = await users.findOne({ _id: new mongodb.ObjectId(_id) });
 
     return res.status(200).json({
       status: 200,
@@ -43,9 +37,5 @@ const updateUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });
-  } finally {
-    client.close();
   }
 };
-
-module.exports = { updateUser };

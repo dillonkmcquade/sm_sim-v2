@@ -1,16 +1,8 @@
-const { MongoClient } = require("mongodb");
-require("dotenv").config();
-const { MONGO_URI, DB_NAME } = process.env;
-
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
-const buyStock = async (req, res) => {
+import { Response, Request } from "express";
+import { collections } from "../services/database.service";
+export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { _id, quantity, currentPrice } = req.body;
-  const client = new MongoClient(MONGO_URI, options);
   if (!id || !currentPrice || !_id || !id) {
     return res.status(400).json({
       status: 400,
@@ -20,9 +12,7 @@ const buyStock = async (req, res) => {
     });
   }
   try {
-    await client.connect();
-    const database = client.db(DB_NAME);
-    const users = database.collection("users");
+    const { users } = collections;
     const user = await users.findOne({ _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
@@ -56,9 +46,5 @@ const buyStock = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });
-  } finally {
-    client.close();
   }
 };
-
-module.exports = { buyStock };

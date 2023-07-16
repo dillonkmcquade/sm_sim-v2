@@ -1,22 +1,12 @@
-const { MongoClient } = require("mongodb");
-require("dotenv").config();
-const { MONGO_URI, DB_NAME } = process.env;
-
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
-const createUser = async (req, res) => {
+import { Response, Request } from "express";
+import { collections } from "../services/database.service";
+export const createUser = async (req: Request, res: Response) => {
   const { user } = req.body;
-  const client = new MongoClient(MONGO_URI, options);
   if (!user) {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
-    await client.connect();
-    const database = client.db(DB_NAME);
-    const users = database.collection("users");
+    const { users } = collections;
     const duplicate = await users.findOne({ _id: user.sub });
     if (duplicate) {
       return res
@@ -38,9 +28,5 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });
-  } finally {
-    client.close();
   }
 };
-
-module.exports = { createUser };

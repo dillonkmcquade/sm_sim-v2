@@ -1,10 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node .",
+    "build": "tsc",
+    "dev": "nodemon ."
   },
   "author": "Dillon McQuade",
   "license": "MIT",
@@ -17,6 +18,10 @@
     "node": "^20.4.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@types/express": "^4.17.17",
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^20.4.2",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.1.6"
   }
 }
