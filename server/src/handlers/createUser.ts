@@ -1,3 +1,4 @@
+"use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 export const createUser = async (req: Request, res: Response) => {
