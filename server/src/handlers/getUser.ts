@@ -12,7 +12,7 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     const { users } = collections;
     if (!users) {
-      return;
+      return res.status(500).json({ status: 500, message: "Database error" });
     }
     const query = { sub: id };
     const user = await users.findOne(query);

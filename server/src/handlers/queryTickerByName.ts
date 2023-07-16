@@ -11,7 +11,7 @@ export const queryTickerByName = async (req: Request, res: Response) => {
   }
   const { tickers } = collections;
   if (!tickers) {
-    return;
+    return res.status(500).json({ status: 500, message: "Database error" });
   }
   try {
     const agg = [

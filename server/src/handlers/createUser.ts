@@ -9,7 +9,7 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     const { users } = collections;
     if (!users) {
-      return;
+      return res.status(500).json({ status: 500, message: "Database error" });
     }
     const duplicate = await users.findOne({ _id: user.sub });
     if (duplicate) {

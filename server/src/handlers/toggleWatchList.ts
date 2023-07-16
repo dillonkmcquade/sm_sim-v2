@@ -13,7 +13,9 @@ export const toggleWatchList = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
-    if (!users) return;
+    if (!users) {
+      return res.status(500).json({ status: 500, message: "Database error" });
+    }
     const user = await users.findOne({ _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });

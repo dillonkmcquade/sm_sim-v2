@@ -11,7 +11,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { users } = collections;
     if (!users) {
-      return;
+      return res.status(500).json({ status: 500, message: "Database error" });
     }
     const update = await users.deleteOne({ _id });
     if (update.deletedCount === 0) {

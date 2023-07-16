@@ -2,7 +2,10 @@
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 
-export const buyStock = async (req: Request, res: Response) => {
+export const buyStock = async (
+  req: Request,
+  res: Response
+): Promise<Response | undefined> => {
   const { id } = req.params;
   const { _id, quantity, currentPrice } = req.body;
   if (!id || !currentPrice || !_id || !id) {
@@ -16,7 +19,7 @@ export const buyStock = async (req: Request, res: Response) => {
   try {
     const { users } = collections;
     if (!users) {
-      return;
+      return res.status(500).json({ status: 500, message: "Database error" });
     }
     const user = await users.findOne({ _id });
     if (!user) {

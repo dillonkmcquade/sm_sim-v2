@@ -16,7 +16,7 @@ export const sellStock = async (req: Request, res: Response) => {
   try {
     const { users } = collections;
     if (!users) {
-      return;
+      return res.status(500).json({ status: 500, message: "Database error" });
     }
     const user = await users.findOne({ _id });
     if (!user) {
