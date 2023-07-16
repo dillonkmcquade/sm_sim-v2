@@ -41,10 +41,11 @@ export const buyStock = async (req: Request, res: Response) => {
         .status(400)
         .json({ status: 400, message: "Could not update user holdings" });
     }
+    user.holdings.push(newHolding);
     return res.status(200).json({
       status: 200,
       message: "stock purchased successfully",
-      holdings: [...user.holdings, newHolding],
+      holdings: user.holdings,
       balance: user.balance - amountToSubtract,
     });
   } catch (error) {
