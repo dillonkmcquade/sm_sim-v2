@@ -14,6 +14,9 @@ export const sellStock = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
+    if (!users) {
+      return;
+    }
     const user = await users.findOne({ _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
@@ -38,12 +41,11 @@ export const sellStock = async (req: Request, res: Response) => {
         .status(400)
         .json({ status: 400, message: "Could not update user holdings" });
     }
-    const { balance, holdings } = await users.findOne({ _id });
     return res.status(200).json({
       status: 200,
-      message: "Stock successfully sold",
-      balance,
-      holdings,
+      message: "stock purchased successfully",
+      holdings: [...user.holdings, newTransaction],
+      balance: user.balance + amountToSubtract,
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });

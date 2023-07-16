@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 
 import { connectToDatabase } from "./services/database.service";
 import { auth } from "express-oauth2-jwt-bearer";

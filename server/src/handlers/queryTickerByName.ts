@@ -8,8 +8,11 @@ export const queryTickerByName = async (req: Request, res: Response) => {
       .status(400)
       .json({ status: 400, message: "No query string given" });
   }
+  const { tickers } = collections;
+  if (!tickers) {
+    return;
+  }
   try {
-    const { tickers } = collections;
     const agg = [
       {
         $search: {

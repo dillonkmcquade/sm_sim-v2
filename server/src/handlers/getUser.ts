@@ -10,6 +10,9 @@ export const getUser = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
+    if (!users) {
+      return;
+    }
     const query = { sub: id };
     const user = await users.findOne(query);
     if (!user) {
@@ -19,7 +22,7 @@ export const getUser = async (req: Request, res: Response) => {
       status: 200,
       data: user,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ status: 500, message: error.message });
   }
 };

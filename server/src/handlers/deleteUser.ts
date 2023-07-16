@@ -9,6 +9,9 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   try {
     const { users } = collections;
+    if (!users) {
+      return;
+    }
     const update = await users.deleteOne({ _id });
     if (update.deletedCount === 0) {
       return res.status(404).json({

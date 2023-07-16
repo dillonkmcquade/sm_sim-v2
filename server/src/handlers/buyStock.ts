@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { _id, quantity, currentPrice } = req.body;
@@ -13,6 +14,9 @@ export const buyStock = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
+    if (!users) {
+      return;
+    }
     const user = await users.findOne({ _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
@@ -37,12 +41,11 @@ export const buyStock = async (req: Request, res: Response) => {
         .status(400)
         .json({ status: 400, message: "Could not update user holdings" });
     }
-    const { holdings, balance } = await users.findOne({ _id });
     return res.status(200).json({
       status: 200,
-      message: "Stock purchased successfully",
-      holdings,
-      balance,
+      message: "stock purchased successfully",
+      holdings: [...user.holdings, newHolding],
+      balance: user.balance - amountToSubtract,
     });
   } catch (error) {
     res.status(500).json({ status: 500, message: "Server error" });

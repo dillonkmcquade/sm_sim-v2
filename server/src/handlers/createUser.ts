@@ -7,6 +7,9 @@ export const createUser = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
+    if (!users) {
+      return;
+    }
     const duplicate = await users.findOne({ _id: user.sub });
     if (duplicate) {
       return res

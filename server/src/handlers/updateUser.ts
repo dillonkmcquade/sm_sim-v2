@@ -16,6 +16,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
   try {
     const { users } = collections;
+    if (!users) return;
     const update = await users.updateOne({ sub: _id }, { $set: req.body });
     if (update.matchedCount === 0 || update.modifiedCount === 0) {
       return res.status(404).json({
