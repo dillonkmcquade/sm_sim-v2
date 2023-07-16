@@ -13,18 +13,20 @@ export async function connectToDatabase() {
     process.env.DB_CONN_STRING
   );
 
-  await client.connect();
+  try {
+    await client.connect();
 
-  const db: mongoDB.Db = client.db(process.env.DB_NAME);
+    const db: mongoDB.Db = client.db(process.env.DB_NAME);
 
-  const userCollection: mongoDB.Collection = db.collection("users");
+    const userCollection: mongoDB.Collection = db.collection("users");
 
-  const tickerCollection: mongoDB.Collection = db.collection("tickers");
+    const tickerCollection: mongoDB.Collection = db.collection("tickers");
 
-  collections.users = userCollection;
-  collections.tickers = tickerCollection;
-
-  console.log(
-    `Successfully connected to database: ${db.databaseName} and collection: ${userCollection.collectionName}`
-  );
+    collections.users = userCollection;
+    collections.tickers = tickerCollection;
+    console.log(`Successfully connected to database: ${db.databaseName}`);
+  } catch (error) {
+    console.error(error);
+    client.close();
+  }
 }
