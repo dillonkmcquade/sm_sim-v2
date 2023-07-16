@@ -2,10 +2,7 @@
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 
-export const buyStock = async (
-  req: Request,
-  res: Response
-): Promise<Response | undefined> => {
+export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { _id, quantity, currentPrice } = req.body;
   if (!id || !currentPrice || !_id || !id) {
