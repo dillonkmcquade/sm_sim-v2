@@ -1,4 +1,3 @@
-import * as mongodb from "mongodb";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 
@@ -17,10 +16,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
   try {
     const { users } = collections;
-    const update = await users.updateOne(
-      { _id: new mongodb.ObjectId(_id) },
-      { $set: req.body }
-    );
+    const update = await users.updateOne({ sub: _id }, { $set: req.body });
     if (update.matchedCount === 0 || update.modifiedCount === 0) {
       return res.status(404).json({
         status: 404,
@@ -28,7 +24,7 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const newUser = await users.findOne({ _id: new mongodb.ObjectId(_id) });
+    const newUser = await users.findOne({ sub: _id });
 
     return res.status(200).json({
       status: 200,
