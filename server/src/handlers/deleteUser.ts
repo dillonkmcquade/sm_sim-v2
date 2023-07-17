@@ -23,6 +23,6 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     return res.status(200).json({ status: 200, message: "Account deleted" });
   } catch (error) {
-    res.status(500).json({ status: 500, message: "Server error" });
+    return res.status(500).json({ status: 500, message: "Server error" });
   }
 };

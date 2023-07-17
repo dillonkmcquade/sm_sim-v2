@@ -36,6 +36,6 @@ export const updateUser = async (req: Request, res: Response) => {
       data: newUser,
     });
   } catch (error) {
-    res.status(500).json({ status: 500, message: "Server error" });
+    return res.status(500).json({ status: 500, message: "Server error" });
   }
 };

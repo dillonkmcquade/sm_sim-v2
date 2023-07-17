@@ -48,11 +48,11 @@ export const queryTickerByName = async (req: Request, res: Response) => {
     if (data.length === 0) {
       return res.status(400).json({ status: 400, message: "Not found" });
     }
-    res.status(200).json({
+    return res.status(200).json({
       status: 200,
       results: data,
     });
   } catch (error) {
-    res.status(500).json({ status: 500, message: "Server error" });
+    return res.status(500).json({ status: 500, message: "Server error" });
   }
 };

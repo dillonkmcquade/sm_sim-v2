@@ -24,6 +24,6 @@ export const getUser = async (req: Request, res: Response) => {
       data: user,
     });
   } catch (error: any) {
-    res.status(500).json({ status: 500, message: error.message });
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
