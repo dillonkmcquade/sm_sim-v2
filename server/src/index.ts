@@ -1,9 +1,9 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import { auth } from "express-oauth2-jwt-bearer";
 
 import { connectToDatabase } from "./services/database.service";
-import { auth } from "express-oauth2-jwt-bearer";
 import { queryTickerByName } from "./handlers/queryTickerByName";
 import { createUser } from "./handlers/createUser";
 import { getUser } from "./handlers/getUser";
@@ -16,6 +16,7 @@ import { deleteUser } from "./handlers/deleteUser";
 dotenv.config();
 
 const server = express();
+const PORT = process.env.PORT || 3001;
 
 const jwtCheck = auth({
   audience: "my-api",
@@ -51,8 +52,8 @@ connectToDatabase()
         return res.send("<h1>Does not exist</h1>");
       });
 
-    server.listen(process.env.PORT, () => {
-      console.log("Listening on port %d", process.env.PORT);
+    server.listen(PORT, () => {
+      console.log("Listening on port %d", PORT);
     });
   })
   .catch((error: Error) => {
