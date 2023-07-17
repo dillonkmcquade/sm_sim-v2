@@ -9,6 +9,7 @@ export const collections: {
 export async function connectToDatabase() {
   dotenv.config();
 
+  //Mongo client url cannot be undefined, check before using
   let DB_STRING: string;
   if (process.env.DB_CONN_STRING) {
     DB_STRING = process.env.DB_CONN_STRING;
