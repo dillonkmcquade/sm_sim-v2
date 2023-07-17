@@ -9,7 +9,14 @@ export const collections: {
 export async function connectToDatabase() {
   dotenv.config();
 
-  const client: MongoClient = new MongoClient(process.env.DB_CONN_STRING!);
+  let DB_STRING: string;
+  if (process.env.DB_CONN_STRING) {
+    DB_STRING = process.env.DB_CONN_STRING;
+  } else {
+    throw new Error("DB_CONN_STRING does not exist");
+  }
+
+  const client: MongoClient = new MongoClient(DB_STRING);
 
   await client.connect();
 
