@@ -1,6 +1,6 @@
 //For making debounce work in react
 import { useRef, useMemo, useEffect } from "react";
-import { debounce } from "../utils/debounce.js";
+import { debounce } from "../utils/utils";
 
 export const useDebounce = (callback, t) => {
   const ref = useRef();

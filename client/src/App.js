@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { GlobalStyles } from "./GlobalStyles.js";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { getTotalValue } from "./utils/getTotalValue.js";
+import { getTotalValue } from "./utils/utils";
 import { UserContext } from "./context/UserContext.js";
 
 import Header from "./components/Header.jsx";

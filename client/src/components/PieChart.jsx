@@ -1,5 +1,5 @@
 import { ResponsivePie } from "@nivo/pie";
-import { getUniques } from "../utils/filterHoldings";
+import { getUniques } from "../utils/utils";
 
 export default function PieChart({ data }) {
   //Format data to satisfy nivo
@@ -11,7 +11,7 @@ export default function PieChart({ data }) {
         value: key.quantity,
         label: key.ticker,
         color: `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(
-          Math.random() * 255
+          Math.random() * 255,
         )}, ${Math.floor(Math.random() * 255)})`,
       };
     });

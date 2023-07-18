@@ -11,7 +11,7 @@ import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert.jsx";
 import { UserContext } from "../context/UserContext.js";
-import { getTotalValue } from "../utils/getTotalValue.js";
+import { getTotalValue } from "../utils/utils";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();

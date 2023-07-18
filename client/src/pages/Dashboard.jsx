@@ -3,8 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-import { getTotalValue, getInvestedValue } from "../utils/getTotalValue";
-import { getUniques } from "../utils/filterHoldings";
+import { getTotalValue, getInvestedValue, getUniques } from "../utils/utils";
 
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
@@ -31,7 +30,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
         const { data } = await response.json();
         if (data.holdings.length === 0) return;
@@ -71,7 +70,7 @@ export default function Dashboard() {
       <PortfolioValue>
         {Number(currentUser.total + currentUser.balance).toLocaleString(
           "en-US",
-          { style: "currency", currency: "USD" }
+          { style: "currency", currency: "USD" },
         )}
       </PortfolioValue>
       <Profit
