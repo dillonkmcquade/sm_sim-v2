@@ -11,13 +11,12 @@ import NewsArticle from "../components/NewsArticle";
 import LineChart from "../components/LineChart";
 import Button from "../components/Button";
 
-import { WidthContext } from "../context/WidthContext";
 import useHistoricalData from "../hooks/useHistoricalData";
 import useQuote from "../hooks/useQuote";
 import useNewsData from "../hooks/useTickerNewsData";
 import { useDebounce } from "../hooks/useDebounce";
 import { useAuth0 } from "@auth0/auth0-react";
-import { UserContext } from "../context/UserContext";
+import { GlobalContent, UserContext } from "../context/UserContext";
 import Alert from "../components/Alert";
 
 export default function StockDetails() {
@@ -26,20 +25,19 @@ export default function StockDetails() {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
 
   //custom hooks
-  const { quote } = useQuote(id);
-  const { data, loading, state, currentDay, dispatch } = useHistoricalData(id);
+  const { quote } = useQuote(id!);
+  const { data, loading, state, currentDay, dispatch } = useHistoricalData(id!);
   const { news, isLoadingNews } = useNewsData(id);
 
   //Context
-  const { width } = useContext(WidthContext);
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
 
   //state
   const { range } = state;
   const [error, setError] = useState("");
   const [isWatched, setIsWatched] = useState(() => {
     if (currentUser) {
-      return currentUser.watchList.includes(id);
+      return currentUser.watchList.includes(id!);
     } else {
       return false;
     }
@@ -55,14 +53,14 @@ export default function StockDetails() {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ _id: user.sub, ticker: id, isWatched }),
+        body: JSON.stringify({ _id: user?.sub, ticker: id, isWatched }),
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
         setCurrentUser({ ...currentUser, watchList: parsed.data });
         return;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
     }
   };
@@ -83,7 +81,7 @@ export default function StockDetails() {
       ? ["1M", "3M", "6M"]
       : ["1D", "1W", "1M", "3M", "6M"];
 
-  const handleClick = (action) => {
+  const handleClick = (action: string) => {
     setError("");
     if (isAuthenticated) {
       navigate(`/transaction/${action}/${id}`);
@@ -126,7 +124,7 @@ export default function StockDetails() {
       </CurrentPrice>
 
       {error && (
-        <Alert severity="warning" sx={{ margin: "0 auto" }}>
+        <Alert severity="warning">
           {error}
         </Alert>
       )}
@@ -134,14 +132,14 @@ export default function StockDetails() {
         {!data || loading ? (
           <CircularProgress sx={{ color: "#027326" }} />
         ) : (
-          <LineChart id={id} data={data} />
+          <LineChart id={id} data={data} small={false} />
         )}
       </ChartWrapper>
 
       <RangeToggle>
         {ranges.map((rangeType) => (
           <RangeOption
-            className={range === rangeType && "active"}
+            className={range === rangeType ? "active" : ""}
             key={rangeType}
             onClick={() => dispatch({ type: rangeType })}
           >
@@ -150,7 +148,7 @@ export default function StockDetails() {
         ))}
       </RangeToggle>
 
-      <ButtonContainer width={width}>
+      <ButtonContainer>
         <Button bradius="4px" handler={() => handleClick("buy")}>
           Buy
         </Button>
@@ -172,7 +170,7 @@ export default function StockDetails() {
         {isLoadingNews || !news ? (
           <CircularProgress />
         ) : (
-          news.map((article) => (
+          news.map((article: typeof news[0]) => (
             <NewsArticle article={article} key={article.id} />
           ))
         )}

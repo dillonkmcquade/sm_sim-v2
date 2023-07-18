@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { styled } from "styled-components";
+import { WebTarget, styled } from "styled-components";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { CircularProgress } from "@mui/material";
@@ -10,7 +10,7 @@ import usePurchaseReducer from "../hooks/usePurchaseReducer.js";
 import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert.jsx";
-import { UserContext } from "../context/UserContext.js";
+import { GlobalContent, Holding, UserContext } from "../context/UserContext";
 import { getTotalValue } from "../utils/utils";
 
 export default function Transaction() {
@@ -27,9 +27,9 @@ export default function Transaction() {
     state,
   } = usePurchaseReducer(transactionType);
 
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
   const { confirmed, quantity, action, loading, error } = state;
-  const { quote } = useQuote(id);
+  const { quote } = useQuote(id!);
   const [alignment, setAlignment] = useState(transactionType);
   const [shares, setShares] = useState(0);
   const { balance } = currentUser;
@@ -41,7 +41,7 @@ export default function Transaction() {
       try {
         const accessToken = await getAccessTokenSilently();
         const response = await fetch(
-          `${REACT_APP_SERVER_URL}/user/${user.sub}`,
+          `${REACT_APP_SERVER_URL}/user/${user?.sub}`,
           {
             method: "GET",
             headers: {
@@ -57,7 +57,7 @@ export default function Transaction() {
         }
 
         const numOfShares = data.data?.holdings.reduce(
-          (accumulator, currentValue) => {
+          (accumulator: number, currentValue: Holding) => {
             if (currentValue.ticker === id) {
               return accumulator + currentValue.quantity;
             } else {
@@ -73,7 +73,7 @@ export default function Transaction() {
         if (data.data?.balance <= 0) {
           errorMessage("Insufficient funds");
         }
-      } catch (error) {
+      } catch (error: any) {
         errorMessage(error.message);
       }
     };
@@ -83,17 +83,17 @@ export default function Transaction() {
   }, [getAccessTokenSilently, user, id, error]);
 
   //toggling buy/sell buttons
-  const toggleAction = (event, newAlignment) => {
+  const toggleAction = (event: ChangeEvent<HTMLInputElement>, newAlignment: string) => {
     if (newAlignment === "sell" && quantity > shares) {
       updateQuantity(shares);
     }
     setAlignment(newAlignment);
-    changeAction(event.target.value);
+    changeAction(event.target?.value);
   };
 
   //changing quantity via number input
-  const handleChange = (event) => {
-    if (event.target.value * quote.c > balance) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (Number( event.target.value) * quote.c  > balance) {
       errorMessage("Insufficient funds");
       return;
     } else {
@@ -119,7 +119,7 @@ export default function Transaction() {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          _id: user.sub, //user UUID
+          _id: user?.sub, //user UUID
           quantity: Number(quantity),
           currentPrice: quote.c,
         }),
@@ -139,7 +139,7 @@ export default function Transaction() {
           navigate(`/dashboard`);
         }, 1000);
       }
-    } catch (error) {
+    } catch (error: any) {
       errorMessage(error.message);
     }
   };
@@ -247,7 +247,7 @@ const BuyOrSell = styled(ToggleButton)`
     border: 1px solid white;
   }
   &.MuiButtonBase-root.Mui-selected {
-    color: ${(props) => props.selectedcolor};
+    color: ${(props) => props.selectedcolor ? props.selectedcolor : "green"};
     background-color: #1b111c;
   }
 `;

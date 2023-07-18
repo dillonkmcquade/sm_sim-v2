@@ -9,9 +9,15 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useDebounce } from "../hooks/useDebounce.js";
-import TickerCard from "../components/TickerCard.jsx";
-import useSearchReducer from "../hooks/useSearchReducer.js";
+import { useDebounce } from "../hooks/useDebounce";
+import TickerCard from "../components/TickerCard";
+import useSearchReducer from "../hooks/useSearchReducer";
+import { ChangeEventHandler, KeyboardEventHandler } from "react";
+
+interface Result {
+  symbol: string;
+  description: string;
+}
 
 export default function Research() {
   const { startSearch, success, errorMessage, clear, updateField, state } =
@@ -24,7 +30,7 @@ export default function Research() {
   const navigate = useNavigate();
 
   //some nice to have features for selecting w/ keyboard
-  const handleKeyDown = (event) => {
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     switch (event.key) {
       case "Enter": {
         if (results && results.length > 0) {
@@ -54,7 +60,7 @@ export default function Research() {
       default:
         return;
     }
-  };
+  } ;
 
   //query to backend
   const search = async () => {
@@ -70,7 +76,7 @@ export default function Research() {
       } else {
         errorMessage(response.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       errorMessage(error.message);
     }
   };
@@ -78,7 +84,7 @@ export default function Research() {
   //only query backend once typing has stopped 300ms delay
   const debouncedSearch = useDebounce(search, 300);
 
-  const handleChange = (event) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     event.preventDefault();
     updateField("inputText", event.target.value);
 
@@ -106,7 +112,7 @@ export default function Research() {
           ) : (
             inputText && (
               <IconButton onClick={clear}>
-                <ClearIcon size="16px" sx={{ color: "white" }} />
+                <ClearIcon sx={{ color: "white" }} />
               </IconButton>
             )
           ),
@@ -114,11 +120,11 @@ export default function Research() {
         label="Search"
       />
       {results &&
-        results.map((result, index) => (
+        results?.map((result: Result, index: number) => (
           <SearchResult
             key={Math.random()}
             tabIndex={0}
-            className={index === isSelected && "selected"}
+            className={index === isSelected ? "selected" : ""}
             onClick={() => {
               return navigate(result.symbol);
             }}
@@ -175,7 +181,7 @@ const Title = styled.h1`
   margin-bottom: 1rem;
 `;
 
-const WhiteBorderTextField = styled(TextField)`
+const WhiteBorderTextField = styled<typeof TextField>(TextField)`
   width: 100%;
   align-self: center;
   & label {
