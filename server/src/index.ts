@@ -32,10 +32,7 @@ connectToDatabase()
       .use(helmet())
       .use(morgan("dev"))
       .use(function (_req, res, next) {
-        res.header(
-          "Access-Control-Allow-Origin",
-          "https://sm-sim.vercel.app/, http://localhost:3000",
-        );
+        res.header("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
         res.header(
           "Access-Control-Allow-Headers",
           "Origin, X-Requested-With, Content-Type, Accept, Authorization",
