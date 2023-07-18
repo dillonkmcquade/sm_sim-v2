@@ -27,7 +27,7 @@ export default function Profile() {
       setLoading();
       const accessToken = await getAccessTokenSilently();
       const response = await fetch(
-        `${REACT_APP_SERVER_URL}/user/update/${currentUser._id}`,
+        `${REACT_APP_SERVER_URL}/user/update/${currentUser.sub}`,
         {
           method: "PATCH",
           headers: {
@@ -35,7 +35,7 @@ export default function Profile() {
             authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
       const { status } = await response.json();
       if (status === 200) {
