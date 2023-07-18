@@ -1,4 +1,18 @@
+import { CSSProperties, ReactNode } from "react";
 import { styled } from "styled-components";
+
+interface Props {
+  handler?: MouseEvent | any;
+  hovercolor?: string;
+  children: ReactNode;
+  bg?: string;
+  hoverbg?: string;
+  color?: string;
+  bradius?: string;
+  border?: string;
+  disabled?: boolean;
+  style?: CSSProperties,
+}
 
 export default function Button({
   handler,
@@ -11,7 +25,7 @@ export default function Button({
   border,
   disabled,
   style,
-}) {
+}: Props) {
   return (
     <StyledButton
       bradius={bradius}
@@ -29,9 +43,9 @@ export default function Button({
   );
 }
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<Props>`
   background: ${(props) =>
-    props.bg ||
+    props.bg ? props.bg : 
     "linear-gradient(90deg,rgba(152, 148, 230, 1) 0%,rgba(121, 9, 119, 1) 100%)"};
   color: ${(props) => props.color || "#000000"};
   font-size: 1.2rem;

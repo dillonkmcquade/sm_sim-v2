@@ -1,7 +1,7 @@
-import LineChart from "../components/LineChart.jsx";
+import LineChart from "../components/LineChart";
 import { styled } from "styled-components";
-import useQuote from "../hooks/useQuote.js";
-import useHistoricalData from "../hooks/useHistoricalData.js";
+import useQuote from "../hooks/useQuote";
+import useHistoricalData from "../hooks/useHistoricalData";
 
 export default function TickerCard({ handler, ticker }) {
   const { quote } = useQuote(ticker);
