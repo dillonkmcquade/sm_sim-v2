@@ -1,6 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+import { ObjectId } from "mongodb";
 export const createUser = async (req: Request, res: Response) => {
   const { user } = req.body;
   if (!user) {
@@ -11,14 +12,14 @@ export const createUser = async (req: Request, res: Response) => {
     if (!users) {
       return res.status(500).json({ status: 500, message: "Database error" });
     }
-    const duplicate = await users.findOne({ _id: user.sub });
+    const duplicate = await users.findOne({ sub: user.sub });
     if (duplicate) {
       return res
         .status(200)
         .json({ status: 200, data: duplicate, message: "User exists" });
     }
     const newUser = {
-      _id: user.sub,
+      _id: new ObjectId(),
       balance: 1000000,
       holdings: [],
       watchList: [],

@@ -13,7 +13,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     if (!users) {
       return res.status(500).json({ status: 500, message: "Database error" });
     }
-    const update = await users.deleteOne({ _id });
+    const update = await users.deleteOne({ sub: _id });
     if (update.deletedCount === 0) {
       return res.status(404).json({
         status: 404,

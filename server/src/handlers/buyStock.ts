@@ -18,7 +18,7 @@ export const buyStock = async (req: Request, res: Response) => {
     if (!users) {
       return res.status(500).json({ status: 500, message: "Database error" });
     }
-    const user = await users.findOne({ _id });
+    const user = await users.findOne({ sub: _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
     }
@@ -33,8 +33,8 @@ export const buyStock = async (req: Request, res: Response) => {
     }
 
     const update = await users.updateOne(
-      { _id },
-      { $inc: { balance: -amountToSubtract }, $push: { holdings: newHolding } }
+      { sub: _id },
+      { $inc: { balance: -amountToSubtract }, $push: { holdings: newHolding } },
     );
 
     if (update.matchedCount === 0 || update.modifiedCount === 0) {
