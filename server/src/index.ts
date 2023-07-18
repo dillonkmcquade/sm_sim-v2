@@ -1,6 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import helmet from "helmet";
+
 import { auth } from "express-oauth2-jwt-bearer";
 
 import { connectToDatabase } from "./services/database.service";
@@ -27,12 +29,13 @@ connectToDatabase()
   .then(() => {
     server
       .use(express.json())
+      .use(helmet())
       .use(morgan("dev"))
       .use(function (_req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header(
           "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+          "Origin, X-Requested-With, Content-Type, Accept, Authorization",
         );
         res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
         next();
