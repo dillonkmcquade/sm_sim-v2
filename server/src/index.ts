@@ -34,7 +34,7 @@ connectToDatabase()
       .use(function (_req, res, next) {
         res.header(
           "Access-Control-Allow-Origin",
-          "https://sm-sim.vercel.app, http://localhost:3000",
+          "https://vercel.app, http://localhost:3000",
         );
         res.header(
           "Access-Control-Allow-Headers",
