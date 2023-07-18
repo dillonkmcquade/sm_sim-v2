@@ -3,7 +3,6 @@ import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 
 export const getUser = async (req: Request, res: Response) => {
-  const id = req?.params?._id;
   if (!req.params._id) {
     return res
       .status(400)
@@ -14,8 +13,7 @@ export const getUser = async (req: Request, res: Response) => {
     if (!users) {
       return res.status(500).json({ status: 500, message: "Database error" });
     }
-    const query = { sub: id };
-    const user = await users.findOne(query);
+    const user = await users.findOne({ sub: req.params._id });
     if (!user) {
       return res.status(404).json({ status: 404, message: "User not found" });
     }

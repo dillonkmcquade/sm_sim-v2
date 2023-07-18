@@ -47,12 +47,16 @@ export default function Transaction() {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
-        const { data } = await response.json();
-        setCurrentUser({ ...currentUser, balance: data.balance });
+        const data = await response.json();
+        if (data.status === 200) {
+          setCurrentUser({ ...currentUser, balance: data.data.balance });
+        } else {
+          return errorMessage(data.message);
+        }
 
-        const numOfShares = data.holdings.reduce(
+        const numOfShares = data.data.holdings.reduce(
           (accumulator, currentValue) => {
             if (currentValue.ticker === id) {
               return accumulator + currentValue.quantity;
@@ -60,13 +64,13 @@ export default function Transaction() {
               return accumulator + 0;
             }
           },
-          0
+          0,
         );
 
         if (numOfShares >= 0) {
           setShares(numOfShares);
         }
-        if (data.balance <= 0) {
+        if (data.data.balance <= 0) {
           errorMessage("Insufficient funds");
         }
       } catch (error) {
