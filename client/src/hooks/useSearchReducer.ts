@@ -1,5 +1,9 @@
 import { useReducer } from "react";
 
+interface Result {
+  symbol: string;
+  description: string;
+}
 const initialState = {
   results: null,
   error: "",
@@ -7,7 +11,10 @@ const initialState = {
   inputText: "",
   isSelected: 0,
 };
-const reducer = (state, action) => {
+const reducer = (
+  state: typeof initialState,
+  action: { type: string; field?: any; payload?: any },
+) => {
   switch (action.type) {
     case "field":
       return { ...state, [action.field]: action.payload };
@@ -30,11 +37,11 @@ export default function useSearchReducer() {
     dispatch({ type: "search" });
   };
 
-  const success = (results) => {
+  const success = (results: Result[]) => {
     dispatch({ type: "success", payload: results });
   };
 
-  const errorMessage = (message) => {
+  const errorMessage = (message: string) => {
     dispatch({ type: "error", payload: message });
   };
 
@@ -42,7 +49,7 @@ export default function useSearchReducer() {
     dispatch({ type: "clear" });
   };
 
-  const updateField = (field, value) => {
+  const updateField = (field: string, value: string | number) => {
     dispatch({ type: "field", field: field, payload: value });
   };
 

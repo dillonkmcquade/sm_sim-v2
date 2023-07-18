@@ -1,5 +1,5 @@
 import { useContext, useReducer } from "react";
-import { UserContext } from "../context/UserContext";
+import { GlobalContent, User, UserContext } from "../context/UserContext";
 
 const initialState = {
   formData: {},
@@ -7,7 +7,10 @@ const initialState = {
   error: "",
   confirmed: false,
 };
-const reducer = (state, action) => {
+const reducer = (
+  state: typeof initialState,
+  action: { type: string; payload?: any; field?: any },
+) => {
   switch (action.type) {
     case "field":
       return {
@@ -34,18 +37,18 @@ const reducer = (state, action) => {
 };
 export default function usePurchaseReducer() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser } = useContext(UserContext) as GlobalContent;
 
   const setLoading = () => {
     dispatch({ type: "loading" });
   };
 
-  const success = (value) => {
+  const success = (value: User) => {
     setCurrentUser(value);
     dispatch({ type: "success", payload: value });
   };
 
-  const errorMessage = (message) => {
+  const errorMessage = (message: string) => {
     dispatch({ type: "error", payload: message });
   };
 

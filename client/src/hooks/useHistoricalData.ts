@@ -11,7 +11,10 @@ const initialState = {
   loading: false,
 };
 
-const reducer = (state, action) => {
+const reducer = (
+  state: typeof initialState,
+  action: { type: string; payload?: any },
+) => {
   switch (action.type) {
     case "1D":
       return {
@@ -61,7 +64,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function useHistoricalData(ticker) {
+export default function useHistoricalData(ticker: string) {
   const [data, setData] = useState(null);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { resolution, from, loading } = state;
@@ -74,14 +77,14 @@ export default function useHistoricalData(ticker) {
       try {
         const response = await fetch(
           `https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=${resolution}&from=${from}&to=${Math.floor(
-            Date.now() / 1000
-          )}&token=${REACT_APP_FINNHUB_KEY}`
+            Date.now() / 1000,
+          )}&token=${REACT_APP_FINNHUB_KEY}`,
         );
         const parsed = await response.json();
         setData(parsed);
 
         dispatch({ type: "finished" });
-      } catch (error) {
+      } catch (error: any) {
         console.error(error.message);
       }
     };
