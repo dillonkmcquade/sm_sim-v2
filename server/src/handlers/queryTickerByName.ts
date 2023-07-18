@@ -10,9 +10,6 @@ export const queryTickerByName = async (req: Request, res: Response) => {
       .json({ status: 400, message: "No query string given" });
   }
   const { tickers } = collections;
-  if (!tickers) {
-    return res.status(500).json({ status: 500, message: "Database error" });
-  }
   try {
     const agg = [
       {
@@ -27,10 +24,10 @@ export const queryTickerByName = async (req: Request, res: Response) => {
       { $limit: 10 },
       { $project: { symbol: 1, description: 1 } },
     ];
-    let data = await tickers.aggregate(agg).toArray();
-    if (data.length === 0) {
+    let data = await tickers?.aggregate(agg).toArray();
+    if (data?.length === 0) {
       data = await tickers
-        .aggregate([
+        ?.aggregate([
           {
             $search: {
               index: "tickers",
@@ -45,7 +42,7 @@ export const queryTickerByName = async (req: Request, res: Response) => {
         ])
         .toArray();
     }
-    if (data.length === 0) {
+    if (data?.length === 0) {
       return res.status(400).json({ status: 400, message: "Not found" });
     }
     return res.status(200).json({

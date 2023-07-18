@@ -15,10 +15,7 @@ export const sellStock = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
-    if (!users) {
-      return res.status(500).json({ status: 500, message: "Database error" });
-    }
-    const user = await users.findOne({ sub: _id });
+    const user = await users?.findOne({ sub: _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
     }
@@ -29,7 +26,7 @@ export const sellStock = async (req: Request, res: Response) => {
       price: currentPrice,
     };
     const amountToSubtract = Number(currentPrice) * quantity;
-    const update = await users.updateOne(
+    const update = await users?.updateOne(
       { sub: _id },
       {
         $inc: { balance: amountToSubtract },
@@ -37,7 +34,7 @@ export const sellStock = async (req: Request, res: Response) => {
       },
     );
 
-    if (update.matchedCount === 0 || update.modifiedCount === 0) {
+    if (update?.matchedCount === 0 || update?.modifiedCount === 0) {
       return res
         .status(400)
         .json({ status: 400, message: "Could not update user holdings" });

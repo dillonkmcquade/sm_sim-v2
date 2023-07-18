@@ -17,18 +17,15 @@ export const updateUser = async (req: Request, res: Response) => {
 
   try {
     const { users } = collections;
-    if (!users) {
-      return res.status(500).json({ status: 500, message: "Database error" });
-    }
-    const update = await users.updateOne({ sub: _id }, { $set: req.body });
-    if (update.matchedCount === 0 || update.modifiedCount === 0) {
+    const update = await users?.updateOne({ sub: _id }, { $set: req.body });
+    if (update?.matchedCount === 0 || update?.modifiedCount === 0) {
       return res.status(404).json({
         status: 404,
         message: "Invalid data given. Check variable names in request body",
       });
     }
 
-    const newUser = await users.findOne({ sub: _id });
+    const newUser = await users?.findOne({ sub: _id });
 
     return res.status(200).json({
       status: 200,
