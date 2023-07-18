@@ -5,21 +5,21 @@ import { GlobalStyles } from "./GlobalStyles.js";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { getTotalValue } from "./utils/utils";
-import { UserContext } from "./context/UserContext.js";
+import { GlobalContent, UserContext } from "./context/UserContext";
 
-import Header from "./components/Header.jsx";
-import Menu from "./components/Menu.jsx";
-import Home from "./pages/Home.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import StockDetails from "./pages/StockDetails.jsx";
-import Research from "./pages/Research.jsx";
-import Transaction from "./pages/Transaction.jsx";
-import Profile from "./pages/Profile.jsx";
+import Header from "./components/Header";
+import Menu from "./components/Menu";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import StockDetails from "./pages/StockDetails";
+import Research from "./pages/Research";
+import Transaction from "./pages/Transaction";
+import Profile from "./pages/Profile";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
 
   useEffect(() => {
     const createUser = async () => {
@@ -40,7 +40,7 @@ export default function App() {
           const total = await getTotalValue(response.data.holdings);
           setCurrentUser({ ...response.data, total, timestamp: Date.now() });
         }
-      } catch (error) {
+      } catch (error: Error | any) {
         console.error(error.message);
       }
     };

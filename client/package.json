@@ -23,7 +23,7 @@
   "scripts": {
     "start": "NODE_ENV=production react-scripts start",
     "start-dev": "NODE_ENV=development react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
+    "build": "NODE_ENV=production tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -44,5 +44,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/styled-components": "^5.1.26",
+    "typescript": "^5.1.6"
   }
 }
