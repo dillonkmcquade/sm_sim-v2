@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { GlobalStyles } from "./GlobalStyles.js";
+import { GlobalStyles } from "./GlobalStyles";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { getTotalValue } from "./utils/utils";
