@@ -12,32 +12,31 @@ export function getInvestedValue(holdings: Holding[]) {
 
 //create object containing {ticker: price} combinations
 async function getPrices(holdings: Holding[]) {
-  const uniques: any = {};
-  holdings.forEach((holding) => {
-    if (!uniques[holding.ticker]) {
-      uniques[holding.ticker] = 0;
-    }
-  });
-  const keys = Object.keys(uniques);
+  const prices: any = {};
+  const uniqueTickers = Array.from(
+    new Set(holdings.map((holding) => holding.ticker)),
+  );
   const { REACT_APP_FINNHUB_KEY } = process.env;
   try {
-    for await (const key of keys) {
-      const cached = window.sessionStorage.getItem(key);
+    const priceRequests = uniqueTickers.map(async (ticker) => {
+      const cached = window.sessionStorage.getItem(ticker);
       if (cached && Date.now() / 1000 - JSON.parse(cached).t < 300) {
-        //Check for stale data
-        uniques[key] = JSON.parse(cached).c;
+        // Check for stale data
+        prices[ticker] = JSON.parse(cached).c;
       } else {
         const response = await fetch(
-          `https://finnhub.io/api/v1/quote?symbol=${key}&token=${REACT_APP_FINNHUB_KEY}`,
+          `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${REACT_APP_FINNHUB_KEY}`,
         );
         const parsed = await response.json();
-        uniques[key] = parsed.c;
+        prices[ticker] = parsed.c;
       }
-    }
+    });
+
+    await Promise.all(priceRequests);
   } catch (err: any) {
     console.error(err.message);
   }
-  return uniques;
+  return prices;
 }
 
 //returns total value of holdings
@@ -52,23 +51,30 @@ export async function getTotalValue(holdings: Holding[]) {
   }, 0);
 }
 
-//Filter user holdings down to {ticker, quantity} array
-//
 export function getUniques(holdings: Holding[]) {
   const uniqueValues: any = {};
-  holdings.forEach((holding) => {
+  for (let i = 0; i < holdings.length; i++) {
+    const holding = holdings[i];
     if (uniqueValues[holding.ticker]) {
       uniqueValues[holding.ticker] += holding.quantity;
     } else {
       uniqueValues[holding.ticker] = holding.quantity;
     }
-  });
-  const newArr: { ticker: string; quantity: number }[] = [];
-  Object.keys(uniqueValues).forEach((ticker: string) => {
-    if (uniqueValues[ticker] === 0) return;
-    newArr.push({ ticker: ticker, quantity: uniqueValues[ticker] });
-  });
-  return newArr;
+  }
+
+  const uniqueTickers = Object.keys(uniqueValues);
+  const newArr: { ticker: string; quantity: number }[] = new Array(
+    uniqueTickers.length,
+  );
+
+  for (let i = 0; i < uniqueTickers.length; i++) {
+    const ticker = uniqueTickers[i];
+    const quantity = uniqueValues[ticker];
+    if (quantity === 0) continue;
+    newArr[i] = { ticker, quantity };
+  }
+
+  return newArr.filter(Boolean);
 }
 
 export function debounce(fn: Function, t: number) {
