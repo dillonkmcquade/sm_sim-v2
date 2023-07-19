@@ -1,13 +1,24 @@
 import { useContext, useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { linearGradientDef } from "@nivo/core";
-import { WidthContext } from "../context/WidthContext";
+import { WidthContent, WidthContext } from "../context/WidthContext";
 import { styled } from "styled-components";
 
-export default function LineChart({ id, data, small }) {
-  const { width } = useContext(WidthContext);
+interface Quote {
+  c: number[]; 
+  h: number[];
+  l: number[];
+  o: number[];
+  pc: number[];
+  t: number[];
+  d: string;
+  dp: string;
+} 
+
+export default function LineChart({ id, data, small }: {id: string; data: Quote; small: boolean}) {
+  const { width } = useContext(WidthContext) as WidthContent;
   const format = useMemo(() => {
-    return data.c.map((idx, index) => {
+    return data.c.map((idx: number, index: number) => {
       return {
         x: new Date(data.t[index] * 1000),
         y: idx,
@@ -70,7 +81,7 @@ export default function LineChart({ id, data, small }) {
         pointLabelYOffset={-12}
         useMesh={true}
         tooltip={({ point }) => {
-          const split = point.data.xFormatted.split(" ");
+          const split = point.data.xFormatted.toString().split(" ");
           const formatted = `${split[1]} ${split[2]} ${split[4]}`;
           return (
             <Tooltip>

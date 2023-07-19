@@ -8,13 +8,13 @@ import { getTotalValue, getInvestedValue, getUniques } from "../utils/utils";
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
 import { CircularProgress } from "@mui/material";
-import { UserContext } from "../context/UserContext";
+import { GlobalContent, UserContext } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
 
 export default function Dashboard() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
 
   //get user object from backend
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function Dashboard() {
         const { REACT_APP_SERVER_URL } = process.env;
         const accessToken = await getAccessTokenSilently();
         const response = await fetch(
-          `${REACT_APP_SERVER_URL}/user/${user.sub}`,
+          `${REACT_APP_SERVER_URL}/user/${user?.sub}`,
           {
             method: "GET",
             headers: {
@@ -33,11 +33,11 @@ export default function Dashboard() {
           },
         );
         const { data } = await response.json();
-        if (data.holdings.length === 0) return;
-        const total = await getTotalValue(data.holdings); //potentially expensive function call
+        if (data?.holdings?.length === 0) return;
+        const total = await getTotalValue(data?.holdings); //potentially expensive function call
         const modifiedObj = { ...data, total, timestamp: Date.now() };
         setCurrentUser(modifiedObj);
-      } catch (err) {
+      } catch (err: any) {
         console.error(err.message);
       }
     }
@@ -48,7 +48,7 @@ export default function Dashboard() {
     //Currently making separate api call to get the price of each stock,
     //This could get costly if the portfolio is large. Therefore we will
     //limit this by doing it once, caching it, and updating every 15 mins
-    if (!currentUser || Date.now() - currentUser.timestamp > 300000) {
+    if (!currentUser || Date.now() - Number( currentUser.timestamp! ) > 300000) {
       getUser();
     }
   }, [currentUser, user, isAuthenticated, getAccessTokenSilently]);
@@ -68,15 +68,15 @@ export default function Dashboard() {
         Hello, <Name>{currentUser.nickname || currentUser.name}</Name>!
       </Title>
       <PortfolioValue>
-        {Number(currentUser.total + currentUser.balance).toLocaleString(
+        {Number(currentUser.total! + currentUser.balance).toLocaleString(
           "en-US",
           { style: "currency", currency: "USD" },
         )}
       </PortfolioValue>
       <Profit
-        color={currentUser.total - investedValue > 0 ? "#027326" : "#b5050e"}
+        color={currentUser.total! - investedValue > 0 ? "#027326" : "#b5050e"}
       >
-        {Number(currentUser.total - investedValue).toLocaleString("en-US", {
+        {Number(currentUser.total! - investedValue).toLocaleString("en-US", {
           style: "currency",
           currency: "USD",
         })}{" "}
@@ -85,7 +85,7 @@ export default function Dashboard() {
 
       <div style={{ height: "500px", color: "black" }}>
         {currentUser.holdings.length === 0 ? (
-          <FourOhFour />
+          <FourOhFour>Nothing here yet.</FourOhFour>
         ) : (
           <PieChart data={currentUser} />
         )}
@@ -96,7 +96,7 @@ export default function Dashboard() {
           <div>Total Value of all holdings: </div>
           <p>
             <Bold>
-              {currentUser.total.toLocaleString("en-US", {
+              {currentUser.total?.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
               })}

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { FormEventHandler, useContext, useState } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -10,24 +10,24 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 import useProfileReducer from "../hooks/useProfileReducer";
 import Alert from "../components/Alert";
-import { UserContext } from "../context/UserContext";
+import { GlobalContent, UserContext } from "../context/UserContext";
 
 export default function Profile() {
   const { getAccessTokenSilently, logout } = useAuth0();
   const { setLoading, success, errorMessage, dispatch, state } =
     useProfileReducer();
   const { formData, confirmed, error, loading } = state;
-  const { currentUser } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext) as GlobalContent;
   const [open, setOpen] = useState(false);
   const { REACT_APP_SERVER_URL } = process.env;
 
-  const handleSubmit = async (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
       const response = await fetch(
-        `${REACT_APP_SERVER_URL}/user/update/${currentUser.sub}`,
+        `${REACT_APP_SERVER_URL}/user/update/${currentUser?.sub}`,
         {
           method: "PATCH",
           headers: {
@@ -39,16 +39,17 @@ export default function Profile() {
       );
       const { status } = await response.json();
       if (status === 200) {
-        return success({ ...currentUser, ...formData });
+        const newUser = {...currentUser, ...formData};
+        return success(newUser);
       } else {
         errorMessage("Nothing to change");
       }
-    } catch (error) {
+    } catch (error: any) {
       errorMessage(error.message);
     }
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({
       type: "field",
       field: "formData",
@@ -66,7 +67,7 @@ export default function Profile() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ _id: currentUser.sub }),
+        body: JSON.stringify({ _id: currentUser?.sub }),
       });
       const data = await response.json();
       if (data.status === 200) {
@@ -75,7 +76,7 @@ export default function Profile() {
       } else {
         errorMessage(data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       errorMessage(error.message);
     }
   };

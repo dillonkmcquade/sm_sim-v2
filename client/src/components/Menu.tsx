@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { styled } from "styled-components";
-import { MenuContext } from "../context/MenuContext";
+import { MenuContent, MenuContext } from "../context/MenuContext";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CircularProgress } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
@@ -10,7 +10,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import DataSaverOffIcon from "@mui/icons-material/DataSaverOff";
 
 export default function Menu() {
-  const { menuVisible } = useContext(MenuContext);
+  const { menuVisible } = useContext(MenuContext) as MenuContent;
   const { error, loginWithRedirect, isAuthenticated, isLoading, logout } =
     useAuth0();
 
@@ -63,7 +63,7 @@ export default function Menu() {
   );
 }
 
-const Nav = styled.nav`
+const Nav = styled.nav<{display: string}>`
   position: fixed;
   top: 56px;
   background-color: #000000;

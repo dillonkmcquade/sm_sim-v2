@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-import { MenuProvider } from "./context/MenuContext.js";
+import { MenuProvider } from "./context/MenuContext";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { WidthProvider } from "./context/WidthContext";
 import { UserProvider } from "./context/UserContext";

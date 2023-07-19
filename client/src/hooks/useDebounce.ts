@@ -2,8 +2,8 @@
 import { useRef, useMemo, useEffect } from "react";
 import { debounce } from "../utils/utils";
 
-export const useDebounce = (callback, t) => {
-  const ref = useRef();
+export const useDebounce = (callback: Function, t: number) => {
+  const ref = useRef<typeof callback>();
 
   useEffect(() => {
     ref.current = callback;

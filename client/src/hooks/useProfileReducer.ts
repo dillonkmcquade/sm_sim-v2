@@ -43,7 +43,7 @@ export default function usePurchaseReducer() {
     dispatch({ type: "loading" });
   };
 
-  const success = (value: User) => {
+  const success = (value: User | null) => {
     setCurrentUser(value);
     dispatch({ type: "success", payload: value });
   };

@@ -2,8 +2,9 @@ import LineChart from "../components/LineChart";
 import { styled } from "styled-components";
 import useQuote from "../hooks/useQuote";
 import useHistoricalData from "../hooks/useHistoricalData";
+import { MouseEventHandler } from "react";
 
-export default function TickerCard({ handler, ticker }) {
+export default function TickerCard({ handler, ticker}: {ticker: string; handler: MouseEventHandler}) {
   const { quote } = useQuote(ticker);
   const { data } = useHistoricalData(ticker);
   return (
@@ -12,7 +13,7 @@ export default function TickerCard({ handler, ticker }) {
       <Wrapper onClick={handler}>
         <Title>{ticker}</Title>
         <Price color={quote.d > 0 ? "#027326" : "#e80e19"}>${quote.c}</Price>
-        <LineChart small="true" id={ticker} data={data} />
+        <LineChart small={true} id={ticker} data={data} />
       </Wrapper>
     )
   );

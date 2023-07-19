@@ -1,8 +1,12 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, ReactNode } from "react";
 
-export const WidthContext = createContext(null);
+export interface WidthContent {
+  width: number;
+}
 
-export const WidthProvider = ({ children }) => {
+export const WidthContext = createContext<WidthContent | null>(null);
+
+export const WidthProvider = ({ children }: {children: ReactNode}) => {
   const [width, setWidth] = useState(window.screen.width);
 
   //conditionally display LineChart bottom axis and change line/pointer size

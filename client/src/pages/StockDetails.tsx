@@ -27,7 +27,7 @@ export default function StockDetails() {
   //custom hooks
   const { quote } = useQuote(id!);
   const { data, loading, state, currentDay, dispatch } = useHistoricalData(id!);
-  const { news, isLoadingNews } = useNewsData(id);
+  const { news, isLoadingNews } = useNewsData(id!);
 
   //Context
   const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
@@ -132,7 +132,7 @@ export default function StockDetails() {
         {!data || loading ? (
           <CircularProgress sx={{ color: "#027326" }} />
         ) : (
-          <LineChart id={id} data={data} small={false} />
+          <LineChart id={id!} data={data} small={false} />
         )}
       </ChartWrapper>
 

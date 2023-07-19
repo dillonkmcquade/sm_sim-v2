@@ -1,9 +1,17 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 
-export const MenuContext = createContext(null);
+export interface MenuContent {
+  menuVisible: boolean;
+  setMenuVisible: React.Dispatch<boolean>;
+}
 
-export const MenuProvider = ({ children }) => {
+export const MenuContext = createContext<MenuContent | null>(null);
+
+type Props = {
+  children: ReactNode;
+}
+export function MenuProvider({children}: Props) {
   const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();
   useEffect(() => {

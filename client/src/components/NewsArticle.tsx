@@ -1,5 +1,16 @@
 import { styled } from "styled-components";
-export default function NewsArticle({ article }) {
+interface Article {
+  id: string;
+  publisher: {name: string; homepage_url: string; logo_url: string; favicon_url: string;};
+  title: string;
+  author: string;
+  article_url: string;
+  tickers: string[];
+  image_url: string;
+  description: string;
+  keywords: string[];
+}
+export default function NewsArticle({ article }: {article: Article}) {
   return (
     <StyledLink href={article.article_url}>
       <Wrapper>

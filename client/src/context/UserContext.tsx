@@ -16,12 +16,16 @@ export interface User {
   picture: string;
   updated_at?: string;
   verified_at?: string;
-  sub:string,
-  email?: string
+  sub:string;
+  email?: string;
+  address?: string;
+  telephone?: string;
+  timestamp?: Date;
+  total?: number;
 }
 export interface GlobalContent {
   currentUser: User;
-  setCurrentUser: React.Dispatch<User>; 
+  setCurrentUser: React.Dispatch<User | null>; 
 }
 
 type Props = {

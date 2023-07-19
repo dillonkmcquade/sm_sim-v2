@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 import MenuIcon from "@mui/icons-material/Menu";
-import { MenuContext } from "../context/MenuContext";
+import { MenuContent, MenuContext } from "../context/MenuContext";
 import { useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Header() {
-  const { menuVisible, setMenuVisible } = useContext(MenuContext);
+  const { menuVisible, setMenuVisible } = useContext(MenuContext) as MenuContent;
   const { isAuthenticated } = useAuth0();
   return (
     <Wrapper>

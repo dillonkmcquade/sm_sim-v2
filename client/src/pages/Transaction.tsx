@@ -1,15 +1,15 @@
-import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from "react";
+import { ChangeEvent , useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { WebTarget, styled } from "styled-components";
+import { styled } from "styled-components";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { CircularProgress } from "@mui/material";
 
-import usePurchaseReducer from "../hooks/usePurchaseReducer.js";
+import usePurchaseReducer from "../hooks/usePurchaseReducer";
 import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
-import Alert from "../components/Alert.jsx";
+import Alert from "../components/Alert";
 import { GlobalContent, Holding, UserContext } from "../context/UserContext";
 import { getTotalValue } from "../utils/utils";
 
@@ -25,7 +25,7 @@ export default function Transaction() {
     errorMessage,
     changeAction,
     state,
-  } = usePurchaseReducer(transactionType);
+  } = usePurchaseReducer(transactionType!);
 
   const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
   const { confirmed, quantity, action, loading, error } = state;
@@ -83,12 +83,12 @@ export default function Transaction() {
   }, [getAccessTokenSilently, user, id, error]);
 
   //toggling buy/sell buttons
-  const toggleAction = (event: ChangeEvent<HTMLInputElement>, newAlignment: string) => {
+  const toggleAction = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
     if (newAlignment === "sell" && quantity > shares) {
       updateQuantity(shares);
     }
     setAlignment(newAlignment);
-    changeAction(event.target?.value);
+    changeAction(newAlignment);
   };
 
   //changing quantity via number input
@@ -97,7 +97,7 @@ export default function Transaction() {
       errorMessage("Insufficient funds");
       return;
     } else {
-      updateQuantity(event.target.value);
+      updateQuantity(Number( event.target.value ));
     }
   };
 
@@ -169,17 +169,17 @@ export default function Transaction() {
       <ToggleButtonGroup
         color="secondary"
         value={alignment}
-        exclusive
+        exclusive={true}
         sx={{ margin: "1rem 0" }}
         onChange={toggleAction}
         aria-label="Platform"
       >
-        <BuyOrSell selectedcolor="#32a842" value="buy">
+        <Buy value="buy">
           Buy
-        </BuyOrSell>
-        <BuyOrSell selectedcolor="#d63c44" value="sell">
+        </Buy>
+        <Sell value="sell">
           Sell
-        </BuyOrSell>
+        </Sell>
       </ToggleButtonGroup>
       <TransactionDetails>
         <h3>
@@ -241,16 +241,23 @@ const Wrapper = styled.div`
   }
 `;
 
-const BuyOrSell = styled(ToggleButton)`
+const Buy = styled(ToggleButton)`
   &.MuiButtonBase-root {
     color: white;
     border: 1px solid white;
   }
   &.MuiButtonBase-root.Mui-selected {
-    color: ${(props) => props.selectedcolor ? props.selectedcolor : "green"};
+    color: #32a842;
     background-color: #1b111c;
   }
 `;
+
+const Sell = styled(Buy)`
+  &.MuiButtonBase-root.Mui-selected {
+    color: #d63c44;
+  }
+
+`
 
 const Detail = styled.div`
   display: flex;
