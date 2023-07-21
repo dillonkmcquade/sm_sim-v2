@@ -1,11 +1,11 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { getTotalValue } from "./utils/utils";
-import { GlobalContent, UserContext } from "./context/UserContext";
+import {useCurrentUser} from "./context/UserContext";
 
 import Header from "./components/Header";
 import Menu from "./components/Menu";
@@ -19,8 +19,7 @@ import { Navigate } from "react-router-dom";
 
 export default function App() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
-  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
-
+  const { currentUser, setCurrentUser } = useCurrentUser();
   useEffect(() => {
     const createUser = async () => {
       // create user if does not already exist
@@ -40,8 +39,10 @@ export default function App() {
           const total = await getTotalValue(response.data.holdings);
           setCurrentUser({ ...response.data, total, timestamp: Date.now() });
         }
-      } catch (error: Error | any) {
-        console.error(error.message);
+      } catch (err) {
+        if (err instanceof Error){
+          console.error(err.message);
+        }
       }
     };
     if (isAuthenticated && !currentUser) {

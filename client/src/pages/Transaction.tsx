@@ -1,4 +1,4 @@
-import { ChangeEvent , useContext, useEffect, useState } from "react";
+import { ChangeEvent ,  useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
@@ -10,8 +10,9 @@ import usePurchaseReducer from "../hooks/usePurchaseReducer";
 import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert";
-import { GlobalContent, Holding, UserContext } from "../context/UserContext";
+import { useCurrentUser } from "../context/UserContext";
 import { getTotalValue } from "../utils/utils";
+import type {Holding} from "../types";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -27,7 +28,7 @@ export default function Transaction() {
     state,
   } = usePurchaseReducer(transactionType!);
 
-  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
+  const { currentUser, setCurrentUser } = useCurrentUser() 
   const { confirmed, quantity, action, loading, error } = state;
   const { quote } = useQuote(id!);
   const [alignment, setAlignment] = useState(transactionType);

@@ -1,38 +1,7 @@
-import { createContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+import {Props, GlobalContent} from "../types";  
 
-export interface Holding {
-  quantity: number;
-  ticker: string;
-  price: number;
-}
-
-export interface User {
-  _id: string;
-  balance: number;
-  holdings: Holding[];
-  watchList: string[];
-  nickname: string;
-  name: string;
-  picture: string;
-  updated_at?: string;
-  verified_at?: string;
-  sub:string;
-  email?: string;
-  address?: string;
-  telephone?: string;
-  timestamp?: Date;
-  total?: number;
-}
-export interface GlobalContent {
-  currentUser: User;
-  setCurrentUser: React.Dispatch<User | null>; 
-}
-
-type Props = {
-  children: ReactNode;
-}
-
-export const UserContext = createContext<GlobalContent | null>(null);
+const UserContext = createContext<GlobalContent | null>(null);
 
 export const UserProvider = ({ children }: Props) => {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -54,3 +23,11 @@ export const UserProvider = ({ children }: Props) => {
     </UserContext.Provider>
   );
 };
+
+export const useCurrentUser = () => { 
+  const currentUserContext = useContext(UserContext);
+  if (!currentUserContext) {
+    throw new Error("useCurrentUser must be used within the UserProvider")
+  }
+  return currentUserContext
+}

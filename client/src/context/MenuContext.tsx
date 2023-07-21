@@ -1,16 +1,9 @@
-import { createContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { MenuContent, Props } from "../types";
 
-export interface MenuContent {
-  menuVisible: boolean;
-  setMenuVisible: React.Dispatch<boolean>;
-}
+export const MenuContext = createContext<MenuContent>({menuVisible: false, setMenuVisible: () => false});
 
-export const MenuContext = createContext<MenuContent | null>(null);
-
-type Props = {
-  children: ReactNode;
-}
 export function MenuProvider({children}: Props) {
   const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();

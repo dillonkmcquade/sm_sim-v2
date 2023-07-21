@@ -1,18 +1,6 @@
-import { CSSProperties, ReactNode } from "react";
 import { styled } from "styled-components";
+import type {ButtonProps} from "../types";
 
-interface Props {
-  handler?: MouseEvent | any;
-  hovercolor?: string;
-  children: ReactNode;
-  bg?: string;
-  hoverbg?: string;
-  color?: string;
-  bradius?: string;
-  border?: string;
-  disabled?: boolean;
-  style?: CSSProperties,
-}
 
 export default function Button({
   handler,
@@ -25,7 +13,7 @@ export default function Button({
   border,
   disabled,
   style,
-}: Props) {
+}: ButtonProps) {
   return (
     <StyledButton
       bradius={bradius}
@@ -43,7 +31,7 @@ export default function Button({
   );
 }
 
-const StyledButton = styled.button<Props>`
+const StyledButton = styled.button<ButtonProps>`
   background: ${(props) =>
     props.bg ? props.bg : 
     "linear-gradient(90deg,rgba(152, 148, 230, 1) 0%,rgba(121, 9, 119, 1) 100%)"};

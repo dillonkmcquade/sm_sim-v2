@@ -31,7 +31,9 @@ export default function useTickerNewsData(ticker: string) {
           );
         }
       } catch (err) {
-        console.error(err);
+        if (err instanceof Error) {
+          console.error(err);
+        }
         setIsLoadingNews(false);
       } finally {
         setIsLoadingNews(false);

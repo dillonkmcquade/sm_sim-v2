@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import {  useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -16,7 +16,7 @@ import useQuote from "../hooks/useQuote";
 import useNewsData from "../hooks/useTickerNewsData";
 import { useDebounce } from "../hooks/useDebounce";
 import { useAuth0 } from "@auth0/auth0-react";
-import { GlobalContent, UserContext } from "../context/UserContext";
+import { useCurrentUser } from "../context/UserContext";
 import Alert from "../components/Alert";
 
 export default function StockDetails() {
@@ -30,7 +30,7 @@ export default function StockDetails() {
   const { news, isLoadingNews } = useNewsData(id!);
 
   //Context
-  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
+  const { currentUser, setCurrentUser } = useCurrentUser(); 
 
   //state
   const { range } = state;
@@ -60,8 +60,10 @@ export default function StockDetails() {
         setCurrentUser({ ...currentUser, watchList: parsed.data });
         return;
       }
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error) {
+      if (error instanceof Error){
+        console.error(error.message);
+      }
     }
   };
 

@@ -32,8 +32,10 @@ export default function useQuote(ticker: string) {
           );
           setLoadingQuote(false);
         }
-      } catch (error: any) {
-        console.error(error.message);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        }
         setLoadingQuote(false);
       }
     }

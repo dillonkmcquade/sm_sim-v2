@@ -1,7 +1,7 @@
 //return invested value, calculated from user holdings
 //quantity and price derived from holdings array in DB
 
-import { Holding } from "../context/UserContext";
+import type { Holding } from "../types";
 
 //price = purchase price
 export function getInvestedValue(holdings: Holding[]) {
@@ -11,7 +11,7 @@ export function getInvestedValue(holdings: Holding[]) {
 }
 
 //create object containing {ticker: price} combinations
-async function getPrices(holdings: Holding[]) {
+async function getPrices(holdings: Holding[]): Promise<{ ticker: number }[]> {
   const prices: any = {};
   const uniqueTickers = Array.from(
     new Set(holdings.map((holding) => holding.ticker)),
@@ -33,8 +33,10 @@ async function getPrices(holdings: Holding[]) {
     });
 
     await Promise.all(priceRequests);
-  } catch (err: any) {
-    console.error(err.message);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
   }
   return prices;
 }
@@ -44,10 +46,7 @@ export async function getTotalValue(holdings: Holding[]) {
   const prices: any = await getPrices(holdings);
 
   return holdings.reduce((accumulator: number, currentValue: Holding) => {
-    return (
-      accumulator +
-      Number(currentValue.quantity) * Number(prices[currentValue.ticker])
-    );
+    return accumulator + currentValue.quantity * prices[currentValue.ticker];
   }, 0);
 }
 

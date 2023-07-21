@@ -1,4 +1,4 @@
-import { FormEventHandler, useContext, useState } from "react";
+import { FormEventHandler , useState } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -10,14 +10,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 import useProfileReducer from "../hooks/useProfileReducer";
 import Alert from "../components/Alert";
-import { GlobalContent, UserContext } from "../context/UserContext";
+import {useCurrentUser} from "../context/UserContext";
 
 export default function Profile() {
   const { getAccessTokenSilently, logout } = useAuth0();
   const { setLoading, success, errorMessage, dispatch, state } =
     useProfileReducer();
   const { formData, confirmed, error, loading } = state;
-  const { currentUser } = useContext(UserContext) as GlobalContent;
+  const { currentUser } = useCurrentUser(); 
   const [open, setOpen] = useState(false);
   const { REACT_APP_SERVER_URL } = process.env;
 

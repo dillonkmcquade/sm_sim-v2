@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import {  useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +8,14 @@ import { getTotalValue, getInvestedValue, getUniques } from "../utils/utils";
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
 import { CircularProgress } from "@mui/material";
-import { GlobalContent, UserContext } from "../context/UserContext";
+import { useCurrentUser } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
+import type { User } from "../types";
 
 export default function Dashboard() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser } = useContext(UserContext) as GlobalContent;
+  const { currentUser, setCurrentUser } = useCurrentUser(); 
 
   //get user object from backend
   useEffect(() => {
@@ -35,10 +36,12 @@ export default function Dashboard() {
         const { data } = await response.json();
         if (data?.holdings?.length === 0) return;
         const total = await getTotalValue(data?.holdings); //potentially expensive function call
-        const modifiedObj = { ...data, total, timestamp: Date.now() };
+        const modifiedObj: User = { ...data, total, timestamp: Date.now()  };
         setCurrentUser(modifiedObj);
-      } catch (err: any) {
-        console.error(err.message);
+      } catch (err) {
+        if (err instanceof Error){
+          console.error(err.message);
+        }
       }
     }
     if (!isAuthenticated) {

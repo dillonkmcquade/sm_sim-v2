@@ -1,5 +1,6 @@
-import { useContext, useReducer } from "react";
-import { GlobalContent, User, UserContext } from "../context/UserContext";
+import { useReducer } from "react";
+import { useCurrentUser } from "../context/UserContext";
+import type { User } from "../types";
 
 const initialState = {
   formData: {},
@@ -37,7 +38,7 @@ const reducer = (
 };
 export default function usePurchaseReducer() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { setCurrentUser } = useContext(UserContext) as GlobalContent;
+  const { setCurrentUser } = useCurrentUser();
 
   const setLoading = () => {
     dispatch({ type: "loading" });

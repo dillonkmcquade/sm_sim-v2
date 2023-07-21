@@ -1,9 +1,9 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import LaunchIcon from "@mui/icons-material/Launch";
-import { ReactNode } from "react";
+import { Props } from "../types";
 
-export default function FourOhFour({ children }: {children: ReactNode}) {
+export default function FourOhFour({ children }: Props) {
   return (
     <Wrapper>
       <p>{children}</p>

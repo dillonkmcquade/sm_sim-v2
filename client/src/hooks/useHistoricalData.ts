@@ -84,8 +84,10 @@ export default function useHistoricalData(ticker: string) {
         setData(parsed);
 
         dispatch({ type: "finished" });
-      } catch (error: any) {
-        console.error(error.message);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        }
       }
     };
     fetchCandleData();

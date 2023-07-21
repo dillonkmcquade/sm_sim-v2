@@ -1,9 +1,6 @@
 import { useReducer } from "react";
+import { Result } from "../types";
 
-interface Result {
-  symbol: string;
-  description: string;
-}
 const initialState = {
   results: null,
   error: "",

@@ -13,11 +13,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import TickerCard from "../components/TickerCard";
 import useSearchReducer from "../hooks/useSearchReducer";
 import { ChangeEventHandler, KeyboardEventHandler } from "react";
-
-interface Result {
-  symbol: string;
-  description: string;
-}
+import { Result } from "../types";
 
 export default function Research() {
   const { startSearch, success, errorMessage, clear, updateField, state } =

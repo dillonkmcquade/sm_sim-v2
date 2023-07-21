@@ -7,7 +7,7 @@ const batchImport = async () => {
     const { tickers } = collections;
     if (!tickers) return;
     const fetchTickers = await fetch(
-      `https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${process.env.FINNHUB_KEY}`
+      `https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${process.env.FINNHUB_KEY}`,
     );
     data = await fetchTickers.json();
     if (!data) {
@@ -18,8 +18,10 @@ const batchImport = async () => {
       console.error(insertTickers);
       return;
     }
-  } catch (error: any) {
-    console.error(error.message);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
   }
 };
 

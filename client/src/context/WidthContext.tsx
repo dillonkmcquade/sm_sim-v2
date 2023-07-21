@@ -1,10 +1,8 @@
 import { useState, useEffect, createContext, ReactNode } from "react";
+import { WidthContent } from "../types";
 
-export interface WidthContent {
-  width: number;
-}
 
-export const WidthContext = createContext<WidthContent | null>(null);
+export const WidthContext = createContext<WidthContent>({width: window.screen.width});
 
 export const WidthProvider = ({ children }: {children: ReactNode}) => {
   const [width, setWidth] = useState(window.screen.width);
