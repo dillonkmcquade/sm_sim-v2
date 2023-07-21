@@ -71,7 +71,7 @@ export default function Profile() {
       });
       const data = await response.json();
       if (data.status === 200) {
-        success(null);
+        window.sessionStorage.clear();
         return logout({ logoutParams: { returnTo: "http://localhost:3000" } });
       } else {
         errorMessage(data.message);

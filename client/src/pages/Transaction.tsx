@@ -12,7 +12,7 @@ import Button from "../components/Button";
 import Alert from "../components/Alert";
 import { useCurrentUser } from "../context/UserContext";
 import { getTotalValue } from "../utils/utils";
-import type {Holding} from "../types";
+import type {Holding, User} from "../types";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -50,9 +50,10 @@ export default function Transaction() {
             },
           },
         );
-        const data = await response.json();
+        const data= await response.json();
+        const userObj: User = data.data;
         if (data.status === 200) {
-          setCurrentUser({ ...currentUser, balance: data.data?.balance });
+          setCurrentUser({ ...currentUser, balance: userObj.balance });
         } else {
           return errorMessage(data.message);
         }
@@ -132,7 +133,7 @@ export default function Transaction() {
       const parsed = await response.json();
       if (parsed.status === 200) {
         const newTotal = await getTotalValue(parsed.holdings);
-        const newUserObj = {
+        const newUserObj: User = {
           ...currentUser,
           holdings: parsed.holdings,
           balance: parsed.balance,

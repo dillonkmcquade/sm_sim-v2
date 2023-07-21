@@ -11,8 +11,8 @@ export function getInvestedValue(holdings: Holding[]) {
 }
 
 //create object containing {ticker: price} combinations
-async function getPrices(holdings: Holding[]): Promise<{ ticker: number }[]> {
-  const prices: any = {};
+async function getPrices(holdings: Holding[]) {
+  const prices: { [key: string]: number } = {};
   const uniqueTickers = Array.from(
     new Set(holdings.map((holding) => holding.ticker)),
   );
@@ -46,7 +46,7 @@ async function getPrices(holdings: Holding[]): Promise<{ ticker: number }[]> {
 
 //returns total value of holdings
 export async function getTotalValue(holdings: Holding[]) {
-  const prices: any = await getPrices(holdings);
+  const prices = await getPrices(holdings);
 
   return holdings.reduce((accumulator: number, currentValue: Holding) => {
     return accumulator + currentValue.quantity * prices[currentValue.ticker];

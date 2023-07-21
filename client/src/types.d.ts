@@ -1,13 +1,27 @@
-import React from "react";
-import { User as AuthUser } from "@auth0/auth0-react";
+import React, { SetStateAction } from "react";
 
 interface MenuContent {
   menuVisible: boolean;
   setMenuVisible: React.Dispatch<boolean>;
 }
+interface User {
+  _id: string;
+  balance: number;
+  holdings: Holding[];
+  watchList: string[];
+  telephone?: string;
+  timestamp?: number;
+  total?: number;
+  sub: string;
+  address?: string;
+  picture: string;
+  name: string;
+  nickname: string;
+  email: string;
+}
 interface GlobalContent {
   currentUser: User;
-  setCurrentUser: React.Dispatch<User | null>;
+  setCurrentUser: React.Dispatch<SetStateAction<User>>;
 }
 
 type Props = {
@@ -20,15 +34,6 @@ interface Holding {
   price: number;
 }
 
-interface User extends AuthUser {
-  _id: string;
-  balance: number;
-  holdings: Holding[];
-  watchList: string[];
-  telephone?: string;
-  timestamp?: Date;
-  total?: number;
-}
 interface WidthContent {
   width: number;
 }

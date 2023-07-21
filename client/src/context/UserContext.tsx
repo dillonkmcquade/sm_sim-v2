@@ -1,10 +1,10 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import {Props, GlobalContent} from "../types";  
+import {Props, GlobalContent , User} from "../types";  
 
 const UserContext = createContext<GlobalContent | null>(null);
 
 export const UserProvider = ({ children }: Props) => {
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [currentUser, setCurrentUser] = useState<User>(() => {
     const cached = window.sessionStorage.getItem("user");
     if (cached) {
       return JSON.parse(cached);
