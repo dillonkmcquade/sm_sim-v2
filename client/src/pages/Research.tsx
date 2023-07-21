@@ -65,8 +65,7 @@ export default function Research() {
       const { REACT_APP_SERVER_URL } = process.env;
       const controller = new AbortController();
       const timeout = setTimeout(()=> {
-        controller.abort();
-        throw new Error("Please retry, it may take a moment for the server to boot up after inactivity.")
+        controller.abort("Please retry, it may take a moment for the server to boot up after inactivity.");
       }, 8000)
       const request = await fetch(
         `${REACT_APP_SERVER_URL}/search?name=${inputText}`, {signal: controller.signal}
