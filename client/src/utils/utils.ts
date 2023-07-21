@@ -28,6 +28,9 @@ async function getPrices(holdings: Holding[]): Promise<{ ticker: number }[]> {
           `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${REACT_APP_FINNHUB_KEY}`,
         );
         const parsed = await response.json();
+        if (!parsed.c) {
+          throw new Error(`Error fetching ${ticker} quote`);
+        }
         prices[ticker] = parsed.c;
       }
     });

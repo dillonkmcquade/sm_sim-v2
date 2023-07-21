@@ -74,8 +74,12 @@ export default function Transaction() {
         if (data.data?.balance <= 0) {
           errorMessage("Insufficient funds");
         }
-      } catch (error: any) {
-        errorMessage(error.message);
+      } catch (error) {
+        if (error instanceof Error){
+          errorMessage(error.message);
+        }else {
+          errorMessage("Error fetching balance")
+        }
       }
     };
     if (!error) {
