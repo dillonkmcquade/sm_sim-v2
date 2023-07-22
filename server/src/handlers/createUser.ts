@@ -2,7 +2,7 @@
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 import { ObjectId } from "mongodb";
-import { User } from "../../../client/src/types";
+import { User } from "../types";
 
 export const createUser = async (req: Request, res: Response) => {
   const { user } = req.body;

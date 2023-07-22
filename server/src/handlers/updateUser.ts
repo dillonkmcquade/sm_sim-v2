@@ -1,7 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
-import type { Update } from "../../../client/src/types";
+import type { Update } from "../types";
 
 export const updateUser = async (req: Request, res: Response) => {
   const { _id } = req.params;

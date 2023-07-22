@@ -1,7 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
-import type { Holding } from "../../../client/src/types";
+import type { Holding } from "../types";
 
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
