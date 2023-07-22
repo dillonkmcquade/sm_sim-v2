@@ -1,10 +1,15 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+import { Holding } from "../../../client/src/types";
 
 export const sellStock = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { _id, quantity, currentPrice } = req.body;
+  const {
+    _id,
+    quantity,
+    currentPrice,
+  }: { _id: string; quantity: number; currentPrice: number } = req.body;
   if (!id || !currentPrice || !_id || !id) {
     return res.status(400).json({
       status: 400,
@@ -20,7 +25,7 @@ export const sellStock = async (req: Request, res: Response) => {
       return res.status(404).json({ status: 200, message: "user not found" });
     }
 
-    const newTransaction = {
+    const newTransaction: Holding = {
       ticker: id,
       quantity: -quantity,
       price: currentPrice,

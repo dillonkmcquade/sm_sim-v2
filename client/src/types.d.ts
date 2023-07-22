@@ -2,7 +2,7 @@ import React, { SetStateAction } from "react";
 
 interface MenuContent {
   menuVisible: boolean;
-  setMenuVisible: React.Dispatch<boolean>;
+  setMenuVisible: React.Dispatch<SetStateAction<boolean>>;
 }
 interface User {
   _id: string;
@@ -18,6 +18,7 @@ interface User {
   name: string;
   nickname: string;
   email: string;
+  [key: string]: any;
 }
 interface GlobalContent {
   currentUser: User;
@@ -78,4 +79,12 @@ interface ButtonProps {
   border?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
+}
+
+interface Update {
+  name?: string;
+  nickname?: string;
+  email?: string;
+  address?: string;
+  telephone?: string;
 }

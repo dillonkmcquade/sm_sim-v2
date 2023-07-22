@@ -1,11 +1,16 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+import type { Holding } from "../../../client/src/types";
 
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { _id, quantity, currentPrice } = req.body;
-  if (!id || !currentPrice || !_id || !id) {
+  const {
+    _id,
+    quantity,
+    currentPrice,
+  }: { _id: string; quantity: number; currentPrice: number } = req.body;
+  if (!id || !currentPrice || !_id) {
     return res.status(400).json({
       status: 400,
       data: req.body,
@@ -20,7 +25,7 @@ export const buyStock = async (req: Request, res: Response) => {
       return res.status(404).json({ status: 200, message: "user not found" });
     }
 
-    const newHolding = { ticker: id, quantity, price: currentPrice };
+    const newHolding: Holding = { ticker: id, quantity, price: currentPrice };
     const amountToSubtract = Number(currentPrice) * quantity;
 
     if (user.balance < amountToSubtract) {

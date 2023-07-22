@@ -1,6 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+import type { Update } from "../../../client/src/types";
 
 export const updateUser = async (req: Request, res: Response) => {
   const { _id } = req.params;
@@ -12,6 +13,32 @@ export const updateUser = async (req: Request, res: Response) => {
       status: 400,
       message: "No update paramaters given.",
       data: req.body,
+    });
+  }
+
+  //limit the updateable user fields
+  function isUpdate(obj: any): boolean {
+    const dummyData: Update = {
+      name: "string",
+      nickname: "string",
+      email: "string",
+      address: "string",
+      telephone: "string",
+    };
+    let result = true;
+    const keys = Object.keys(obj);
+    keys.forEach((key) => {
+      const expectedKeys = Object.keys(dummyData);
+      if (!expectedKeys.includes(key)) {
+        result = false;
+      }
+    });
+    return result;
+  }
+  if (!isUpdate(req.body)) {
+    return res.status(400).json({
+      status: 400,
+      message: "Bad request, unrecognized properties of request body",
     });
   }
 

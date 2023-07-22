@@ -1,9 +1,9 @@
 import { useReducer } from "react";
 import { useCurrentUser } from "../context/UserContext";
-import type { User } from "../types";
+import type { Update, User } from "../types";
 
 const initialState = {
-  formData: {},
+  formData: {} as Update,
   loading: false,
   error: "",
   confirmed: false,

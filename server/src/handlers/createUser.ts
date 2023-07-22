@@ -2,6 +2,8 @@
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 import { ObjectId } from "mongodb";
+import { User } from "../../../client/src/types";
+
 export const createUser = async (req: Request, res: Response) => {
   const { user } = req.body;
   if (!user) {
@@ -15,7 +17,7 @@ export const createUser = async (req: Request, res: Response) => {
         .status(200)
         .json({ status: 200, data: duplicate, message: "User exists" });
     }
-    const newUser = {
+    const newUser: User = {
       _id: new ObjectId(),
       balance: 1000000,
       holdings: [],

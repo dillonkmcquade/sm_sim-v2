@@ -3,7 +3,11 @@ import { Response, Request } from "express";
 import { collections } from "../services/database.service";
 
 export const toggleWatchList = async (req: Request, res: Response) => {
-  const { _id, ticker, isWatched } = req.body;
+  const {
+    _id,
+    ticker,
+    isWatched,
+  }: { _id: string; ticker: string; isWatched: boolean } = req.body;
   if (!ticker || !_id || isWatched === undefined) {
     return res.status(400).json({
       status: 400,
@@ -43,12 +47,12 @@ export const toggleWatchList = async (req: Request, res: Response) => {
         .status(400)
         .json({ status: 400, message: "Could not update user watch list" });
     }
-    const newUser: any = await users?.findOne({ sub: _id });
+    const newUser = await users?.findOne({ sub: _id });
 
     return res.status(200).json({
       status: 200,
       message: "Watch list updated successfully",
-      data: newUser.watchList,
+      data: newUser?.watchList,
     });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
