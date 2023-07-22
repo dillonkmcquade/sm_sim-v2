@@ -1,6 +1,6 @@
 import { MongoClient, Collection, Db } from "mongodb";
 import dotenv from "dotenv";
-import { User } from "../../../client/src/types";
+import { User } from "../types";
 
 export const collections: {
   users?: Collection<User>;
