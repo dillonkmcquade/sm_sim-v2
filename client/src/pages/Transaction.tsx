@@ -118,7 +118,7 @@ export default function Transaction() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${REACT_APP_SERVER_URL}/${action}/${id}`, {
+      const response = await fetch(`${REACT_APP_SERVER_URL}/transaction/${action}/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,

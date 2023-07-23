@@ -8,13 +8,9 @@ import { auth } from "express-oauth2-jwt-bearer";
 
 import { connectToDatabase } from "./services/database.service";
 import { queryTickerByName } from "./handlers/queryTickerByName";
-import { createUser } from "./handlers/createUser";
-import { getUser } from "./handlers/getUser";
-import { buyStock } from "./handlers/buyStock";
-import { sellStock } from "./handlers/sellStock";
-import { toggleWatchList } from "./handlers/toggleWatchList";
-import { updateUser } from "./handlers/updateUser";
-import { deleteUser } from "./handlers/deleteUser";
+
+import userRouter from "./routes/user";
+import transactionRouter from "./routes/transaction";
 
 dotenv.config();
 
@@ -42,16 +38,12 @@ connectToDatabase()
         res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
         next();
       })
+
       .get("/search", queryTickerByName)
 
       //Auth required
-      .post("/user", jwtCheck, createUser)
-      .delete("/user", jwtCheck, deleteUser)
-      .patch("/user/update/:_id", jwtCheck, updateUser)
-      .get("/user/:_id", jwtCheck, getUser)
-      .patch("/buy/:id", jwtCheck, buyStock)
-      .patch("/sell/:id", jwtCheck, sellStock)
-      .patch("/toggleWatchList", jwtCheck, toggleWatchList)
+      .use("/user", jwtCheck, userRouter)
+      .use("/transaction", jwtCheck, transactionRouter)
 
       .get("*", (_req, res) => {
         return res.send("<h1>Does not exist</h1>");
