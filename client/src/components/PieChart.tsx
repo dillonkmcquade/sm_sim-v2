@@ -1,9 +1,10 @@
 import { ResponsivePie } from "@nivo/pie";
 import { getUniques } from "../utils/utils";
+import { User } from "../types";
 
-export default function PieChart({ data }) {
+export default function PieChart({ data }: {data: User}) {
   //Format data to satisfy nivo
-  const formatted = (data) => {
+  const formatted = (data: User) => {
     const uniques = getUniques(data.holdings);
     const newData = uniques.map((key) => {
       return {
