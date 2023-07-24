@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import compression from "compression";
 
-import { auth } from "express-oauth2-jwt-bearer";
-
 import { connectToDatabase } from "./services/database.service";
 import { queryTickerByName } from "./handlers/queryTickerByName";
 
@@ -17,11 +15,6 @@ dotenv.config();
 
 const server = express();
 const PORT = process.env.PORT || 3001;
-
-const jwtCheck = auth({
-  audience: "my-api",
-  issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
-});
 
 connectToDatabase()
   .then(() => {
@@ -46,8 +39,8 @@ connectToDatabase()
       .use("/stock", stockRouter)
 
       //Auth required
-      .use("/user", jwtCheck, userRouter)
-      .use("/transaction", jwtCheck, transactionRouter)
+      .use("/user", userRouter)
+      .use("/transaction", transactionRouter)
 
       .get("/search", queryTickerByName)
       .get("*", (_req, res) => {

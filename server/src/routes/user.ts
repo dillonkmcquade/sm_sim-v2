@@ -1,3 +1,4 @@
+import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
 import { createUser } from "../handlers/createUser";
 import { deleteUser } from "../handlers/deleteUser";
@@ -6,7 +7,12 @@ import { getUser } from "../handlers/getUser";
 import { toggleWatchList } from "../handlers/toggleWatchList";
 
 const userRouter = Router();
+const jwtCheck = auth({
+  audience: "my-api",
+  issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
+});
 
+userRouter.use(jwtCheck);
 userRouter.post("/", createUser);
 userRouter.delete("/", deleteUser);
 userRouter.patch("/update/:_id", updateUser);
