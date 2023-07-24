@@ -34,9 +34,12 @@ connectToDatabase()
         res.header("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
         res.header(
           "Access-Control-Allow-Headers",
-          "Options, Content-Type, Accept, Authorization",
+          "Content-Type, Accept, Authorization",
         );
-        res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+        res.header(
+          "Access-Control-Allow-Methods",
+          "OPTIONS, GET, POST, PATCH, DELETE",
+        );
         next();
       })
 
