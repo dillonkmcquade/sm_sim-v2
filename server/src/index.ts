@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import cors from "cors";
 
 import { connectToDatabase } from "./services/database.service";
 import { queryTickerByName } from "./handlers/queryTickerByName";
@@ -21,19 +22,7 @@ connectToDatabase()
       .use(express.json())
       .use(helmet())
       .use(morgan("dev"))
-      .use(function (_req, res, next) {
-        res.header("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
-        res.header(
-          "Access-Control-Allow-Headers",
-          "Content-Type, Accept, Authorization",
-        );
-        res.header(
-          "Access-Control-Allow-Methods",
-          "OPTIONS, GET, POST, PATCH, DELETE",
-        );
-        next();
-      })
-
+      .use(cors({ origin: process.env.ALLOWED_ORIGIN }))
       .use("/stock", stockRouter)
 
       //Auth required

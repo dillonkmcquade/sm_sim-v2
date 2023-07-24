@@ -1,5 +1,4 @@
 import { auth } from "express-oauth2-jwt-bearer";
-import cors from "cors";
 import { Router } from "express";
 import { createUser } from "../handlers/createUser";
 import { deleteUser } from "../handlers/deleteUser";
@@ -15,7 +14,6 @@ const jwtCheck = auth({
 });
 
 userRouter
-  .use(cors({ origin: process.env.ALLOWED_ORIGIN }))
   .use(jwtCheck)
   .post("/", createUser)
   .delete("/", deleteUser)

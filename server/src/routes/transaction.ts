@@ -1,5 +1,4 @@
 import { Router } from "express";
-import cors from "cors";
 import { auth } from "express-oauth2-jwt-bearer";
 import { buyStock } from "../handlers/buyStock";
 import { sellStock } from "../handlers/sellStock";
@@ -11,7 +10,6 @@ const jwtCheck = auth({
 });
 
 transactionRouter
-  .use(cors())
   .use(jwtCheck)
   .patch("/buy/:id", buyStock)
   .patch("/sell/:id", sellStock);
