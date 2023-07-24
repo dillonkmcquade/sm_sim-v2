@@ -26,6 +26,9 @@ export default function App() {
       try {
         const { REACT_APP_SERVER_URL } = process.env;
         const accessToken = await getAccessTokenSilently();
+        if (!accessToken) {
+          throw new Error("No accessToken");
+        }
         const request = await fetch(`${REACT_APP_SERVER_URL}/user`, {
           method: "POST",
           headers: {

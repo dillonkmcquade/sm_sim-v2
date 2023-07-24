@@ -8,8 +8,8 @@ import { toggleWatchList } from "../handlers/toggleWatchList";
 
 const userRouter = Router();
 const jwtCheck = auth({
-  audience: "my-api",
   issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
+  audience: "my-api",
 });
 
 userRouter.use(jwtCheck);
