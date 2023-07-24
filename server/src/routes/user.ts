@@ -15,7 +15,7 @@ const jwtCheck = auth({
 });
 
 userRouter
-  .use(cors())
+  .use(cors({ origin: process.env.ALLOWED_ORIGIN }))
   .use(jwtCheck)
   .post("/", createUser)
   .delete("/", deleteUser)
