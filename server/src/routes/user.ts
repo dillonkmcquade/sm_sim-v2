@@ -1,4 +1,5 @@
 import { auth } from "express-oauth2-jwt-bearer";
+import cors from "cors";
 import { Router } from "express";
 import { createUser } from "../handlers/createUser";
 import { deleteUser } from "../handlers/deleteUser";
@@ -7,16 +8,19 @@ import { getUser } from "../handlers/getUser";
 import { toggleWatchList } from "../handlers/toggleWatchList";
 
 const userRouter = Router();
+
 const jwtCheck = auth({
   issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
   audience: "my-api",
 });
 
-userRouter.use(jwtCheck);
-userRouter.post("/", createUser);
-userRouter.delete("/", deleteUser);
-userRouter.patch("/update/:_id", updateUser);
-userRouter.get("/:_id", getUser);
-userRouter.patch("/toggleWatchList", toggleWatchList);
+userRouter
+  .use(cors())
+  .use(jwtCheck)
+  .post("/", createUser)
+  .delete("/", deleteUser)
+  .patch("/update/:_id", updateUser)
+  .get("/:_id", getUser)
+  .patch("/toggleWatchList", toggleWatchList);
 
 export default userRouter;

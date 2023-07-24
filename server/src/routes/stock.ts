@@ -5,8 +5,9 @@ import { getNews } from "../handlers/getNews";
 
 const stockRouter = Router();
 
-stockRouter.get("/news/:ticker", getNews);
-stockRouter.get("/quote/:ticker", getQuote);
-stockRouter.get("/candle/:ticker", getCandle);
+stockRouter
+  .get("/news/:ticker", getNews)
+  .get("/quote/:ticker", getQuote)
+  .get("/candle/:ticker", getCandle);
 
 export default stockRouter;
