@@ -16,7 +16,6 @@ async function getPrices(holdings: Holding[]) {
   const uniqueTickers = Array.from(
     new Set(holdings.map((holding) => holding.ticker)),
   );
-  const { REACT_APP_FINNHUB_KEY } = process.env;
   try {
     const priceRequests = uniqueTickers.map(async (ticker) => {
       const cached = window.sessionStorage.getItem(ticker);
@@ -25,13 +24,13 @@ async function getPrices(holdings: Holding[]) {
         prices[ticker] = JSON.parse(cached).c;
       } else {
         const response = await fetch(
-          `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${REACT_APP_FINNHUB_KEY}`,
+          `${process.env.REACT_APP_SERVER_URL}/stock/quote/${ticker}`,
         );
         const parsed = await response.json();
-        if (!parsed.c) {
+        if (!parsed.data.c) {
           throw new Error(`Error fetching ${ticker} quote`);
         }
-        prices[ticker] = parsed.c;
+        prices[ticker] = parsed.data.c;
       }
     });
 

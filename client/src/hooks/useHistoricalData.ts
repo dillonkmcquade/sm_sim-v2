@@ -72,16 +72,13 @@ export default function useHistoricalData(ticker: string) {
 
   useEffect(() => {
     const fetchCandleData = async () => {
-      const { REACT_APP_FINNHUB_KEY } = process.env;
       dispatch({ type: "loading" });
       try {
         const response = await fetch(
-          `https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=${resolution}&from=${from}&to=${Math.floor(
-            Date.now() / 1000,
-          )}&token=${REACT_APP_FINNHUB_KEY}`,
+          `${process.env.REACT_APP_SERVER_URL}/stock/candle/${ticker}?resolution=${resolution}&from=${from}`,
         );
         const parsed = await response.json();
-        setData(parsed);
+        setData(parsed.data);
 
         dispatch({ type: "finished" });
       } catch (error) {

@@ -11,6 +11,7 @@ import { queryTickerByName } from "./handlers/queryTickerByName";
 
 import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
+import stockRouter from "./routes/stock";
 
 dotenv.config();
 
@@ -40,14 +41,14 @@ connectToDatabase()
       })
 
       .get("/search", queryTickerByName)
+      .use("/stock", stockRouter)
+      .get("*", (_req, res) => {
+        return res.send("<h1>Does not exist</h1>");
+      })
 
       //Auth required
       .use("/user", jwtCheck, userRouter)
-      .use("/transaction", jwtCheck, transactionRouter)
-
-      .get("*", (_req, res) => {
-        return res.send("<h1>Does not exist</h1>");
-      });
+      .use("/transaction", jwtCheck, transactionRouter);
 
     server.listen(PORT, () => {
       console.log("Listening on port %d", PORT);

@@ -18,16 +18,15 @@ export default function useTickerNewsData(ticker: string) {
     async function getTickerData() {
       setIsLoadingNews(true);
       try {
-        const { REACT_APP_POLYGON_KEY } = process.env;
         const request = await fetch(
-          `https://api.polygon.io/v2/reference/news?ticker=${ticker}&apiKey=${REACT_APP_POLYGON_KEY}`,
+          `${process.env.REACT_APP_SERVER_URL}/stock/news/${ticker}`,
         );
         const response = await request.json();
-        if (response.results) {
-          setNews(response.results);
+        if (response.data.results) {
+          setNews(response["data"].results);
           window.localStorage.setItem(
             `${ticker}`,
-            JSON.stringify(response.results),
+            JSON.stringify(response["data"].results),
           );
         }
       } catch (err) {

@@ -19,18 +19,20 @@ export default function useQuote(ticker: string) {
   const [loadingQuote, setLoadingQuote] = useState(false);
   useEffect(() => {
     async function getQuote() {
-      const { REACT_APP_FINNHUB_KEY } = process.env;
       setLoadingQuote(true);
       try {
         const response = await fetch(
-          `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${REACT_APP_FINNHUB_KEY}`,
+          `${process.env.REACT_APP_SERVER_URL}/stock/quote/${ticker}`,
         );
         const parsed = await response.json();
-        if (parsed.c) {
-          setQuote(parsed);
+        if (parsed.data.c) {
+          setQuote(parsed["data"]);
           window.sessionStorage.setItem(
             ticker,
-            JSON.stringify({ ...parsed, t: Math.floor(Date.now() / 1000) }),
+            JSON.stringify({
+              ...parsed["data"],
+              t: Math.floor(Date.now() / 1000),
+            }),
           );
           setLoadingQuote(false);
         } else {
