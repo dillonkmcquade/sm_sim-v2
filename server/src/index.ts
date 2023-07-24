@@ -34,21 +34,22 @@ connectToDatabase()
         res.header("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
         res.header(
           "Access-Control-Allow-Headers",
-          "Content-Type, Accept, Authorization",
+          "Options, Content-Type, Accept, Authorization",
         );
         res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
         next();
       })
 
-      .get("/search", queryTickerByName)
       .use("/stock", stockRouter)
-      .get("*", (_req, res) => {
-        return res.send("<h1>Does not exist</h1>");
-      })
 
       //Auth required
       .use("/user", jwtCheck, userRouter)
-      .use("/transaction", jwtCheck, transactionRouter);
+      .use("/transaction", jwtCheck, transactionRouter)
+
+      .get("/search", queryTickerByName)
+      .get("*", (_req, res) => {
+        return res.send("<h1>Does not exist</h1>");
+      });
 
     server.listen(PORT, () => {
       console.log("Listening on port %d", PORT);
