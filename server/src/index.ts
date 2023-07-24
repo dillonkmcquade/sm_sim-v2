@@ -2,7 +2,6 @@ import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import helmet from "helmet";
-import compression from "compression";
 
 import { connectToDatabase } from "./services/database.service";
 import { queryTickerByName } from "./handlers/queryTickerByName";
@@ -21,7 +20,6 @@ connectToDatabase()
     server
       .use(express.json())
       .use(helmet())
-      .use(compression())
       .use(morgan("dev"))
       .use(function (_req, res, next) {
         res.header("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);

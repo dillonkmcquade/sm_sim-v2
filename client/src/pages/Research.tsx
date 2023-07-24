@@ -70,7 +70,9 @@ export default function Research() {
         return
       }, 5000)
       const request = await fetch(
-        `${REACT_APP_SERVER_URL}/search?name=${inputText}`, {signal: controller.signal}
+        `${REACT_APP_SERVER_URL}/search?name=${inputText}`, {
+          signal: controller.signal
+        }
       );
       const response = await request.json();
       if (response.status === 200) {
