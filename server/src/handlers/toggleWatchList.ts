@@ -1,6 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+import type { User } from "../types";
 
 export const toggleWatchList = async (req: Request, res: Response) => {
   const {
@@ -17,7 +18,7 @@ export const toggleWatchList = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
-    const user = await users?.findOne({ sub: _id });
+    const user = await users?.findOne<User>({ sub: _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
     }
@@ -47,7 +48,7 @@ export const toggleWatchList = async (req: Request, res: Response) => {
         .status(400)
         .json({ status: 400, message: "Could not update user watch list" });
     }
-    const newUser = await users?.findOne({ sub: _id });
+    const newUser = await users?.findOne<User>({ sub: _id });
 
     return res.status(200).json({
       status: 200,

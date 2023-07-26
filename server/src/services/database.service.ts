@@ -1,10 +1,10 @@
 import { MongoClient, Collection, Db } from "mongodb";
 import dotenv from "dotenv";
-import { User } from "../types";
+import { User, Ticker } from "../types";
 
 export const collections: {
   users?: Collection<User>;
-  tickers?: Collection;
+  tickers?: Collection<Ticker>;
 } = {};
 
 export async function connectToDatabase() {
@@ -26,7 +26,7 @@ export async function connectToDatabase() {
 
   const userCollection: Collection<User> = db.collection("users");
 
-  const tickerCollection: Collection = db.collection("tickers");
+  const tickerCollection: Collection<Ticker> = db.collection("tickers");
 
   collections.users = userCollection;
   collections.tickers = tickerCollection;

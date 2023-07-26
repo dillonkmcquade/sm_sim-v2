@@ -1,6 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
+import { Ticker } from "../types";
 
 export const queryTickerByName = async (req: Request, res: Response) => {
   const { name } = req.query;
@@ -24,10 +25,10 @@ export const queryTickerByName = async (req: Request, res: Response) => {
       { $limit: 10 },
       { $project: { symbol: 1, description: 1 } },
     ];
-    let data = await tickers?.aggregate(agg).toArray();
+    let data = await tickers?.aggregate<Ticker>(agg).toArray();
     if (data?.length === 0) {
       data = await tickers
-        ?.aggregate([
+        ?.aggregate<Ticker>([
           {
             $search: {
               index: "tickers",

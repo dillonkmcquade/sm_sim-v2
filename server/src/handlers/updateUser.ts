@@ -1,7 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
-import type { Update } from "../types";
+import type { Update, User } from "../types";
 
 export const updateUser = async (req: Request, res: Response) => {
   const { _id } = req.params;
@@ -52,7 +52,7 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const newUser = await users?.findOne({ sub: _id });
+    const newUser = await users?.findOne<User>({ sub: _id });
 
     return res.status(200).json({
       status: 200,

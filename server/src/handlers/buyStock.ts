@@ -1,7 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { collections } from "../services/database.service";
-import type { Holding } from "../types";
+import type { Holding, User } from "../types";
 
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -20,7 +20,7 @@ export const buyStock = async (req: Request, res: Response) => {
   }
   try {
     const { users } = collections;
-    const user = await users?.findOne({ sub: _id });
+    const user = await users?.findOne<User>({ sub: _id });
     if (!user) {
       return res.status(404).json({ status: 200, message: "user not found" });
     }

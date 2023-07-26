@@ -1,5 +1,6 @@
+import { ObjectId } from "mongodb";
 export interface User {
-  _id: string;
+  _id: ObjectId;
   balance: number;
   holdings: Holding[];
   watchList: string[];
@@ -27,4 +28,9 @@ export interface Update {
   email?: string;
   address?: string;
   telephone?: string;
+}
+
+export interface Ticker {
+  symbol: string;
+  description: string;
 }
