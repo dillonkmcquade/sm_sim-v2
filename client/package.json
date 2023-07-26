@@ -52,5 +52,15 @@
     "@types/styled-components": "^5.1.26",
     "typescript": "^5.1.6",
     "typescript-plugin-styled-components": "^3.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "d3-color@<3.1.0": ">=3.1.0",
+      "nth-check@<2.0.1": ">=2.0.1",
+      "semver@<5.7.2": ">=5.7.2",
+      "semver@>=6.0.0 <6.3.1": ">=6.3.1",
+      "semver@>=7.0.0 <7.5.2": ">=7.5.2",
+      "word-wrap@<1.2.4": ">=1.2.4"
+    }
   }
 }

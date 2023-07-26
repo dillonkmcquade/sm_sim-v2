@@ -4,6 +4,14 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  d3-color@<3.1.0: '>=3.1.0'
+  nth-check@<2.0.1: '>=2.0.1'
+  semver@<5.7.2: '>=5.7.2'
+  semver@>=6.0.0 <6.3.1: '>=6.3.1'
+  semver@>=7.0.0 <7.5.2: '>=7.5.2'
+  word-wrap@<1.2.4: '>=1.2.4'
+
 dependencies:
   '@auth0/auth0-react':
     specifier: ^2.1.1
@@ -4927,7 +4935,7 @@ packages:
       boolbase: 1.0.0
       css-what: 3.4.2
       domutils: 1.7.0
-      nth-check: 1.0.2
+      nth-check: 2.1.1
     dev: false
 
   /css-select@4.3.0:
@@ -5078,10 +5086,6 @@ packages:
       internmap: 1.0.1
     dev: false
 
-  /d3-color@2.0.0:
-    resolution: {integrity: sha512-SPXi0TSKPD4g9tw0NMZFnR95XVgUZiBH+uUTqQuDu1OsE2zomHU7ho0FISciaPvosimixwHFl3WHLGabv6dDgQ==}
-    dev: false
-
   /d3-color@3.1.0:
     resolution: {integrity: sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==}
     engines: {node: '>=12'}
@@ -5100,7 +5104,7 @@ packages:
   /d3-interpolate@2.0.1:
     resolution: {integrity: sha512-c5UhwwTs/yybcmTpAVqwSFl6vrQ8JZJoT5F7xNFK9pymv5C0Ymcc9/LIJHtYIggg/yS9YHw8i8O8tgb9pupjeQ==}
     dependencies:
-      d3-color: 2.0.0
+      d3-color: 3.1.0
     dev: false
 
   /d3-path@1.0.9:
@@ -5110,7 +5114,7 @@ packages:
   /d3-scale-chromatic@2.0.0:
     resolution: {integrity: sha512-LLqy7dJSL8yDy7NRmf6xSlsFZ6zYvJ4BcWFE4zBrOPnQERv9zj24ohnXKRbyi9YHnYV+HN1oEO3iFK971/gkzA==}
     dependencies:
-      d3-color: 2.0.0
+      d3-color: 3.1.0
       d3-interpolate: 2.0.1
     dev: false
 
@@ -8229,12 +8233,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       path-key: 3.1.1
-    dev: false
-
-  /nth-check@1.0.2:
-    resolution: {integrity: sha512-WeBOdju8SnzPN5vTUJYxYUxLeXpCaVP5i5e0LF8fg7WORF2Wd7wFX/pk0tYZk7s8T+J7VLy0Da6J1+wCT0AtHg==}
-    dependencies:
-      boolbase: 1.0.0
     dev: false
 
   /nth-check@2.1.1:
