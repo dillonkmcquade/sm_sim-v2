@@ -1,5 +1,4 @@
 import {
-  Alert,
   AlertTitle,
   CircularProgress,
   IconButton,
@@ -14,6 +13,7 @@ import TickerCard from "../components/TickerCard";
 import useSearchReducer from "../hooks/useSearchReducer";
 import { ChangeEventHandler, KeyboardEventHandler } from "react";
 import { Result } from "../types";
+import Alert from "../components/Alert";
 
 export default function Research() {
   const { startSearch, success, errorMessage, clear, updateField, state } =
@@ -145,12 +145,6 @@ export default function Research() {
         {error && (
           <Alert
             severity="error"
-            sx={{
-              backgroundColor: "rgb(22, 11, 11)",
-              width: "80vw",
-              borderRadius: "1rem",
-              margin: "1rem auto",
-            }}
           >
             <AlertTitle>Error</AlertTitle>
             {error}
