@@ -1,3 +1,3 @@
 #!/bin/bash
 
-podman run -dt -p 3001:3001 marketsim:latest
+podman run -it -p 3001:3001 marketsim:latest
