@@ -49,6 +49,6 @@ export default function useQuote(ticker: string) {
     if (!quote) {
       getQuote();
     }
-  }, [quote, ticker]);
+  }, [navigate, quote, ticker]);
   return { quote, loadingQuote };
 }

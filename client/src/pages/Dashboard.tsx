@@ -54,7 +54,7 @@ export default function Dashboard() {
     if (!currentUser || Date.now() - Number( currentUser.timestamp! ) > 300000) {
       getUser();
     }
-  }, [currentUser, user, isAuthenticated, getAccessTokenSilently]);
+  }, [setCurrentUser, currentUser, user, isAuthenticated, getAccessTokenSilently]);
 
   const investedValue = currentUser
     ? getInvestedValue(currentUser.holdings)

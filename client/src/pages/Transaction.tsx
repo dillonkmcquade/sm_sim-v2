@@ -1,4 +1,4 @@
-import { ChangeEvent ,  useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
@@ -12,7 +12,7 @@ import Button from "../components/Button";
 import Alert from "../components/Alert";
 import { useCurrentUser } from "../context/UserContext";
 import { getTotalValue } from "../utils/utils";
-import type {Holding, User} from "../types";
+import type { User, Holding} from "../types";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -34,31 +34,9 @@ export default function Transaction() {
   const [alignment, setAlignment] = useState(transactionType);
   const [shares, setShares] = useState(0);
   const { balance } = currentUser;
-  const { REACT_APP_SERVER_URL } = process.env;
 
   useEffect(() => {
-    //fetch most recent balance
-    const fetchBalance = async () => {
-      try {
-        const accessToken = await getAccessTokenSilently();
-        const response = await fetch(
-          `${REACT_APP_SERVER_URL}/user/${user?.sub}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        const data= await response.json();
-        const userObj: User = data.data;
-        if (data.status === 200) {
-          setCurrentUser({ ...currentUser, balance: userObj.balance });
-        } else {
-          return errorMessage(data.message);
-        }
-
-        const numOfShares = data.data?.holdings.reduce(
+        const numOfShares = currentUser.holdings.reduce(
           (accumulator: number, currentValue: Holding) => {
             if (currentValue.ticker === id) {
               return accumulator + currentValue.quantity;
@@ -72,21 +50,8 @@ export default function Transaction() {
         if (numOfShares >= 0) {
           setShares(numOfShares);
         }
-        if (data.data?.balance <= 0) {
-          errorMessage("Insufficient funds");
-        }
-      } catch (error) {
-        if (error instanceof Error){
-          errorMessage(error.message);
-        }else {
-          errorMessage("Error fetching balance")
-        }
-      }
-    };
-    if (!error) {
-      fetchBalance();
-    }
-  }, [getAccessTokenSilently, user, id, error]);
+    
+  }, [ currentUser, id ]);
 
   //toggling buy/sell buttons
   const toggleAction = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
@@ -115,10 +80,14 @@ export default function Transaction() {
     if (action === "sell" && quantity > shares) {
       return errorMessage("You cannot sell this many shares");
     }
+    if (action === "buy" && currentUser.balance <= 0) {
+      errorMessage("Insufficient funds");
+      return
+    }
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${REACT_APP_SERVER_URL}/transaction/${action}/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/transaction/${action}/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,

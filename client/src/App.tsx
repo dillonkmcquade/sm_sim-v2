@@ -48,7 +48,7 @@ export default function App() {
     if (isAuthenticated && !currentUser) {
       createUser();
     }
-  }, [getAccessTokenSilently, isAuthenticated, user, currentUser]);
+  }, [getAccessTokenSilently, isAuthenticated, user, currentUser, setCurrentUser]);
 
   return (
     <>
