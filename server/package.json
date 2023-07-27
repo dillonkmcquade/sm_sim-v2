@@ -2,15 +2,21 @@
   "name": "server",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Dillon McQuade",
+    "email": "dillonkmcquade@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dillonkmcquade/sm_sim.git"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon src/index.ts"
   },
-  "author": "Dillon McQuade",
-  "license": "MIT",
   "dependencies": {
-    "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.4",
