@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { getTotalValue } from "./utils/utils";
 import {useCurrentUser} from "./context/UserContext";
 
 import Header from "./components/Header";
@@ -15,13 +14,13 @@ import StockDetails from "./pages/StockDetails";
 import Research from "./pages/Research";
 import Transaction from "./pages/Transaction";
 import Profile from "./pages/Profile";
-import { Navigate } from "react-router-dom";
+import { getTotalValue } from "./utils/utils";
 
 export default function App() {
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const { currentUser, setCurrentUser } = useCurrentUser();
   useEffect(() => {
-    const createUser = async () => {
+    async function authenticateUser() {
       // create user if does not already exist
       try {
         const { REACT_APP_SERVER_URL } = process.env;
@@ -40,15 +39,15 @@ export default function App() {
           setCurrentUser({ ...response.data, total, timestamp: Date.now() });
         }
       } catch (err) {
-        if (err instanceof Error){
+        if (err instanceof Error) {
           console.error(err.message);
         }
       }
-    };
-    if (isAuthenticated && !currentUser) {
-      createUser();
     }
-  }, [getAccessTokenSilently, isAuthenticated, user, currentUser, setCurrentUser]);
+    if (isAuthenticated && !currentUser) {
+      authenticateUser();
+    }
+  }, [getAccessTokenSilently, user, setCurrentUser, isAuthenticated, currentUser]);
 
   return (
     <>
