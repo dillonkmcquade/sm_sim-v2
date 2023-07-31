@@ -11,7 +11,7 @@ export function getInvestedValue(holdings: Holding[]) {
 }
 
 //create object containing {ticker: price} combinations
-async function getPrices(holdings: Holding[]) {
+export async function getPrices(holdings: Holding[]) {
   const prices: { [key: string]: number } = {};
   const uniqueTickers = Array.from(
     new Set(holdings.map((holding) => holding.ticker)),
@@ -71,7 +71,7 @@ export function getUniques(holdings: Holding[]) {
   for (let i = 0; i < uniqueTickers.length; i++) {
     const ticker = uniqueTickers[i];
     const quantity = uniqueValues[ticker];
-    if (quantity === 0) continue;
+    if (quantity <= 0 || quantity === undefined) continue;
     newArr[i] = { ticker, quantity };
   }
 
