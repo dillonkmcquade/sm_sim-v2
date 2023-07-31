@@ -3,10 +3,10 @@ import { ResponsiveLine } from "@nivo/line";
 import { linearGradientDef } from "@nivo/core";
 import { WidthContext } from "../context/WidthContext";
 import { styled } from "styled-components";
-import type {Quote} from "../types";
+import type {Candle} from "../types";
 
 
-export default function LineChart({ id, data, small }: {id: string; data: Quote; small: boolean}) {
+export default function LineChart({ id, data, small }: {id: string; data: Candle; small: boolean}) {
   const { width } = useContext(WidthContext);
   const format = useMemo(() => {
     return data.c.map((idx: number, index: number) => {

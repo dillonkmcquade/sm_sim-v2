@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { Quote } from "../types";
 export default function useQuote(ticker: string) {
   const navigate = useNavigate();
-  const [quote, setQuote] = useState(() => {
+  const [quote, setQuote] = useState<Quote | null>(() => {
     const cached = window.sessionStorage.getItem(ticker);
     const parsed = cached === null ? null : JSON.parse(cached);
 

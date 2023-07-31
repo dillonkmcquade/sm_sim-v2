@@ -64,7 +64,7 @@ export default function Transaction() {
 
   //changing quantity via number input
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (Number( event.target.value) * quote.c  > balance) {
+    if (Number( event.target.value) * quote!.c  > balance) {
       errorMessage("Insufficient funds");
       return;
     } else {
@@ -96,7 +96,7 @@ export default function Transaction() {
         body: JSON.stringify({
           _id: user?.sub, //user UUID
           quantity: Number(quantity),
-          currentPrice: quote.c,
+          currentPrice: quote!.c,
         }),
       });
       const parsed = await response.json();

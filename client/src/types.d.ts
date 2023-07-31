@@ -58,14 +58,23 @@ interface Article {
   description: string;
   keywords: string[];
 }
-interface Quote {
+interface Candle {
   c: number[];
   h: number[];
   l: number[];
   o: number[];
-  pc: number[];
+  s: string;
   t: number[];
-  d: string;
+  v: number[];
+}
+interface Quote {
+  c: number;
+  h: number;
+  l: number;
+  o: number;
+  pc: number;
+  t: number;
+  d: number;
   dp: string;
 }
 interface ButtonProps {

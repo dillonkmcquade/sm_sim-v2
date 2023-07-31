@@ -2,6 +2,7 @@
 //Range options are defined in reducer below
 
 import { useEffect, useState, useReducer } from "react";
+import type { Candle } from "../types";
 
 const currentTime = Date.now() / 1000;
 const initialState = {
@@ -65,7 +66,7 @@ const reducer = (
 };
 
 export default function useHistoricalData(ticker: string) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Candle | null>(null);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { resolution, from, loading } = state;
   const currentDay = new Date().getDay();
