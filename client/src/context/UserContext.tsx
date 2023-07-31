@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import {Props, GlobalContent , User} from "../types";  
+import {Props, UserContent , User} from "../types";  
 
-const UserContext = createContext<GlobalContent | null>(null);
+const UserContext = createContext<UserContent | null>(null);
 
 export const UserProvider = ({ children }: Props) => {
   const [currentUser, setCurrentUser] = useState<User>(() => {

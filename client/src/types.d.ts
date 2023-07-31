@@ -20,7 +20,7 @@ interface User {
   email: string;
   [key: string]: any;
 }
-interface GlobalContent {
+interface UserContent {
   currentUser: User;
   setCurrentUser: React.Dispatch<SetStateAction<User>>;
 }
