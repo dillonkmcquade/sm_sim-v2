@@ -1,3 +1,3 @@
 #!/bin/bash
 
-podman run -it -p 3001:3001 marketsim:latest
+docker run -it --name marketsim-api -p 3001:3001 marketsim:latest
