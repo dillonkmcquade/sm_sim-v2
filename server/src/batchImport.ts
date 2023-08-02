@@ -1,21 +1,23 @@
 import * as dotenv from "dotenv";
-import { collections } from "./services/database.service";
+import { Client } from "pg";
+
 const batchImport = async () => {
   dotenv.config();
+  const client = new Client({
+    host: "localhost",
+    port: 5432,
+    database: "marketsim",
+    user: "postgres",
+    password: process.env.POSTGRES_PASSWORD,
+  });
+
   let data;
   try {
-    const { tickers } = collections;
-    if (!tickers) return;
     const fetchTickers = await fetch(
       `https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${process.env.FINNHUB_KEY}`,
     );
     data = await fetchTickers.json();
     if (!data) {
-      return;
-    }
-    const insertTickers = await tickers.insertMany(data);
-    if (insertTickers.insertedCount === 0) {
-      console.error(insertTickers);
       return;
     }
   } catch (err) {
