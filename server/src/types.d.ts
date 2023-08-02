@@ -22,13 +22,7 @@ export interface Holding {
   price: number;
 }
 
-export interface Update {
-  name?: string;
-  nickname?: string;
-  email?: string;
-  address?: string;
-  telephone?: string;
-}
+export type Update = Partial<User>;
 
 export interface Ticker {
   symbol: string;

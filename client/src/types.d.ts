@@ -90,10 +90,4 @@ interface ButtonProps {
   style?: React.CSSProperties;
 }
 
-interface Update {
-  name?: string;
-  nickname?: string;
-  email?: string;
-  address?: string;
-  telephone?: string;
-}
+type Update = Partial<User>;
