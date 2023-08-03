@@ -14,7 +14,7 @@ import StockDetails from "./pages/StockDetails";
 import Research from "./pages/Research";
 import Transaction from "./pages/Transaction";
 import Profile from "./pages/Profile";
-import { getTotalValue } from "./utils/utils";
+// import { getTotalValue } from "./utils/utils";
 
 export default function App() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
@@ -35,8 +35,8 @@ export default function App() {
         });
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
-          const total = await getTotalValue(response.data.holdings);
-          setCurrentUser({ ...response.data, total, timestamp: Date.now() });
+          // const total = await getTotalValue(response.data.holdings) || 0;
+          setCurrentUser({ ...response.data, timestamp: Date.now() });
         }
       } catch (err) {
         if (err instanceof Error) {

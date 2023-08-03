@@ -19,12 +19,12 @@ export default function Dashboard() {
 
   //get user object from backend
   useEffect(() => {
-    async function getUser() {
+    async function getHoldings() {
       try {
         const { REACT_APP_SERVER_URL } = process.env;
         const accessToken = await getAccessTokenSilently();
         const response = await fetch(
-          `${REACT_APP_SERVER_URL}/user/${user?.sub}`,
+          `${REACT_APP_SERVER_URL}/user/holdings`,
           {
             method: "GET",
             headers: {
@@ -34,9 +34,11 @@ export default function Dashboard() {
           },
         );
         const { data } = await response.json();
-        if (data?.holdings?.length === 0) return;
-        const total = await getTotalValue(data?.holdings); //potentially expensive function call
-        const modifiedObj: User = { ...data, total, timestamp: Date.now()  };
+        if (data?.length === 0) {
+          return setCurrentUser({...currentUser, total: 0, holdings: [], timestamp: Date.now()})
+        };
+        const total = await getTotalValue(data); //potentially expensive function call
+        const modifiedObj: User = { ...currentUser, holdings: data, total, timestamp: Date.now()  };
         setCurrentUser(modifiedObj);
       } catch (err) {
         if (err instanceof Error){
@@ -51,12 +53,12 @@ export default function Dashboard() {
     //Currently making separate api call to get the price of each stock,
     //This could get costly if the portfolio is large. Therefore we will
     //limit this by doing it once, caching it, and updating every 15 mins
-    if (!currentUser || Date.now() - Number( currentUser.timestamp! ) > 300000) {
-      getUser();
+    if (!currentUser.holdings || Date.now() - Number( currentUser.timestamp! ) > 300000) {
+      getHoldings();
     }
   }, [setCurrentUser, currentUser, user, isAuthenticated, getAccessTokenSilently]);
 
-  const investedValue = currentUser
+  const investedValue = currentUser.holdings && currentUser.holdings?.length
     ? getInvestedValue(currentUser.holdings)
     : 0;
 
@@ -87,7 +89,7 @@ export default function Dashboard() {
       </Profit>
 
       <div style={{ height: "500px", color: "black" }}>
-        {currentUser.holdings.length === 0 ? (
+        {!currentUser.holdings?.length ? (
           <FourOhFour>Nothing here yet.</FourOhFour>
         ) : (
           <PieChart data={currentUser} />
@@ -120,7 +122,7 @@ export default function Dashboard() {
       </AccountDetails>
       <Title>Holdings</Title>
       <Holdings>
-        {currentUser.holdings.length === 0 ? (
+        {!currentUser.holdings?.length ? (
           <FourOhFour>Nothing here yet.</FourOhFour>
         ) : (
           getUniques(currentUser.holdings).map((holding) => (
@@ -134,8 +136,8 @@ export default function Dashboard() {
       </Holdings>
       <Title>Watch List</Title>
       <WatchList>
-        {currentUser.watchList.length > 0 ? (
-          currentUser.watchList.map((item) => (
+        {currentUser.watch_list.length > 0 ? (
+          currentUser.watch_list.map((item) => (
             <TickerCard
               key={item}
               ticker={item}
@@ -149,7 +151,6 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
-
 const Wrapper = styled.div`
   position: relative;
   top: 56px;

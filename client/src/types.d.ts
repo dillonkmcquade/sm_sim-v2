@@ -8,7 +8,7 @@ interface User {
   _id: string;
   balance: number;
   holdings: Holding[];
-  watchList: string[];
+  watch_list: string[];
   telephone?: string;
   timestamp?: number;
   total?: number;

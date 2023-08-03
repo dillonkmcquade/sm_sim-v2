@@ -5,6 +5,7 @@ import { createUser } from "../handlers/createUser";
 import { updateUser } from "../handlers/updateUser";
 import { toggleWatchList } from "../handlers/toggleWatchList"; */
 import { getUser } from "../handlers/getUser";
+import { getHoldings } from "../handlers/getHoldings";
 
 const userRouter = Router();
 
@@ -12,7 +13,11 @@ const jwtCheck = auth({
   issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
   audience: "my-api",
 });
-userRouter.use(jwtCheck).post("/", createUser).get("/", getUser);
+userRouter
+  .use(jwtCheck)
+  .post("/", createUser)
+  .get("/", getUser)
+  .get("/holdings", getHoldings);
 /* .delete("/", deleteUser)
   .patch("/update/:_id", updateUser)
   .patch("/toggleWatchList", toggleWatchList); */

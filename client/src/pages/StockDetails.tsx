@@ -37,7 +37,7 @@ export default function StockDetails() {
   const [error, setError] = useState("");
   const [isWatched, setIsWatched] = useState(() => {
     if (currentUser) {
-      return currentUser.watchList.includes(id!);
+      return currentUser.watch_list.includes(id!);
     } else {
       return false;
     }
@@ -57,7 +57,7 @@ export default function StockDetails() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
-        setCurrentUser({ ...currentUser, watchList: parsed.data });
+        setCurrentUser({ ...currentUser, watch_list: parsed.data });
         return;
       }
     } catch (error) {
