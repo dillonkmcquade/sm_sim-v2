@@ -7,8 +7,8 @@ import cors from "cors";
 import { connectToDatabase } from "./services/database.service";
 import { queryTickerByName } from "./handlers/queryTickerByName";
 
-/* import userRouter from "./routes/user";
-import transactionRouter from "./routes/transaction";*/
+import userRouter from "./routes/user";
+// import transactionRouter from "./routes/transaction";*/
 import stockRouter from "./routes/stock";
 
 dotenv.config();
@@ -24,9 +24,9 @@ connectToDatabase()
       .use(morgan("dev"))
       .use(cors({ origin: process.env.ALLOWED_ORIGIN }))
       .use("/stock", stockRouter)
-      /*
       //Auth required
       .use("/user", userRouter)
+      /*
       .use("/transaction", transactionRouter) */
 
       .get("/search", queryTickerByName)

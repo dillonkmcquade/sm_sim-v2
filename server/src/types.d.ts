@@ -1,13 +1,9 @@
-import { ObjectId } from "mongodb";
 export interface User {
-  _id: ObjectId;
+  id?: string;
   balance: number;
-  holdings: Holding[];
-  watchList: string[];
   telephone?: string;
-  timestamp?: number;
+  created_at?: Date;
   total?: number;
-  sub: string;
   address?: string;
   picture: string;
   name: string;

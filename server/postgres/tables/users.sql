@@ -11,6 +11,6 @@ CREATE TABLE users (
   picture VARCHAR(100),
   email VARCHAR(40),
   watch_list TEXT[],
-  transaction_id VARCHAR(80)
+  transaction_id VARCHAR(80) GENERATED ALWAYS AS id
 );
 COMMIT;
