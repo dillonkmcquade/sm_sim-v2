@@ -14,7 +14,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "test": "inso run test 'MarketSim' --src ./.insomnia/Insomnia_2023-08-03.json"
   },
   "dependencies": {
     "@types/cors": "^2.8.13",

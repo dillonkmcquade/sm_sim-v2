@@ -4,13 +4,14 @@ import { db } from "../services/database.service";
 
 export const createUser = async (req: Request, res: Response) => {
   const { user } = req.body;
+  const auth = req.auth;
   if (!user) {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
     let data;
     const duplicate = await db.query("SELECT * FROM users WHERE auth0_id=$1", [
-      user.sub,
+      auth?.payload.sub,
     ]);
     if (duplicate.rowCount) {
       data = duplicate;
@@ -30,7 +31,7 @@ export const createUser = async (req: Request, res: Response) => {
           1000000,
           [],
           new Date(),
-          user.sub,
+          auth?.payload.sub,
         ],
       );
     }
