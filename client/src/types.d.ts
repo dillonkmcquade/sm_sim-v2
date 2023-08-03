@@ -31,7 +31,7 @@ type Props = {
 
 interface Holding {
   quantity: number;
-  ticker: string;
+  symbol: string;
   price: number;
 }
 

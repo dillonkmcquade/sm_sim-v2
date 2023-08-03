@@ -38,7 +38,7 @@ export default function Transaction() {
   useEffect(() => {
         const numOfShares = currentUser.holdings.reduce(
           (accumulator: number, currentValue: Holding) => {
-            if (currentValue.ticker === id) {
+            if (currentValue.symbol === id) {
               return accumulator + currentValue.quantity;
             } else {
               return accumulator + 0;

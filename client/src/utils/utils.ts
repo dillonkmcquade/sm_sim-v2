@@ -14,7 +14,7 @@ export function getInvestedValue(holdings: Holding[]) {
 export async function getPrices(holdings: Holding[]) {
   const prices: { [key: string]: number } = {};
   const uniqueTickers = Array.from(
-    new Set(holdings.map((holding) => holding.ticker)),
+    new Set(holdings.map((holding) => holding.symbol)),
   );
   try {
     const priceRequests = uniqueTickers.map(async (ticker) => {
@@ -48,7 +48,7 @@ export async function getTotalValue(holdings: Holding[]) {
   const prices = await getPrices(holdings);
 
   return holdings.reduce((accumulator: number, currentValue: Holding) => {
-    return accumulator + currentValue.quantity * prices[currentValue.ticker];
+    return accumulator + currentValue.quantity * prices[currentValue.symbol];
   }, 0);
 }
 
@@ -56,10 +56,10 @@ export function getUniques(holdings: Holding[]) {
   const uniqueValues: any = {};
   for (let i = 0; i < holdings.length; i++) {
     const holding = holdings[i];
-    if (uniqueValues[holding.ticker]) {
-      uniqueValues[holding.ticker] += holding.quantity;
+    if (uniqueValues[holding.symbol]) {
+      uniqueValues[holding.symbol] += holding.quantity;
     } else {
-      uniqueValues[holding.ticker] = holding.quantity;
+      uniqueValues[holding.symbol] = holding.quantity;
     }
   }
 
