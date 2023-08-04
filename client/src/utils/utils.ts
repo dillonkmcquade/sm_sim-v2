@@ -89,3 +89,22 @@ export function debounce(fn: Function, t: number) {
     }, t);
   };
 }
+
+export async function getHoldings(accessToken: string) {
+  try {
+    const { REACT_APP_SERVER_URL } = process.env;
+    const response = await fetch(`${REACT_APP_SERVER_URL}/user/holdings`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const { data } = await response.json();
+    return data;
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
+  }
+}

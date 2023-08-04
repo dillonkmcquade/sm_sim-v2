@@ -3,13 +3,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-import { getTotalValue, getInvestedValue, getUniques } from "../utils/utils";
+import { getInvestedValue, getUniques, getHoldings, getTotalValue } from "../utils/utils";
 
 import PieChart from "../components/PieChart";
 import TickerCard from "../components/TickerCard";
 import { CircularProgress } from "@mui/material";
 import { useCurrentUser } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
+
 import type { User } from "../types";
 
 export default function Dashboard() {
@@ -19,42 +20,21 @@ export default function Dashboard() {
 
   //get user object from backend
   useEffect(() => {
-    async function getHoldings() {
-      try {
-        const { REACT_APP_SERVER_URL } = process.env;
-        const accessToken = await getAccessTokenSilently();
-        const response = await fetch(
-          `${REACT_APP_SERVER_URL}/user/holdings`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        const { data } = await response.json();
-        if (data?.length === 0) {
-          return setCurrentUser({...currentUser, total: 0, holdings: [], timestamp: Date.now()})
-        };
-        const total = await getTotalValue(data); //potentially expensive function call
-        const modifiedObj: User = { ...currentUser, holdings: data, total, timestamp: Date.now()  };
-        setCurrentUser(modifiedObj);
-      } catch (err) {
-        if (err instanceof Error){
-          console.error(err.message);
-        }
-      }
-    }
     if (!isAuthenticated) {
       return;
     }
-
-    //Currently making separate api call to get the price of each stock,
-    //This could get costly if the portfolio is large. Therefore we will
-    //limit this by doing it once, caching it, and updating every 15 mins
-      getHoldings();
-  }, [setCurrentUser, isAuthenticated, getAccessTokenSilently]);
+    async function setTotalValue(){
+        const accessToken = await getAccessTokenSilently();
+        const holdings = await getHoldings(accessToken);
+        if (holdings.length === 0) {
+          return setCurrentUser({...currentUser, total: 0, holdings: [], timestamp: Date.now()})
+        };
+        const total = await getTotalValue(holdings); //potentially expensive function call
+        const modifiedObj: User = { ...currentUser, holdings, total, timestamp: Date.now()  };
+        setCurrentUser(modifiedObj);
+      }
+    setTotalValue();
+  }, [getHoldings, setCurrentUser, isAuthenticated, getAccessTokenSilently]);
 
   const investedValue = currentUser.holdings && currentUser.holdings?.length
     ? getInvestedValue(currentUser.holdings)

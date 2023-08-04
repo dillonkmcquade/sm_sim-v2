@@ -10,7 +10,10 @@ import usePurchaseReducer from "../hooks/usePurchaseReducer";
 import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert";
+
 import { useCurrentUser } from "../context/UserContext";
+import { getHoldings } from "../utils/utils";
+
 import type { User, Holding} from "../types";
 
 export default function Transaction() {
@@ -35,22 +38,28 @@ export default function Transaction() {
   const { balance } = currentUser;
 
   useEffect(() => {
-        const numOfShares = currentUser.holdings.reduce(
-          (accumulator: number, currentValue: Holding) => {
-            if (currentValue.symbol === id) {
-              return accumulator + currentValue.quantity;
-            } else {
-              return accumulator + 0;
-            }
-          },
-          0,
-        );
+  async function getShares(){
+      const accessToken = await getAccessTokenSilently();
+      const holdings = await getHoldings(accessToken);
+      const numOfShares = holdings.reduce(
+        (accumulator: number, currentValue: Holding) => {
+          if (currentValue.symbol === id) {
+            return accumulator + currentValue.quantity;
+          } else {
+            return accumulator + 0;
+          }
+        },
+        0,
+      );
 
-        if (numOfShares >= 0) {
-          setShares(numOfShares);
-        }
+      if (numOfShares >= 0) {
+        setShares(numOfShares);
+        setCurrentUser({...currentUser, holdings})
+      }
+    }
+    getShares();
     
-  }, [ currentUser, id ]);
+  }, [ id, getAccessTokenSilently, getHoldings, setCurrentUser ]);
 
   //toggling buy/sell buttons
   const toggleAction = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
