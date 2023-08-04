@@ -55,9 +55,6 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     await pool.query("ROLLBACK");
-    if (error instanceof Error) {
-      console.log(error.message);
-    }
     return res
       .status(500)
       .json({ status: 500, message: "Server error", data: req.body });
