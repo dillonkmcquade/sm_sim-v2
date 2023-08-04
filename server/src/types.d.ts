@@ -13,8 +13,9 @@ export interface User {
 }
 
 export interface Holding {
+  transaction_id: string;
   quantity: number;
-  ticker: string;
+  symbol: string;
   price: number;
 }
 

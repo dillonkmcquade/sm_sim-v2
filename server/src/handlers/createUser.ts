@@ -1,6 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
-import { db } from "../services/database.service";
+import { pool } from "../services/database.service";
+import type { User } from "../types";
 
 export const createUser = async (req: Request, res: Response) => {
   const { user } = req.body;
@@ -8,11 +9,13 @@ export const createUser = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
+  const client = await pool.connect();
   try {
     let data;
-    const duplicate = await db.query("SELECT * FROM users WHERE auth0_id=$1", [
-      auth?.payload.sub,
-    ]);
+    const duplicate = await client.query(
+      "SELECT * FROM users WHERE auth0_id=$1",
+      [auth?.payload.sub],
+    );
     if (duplicate.rowCount) {
       data = duplicate;
       return res.status(200).json({
@@ -21,7 +24,7 @@ export const createUser = async (req: Request, res: Response) => {
         data: data.rows[0],
       });
     } else {
-      data = await db.query(
+      data = await client.query<User>(
         "INSERT INTO users (name, email, nickname, picture, balance, watch_list, created_at, auth0_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
         [
           user.name,
@@ -42,5 +45,7 @@ export const createUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
+  } finally {
+    client.release();
   }
 };

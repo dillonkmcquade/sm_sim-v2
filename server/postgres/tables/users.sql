@@ -6,11 +6,10 @@ CREATE TABLE users (
   telephone VARCHAR(15),
   name VARCHAR(40),
   nickname VARCHAR(40),
-  balance INTEGER,
+  balance FLOAT,
   created_at TIMESTAMP,
   picture VARCHAR(100),
   email VARCHAR(40),
-  watch_list TEXT[],
-  transaction_id VARCHAR(80) GENERATED ALWAYS AS id
+  watch_list TEXT[]
 );
 COMMIT;

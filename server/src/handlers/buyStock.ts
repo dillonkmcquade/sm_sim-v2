@@ -1,16 +1,14 @@
 "use strict";
 import { Response, Request } from "express";
-import { collections } from "../services/database.service";
-import type { Holding, User } from "../types";
+import { pool } from "../services/database.service";
+import type { User } from "../types";
 
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const {
-    _id,
-    quantity,
-    currentPrice,
-  }: { _id: string; quantity: number; currentPrice: number } = req.body;
-  if (!id || !currentPrice || !_id) {
+  const payload = req.auth?.payload;
+  const { quantity, currentPrice }: { quantity: number; currentPrice: number } =
+    req.body;
+  if (!id || !currentPrice || quantity === 0) {
     return res.status(400).json({
       status: 400,
       data: req.body,
@@ -18,40 +16,39 @@ export const buyStock = async (req: Request, res: Response) => {
       message: "missing data",
     });
   }
+  const client = await pool.connect();
   try {
-    const { users } = collections;
-    const user = await users?.findOne<User>({ sub: _id });
-    if (!user) {
-      return res.status(404).json({ status: 200, message: "user not found" });
-    }
-
-    const newHolding: Holding = { ticker: id, quantity, price: currentPrice };
     const amountToSubtract = Number(currentPrice) * quantity;
-
-    if (user.balance < amountToSubtract) {
+    await client.query("BEGIN");
+    const balance = await client.query<Pick<User, "balance">>(
+      "SELECT balance FROM users WHERE auth0_id=$1",
+      [payload?.sub],
+    );
+    if (balance.rows[0].balance > amountToSubtract) {
+      await client.query(
+        "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
+        [payload?.sub, id, quantity, currentPrice],
+      );
+      const update = await client.query<Pick<User, "balance">>(
+        "UPDATE users SET balance = $1 RETURNING balance",
+        [balance.rows[0].balance - amountToSubtract],
+      );
+      await client.query("COMMIT");
+      return res.status(200).json({
+        status: 200,
+        message: "stock purchased successfully",
+        balance: update.rows[0].balance,
+      });
+    } else {
+      await client.query("ROLLBACK");
       return res
         .status(400)
         .json({ status: 400, message: "Insufficient funds" });
     }
-
-    const update = await users?.updateOne(
-      { sub: _id },
-      { $inc: { balance: -amountToSubtract }, $push: { holdings: newHolding } },
-    );
-
-    if (update?.matchedCount === 0 || update?.modifiedCount === 0) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "Could not update user holdings" });
-    }
-    user.holdings.push(newHolding);
-    return res.status(200).json({
-      status: 200,
-      message: "stock purchased successfully",
-      holdings: user.holdings,
-      balance: user.balance - amountToSubtract,
-    });
   } catch (error) {
+    await client.query("ROLLBACK");
     return res.status(500).json({ status: 500, message: "Server error" });
+  } finally {
+    client.release();
   }
 };

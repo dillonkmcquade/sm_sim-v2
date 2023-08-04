@@ -11,12 +11,11 @@ import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert";
 import { useCurrentUser } from "../context/UserContext";
-import { getTotalValue } from "../utils/utils";
 import type { User, Holding} from "../types";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
 
   const {
@@ -84,6 +83,7 @@ export default function Transaction() {
       errorMessage("Insufficient funds");
       return
     }
+
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
@@ -94,19 +94,15 @@ export default function Transaction() {
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          _id: user?.sub, //user UUID
           quantity: Number(quantity),
           currentPrice: quote!.c,
         }),
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
-        const newTotal = await getTotalValue(parsed.holdings);
         const newUserObj: User = {
           ...currentUser,
-          holdings: parsed.holdings,
           balance: parsed.balance,
-          total: newTotal,
         };
         setCurrentUser(newUserObj);
         success();

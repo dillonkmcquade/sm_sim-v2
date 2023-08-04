@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { db } from "../services/database.service";
+import { pool } from "../services/database.service";
+import type { Holding } from "../types";
 
 export async function getHoldings(req: Request, res: Response) {
   const auth = req.auth?.payload;
 
   try {
-    const { rows } = await db.query(
+    const { rows } = await pool.query<Holding>(
       "SELECT * FROM transactions WHERE transaction_id=$1",
       [auth?.sub],
     );

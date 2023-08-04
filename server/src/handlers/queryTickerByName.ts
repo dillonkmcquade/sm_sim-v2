@@ -1,6 +1,6 @@
 "use strict";
 import { Response, Request } from "express";
-import { db } from "../services/database.service";
+import { pool } from "../services/database.service";
 import type { Ticker } from "../types";
 
 export const queryTickerByName = async (req: Request, res: Response) => {
@@ -11,7 +11,7 @@ export const queryTickerByName = async (req: Request, res: Response) => {
       .json({ status: 400, message: "No query string given" });
   }
   try {
-    const data = await db.query<Ticker>(
+    const data = await pool.query<Ticker>(
       "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
       [name.toUpperCase() + "%"],
     );

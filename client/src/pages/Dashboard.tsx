@@ -13,7 +13,7 @@ import FourOhFour from "../components/FourOhFour";
 import type { User } from "../types";
 
 export default function Dashboard() {
-  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useCurrentUser(); 
 
@@ -53,10 +53,8 @@ export default function Dashboard() {
     //Currently making separate api call to get the price of each stock,
     //This could get costly if the portfolio is large. Therefore we will
     //limit this by doing it once, caching it, and updating every 15 mins
-    if (!currentUser.holdings || Date.now() - Number( currentUser.timestamp! ) > 300000) {
       getHoldings();
-    }
-  }, [setCurrentUser, currentUser, user, isAuthenticated, getAccessTokenSilently]);
+  }, [setCurrentUser, isAuthenticated, getAccessTokenSilently]);
 
   const investedValue = currentUser.holdings && currentUser.holdings?.length
     ? getInvestedValue(currentUser.holdings)
