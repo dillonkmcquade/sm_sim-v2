@@ -1,8 +1,8 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
 import { createUser } from "../handlers/createUser";
-/* import { deleteUser } from "../handlers/deleteUser";
-import { updateUser } from "../handlers/updateUser";*/
+/* import { deleteUser } from "../handlers/deleteUser";*/
+import { updateUser } from "../handlers/updateUser";
 import { toggleWatchList } from "../handlers/toggleWatchList";
 import { getUser } from "../handlers/getUser";
 import { getHoldings } from "../handlers/getHoldings";
@@ -18,8 +18,8 @@ userRouter
   .post("/", createUser)
   .get("/", getUser)
   .get("/holdings", getHoldings)
-  .patch("/toggleWatchList", toggleWatchList);
-/* .delete("/", deleteUser)
-  .patch("/update/:_id", updateUser)*/
+  .patch("/toggleWatchList", toggleWatchList)
+  .patch("/update", updateUser);
+/* .delete("/", deleteUser)*/
 
 export default userRouter;

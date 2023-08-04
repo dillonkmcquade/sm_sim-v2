@@ -1,13 +1,11 @@
 "use strict";
 import { Response, Request } from "express";
-import { collections } from "../services/database.service";
-import type { Update, User } from "../types";
+import { pool } from "../services/database.service";
+import format from "pg-format";
+import type { Update } from "../types";
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { _id } = req.params;
-  if (!_id) {
-    return res.status(400).json({ status: 400, message: "Missing client ID" });
-  }
+  const payload = req.auth!.payload;
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
       status: 400,
@@ -43,23 +41,25 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const { users } = collections;
-    const update = await users?.updateOne({ sub: _id }, { $set: req.body });
-    if (update?.matchedCount === 0 || update?.modifiedCount === 0) {
-      return res.status(404).json({
-        status: 404,
-        message: "Invalid data given. Check variable names in request body",
-      });
-    }
-
-    const newUser = await users?.findOne<User>({ sub: _id });
-
+    pool.query("BEGIN");
+    const keys = Object.keys(req.body);
+    const queries = keys.map(async (key) => {
+      const sql = format("UPDATE users SET %I = $1 WHERE auth0_id=$2", key);
+      await pool.query(sql, [req.body[key], payload.sub]);
+    });
+    await Promise.all(queries);
+    await pool.query("COMMIT");
     return res.status(200).json({
       status: 200,
       message: "User updated successfully.",
-      data: newUser,
     });
   } catch (error) {
-    return res.status(500).json({ status: 500, message: "Server error" });
+    await pool.query("ROLLBACK");
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+    return res
+      .status(500)
+      .json({ status: 500, message: "Server error", data: req.body });
   }
 };
