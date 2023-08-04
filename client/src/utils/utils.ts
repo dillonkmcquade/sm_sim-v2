@@ -45,11 +45,16 @@ export async function getPrices(holdings: Holding[]) {
 
 //returns total value of holdings
 export async function getTotalValue(holdings: Holding[]) {
-  const prices = await getPrices(holdings);
-
-  return holdings.reduce((accumulator: number, currentValue: Holding) => {
-    return accumulator + currentValue.quantity * prices[currentValue.symbol];
-  }, 0);
+  try {
+    const prices = await getPrices(holdings);
+    return holdings.reduce((accumulator: number, currentValue: Holding) => {
+      return accumulator + currentValue.quantity * prices[currentValue.symbol];
+    }, 0);
+  } catch (err) {
+    if (err instanceof Error) {
+      return console.error(err.message);
+    }
+  }
 }
 
 export function getUniques(holdings: Holding[]) {
