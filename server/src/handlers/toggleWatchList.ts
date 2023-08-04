@@ -1,15 +1,12 @@
 "use strict";
 import { Response, Request } from "express";
-import { collections } from "../services/database.service";
-import type { User } from "../types";
+import { db } from "../services/database.service";
 
 export const toggleWatchList = async (req: Request, res: Response) => {
-  const {
-    _id,
-    ticker,
-    isWatched,
-  }: { _id: string; ticker: string; isWatched: boolean } = req.body;
-  if (!ticker || !_id || isWatched === undefined) {
+  const { ticker, isWatched }: { ticker: string; isWatched: boolean } =
+    req.body;
+  const auth = req.auth?.payload;
+  if (!ticker || isWatched === undefined) {
     return res.status(400).json({
       status: 400,
       data: req.body,
@@ -17,45 +14,44 @@ export const toggleWatchList = async (req: Request, res: Response) => {
     });
   }
   try {
-    const { users } = collections;
-    const user = await users?.findOne<User>({ sub: _id });
-    if (!user) {
-      return res.status(404).json({ status: 200, message: "user not found" });
-    }
-    let update: any;
-    if (
-      (isWatched && user.watchList.includes(ticker)) ||
-      (!isWatched && !user.watchList.includes(ticker))
-    ) {
-      //do nothing
-      return res.status(204);
-    } else if (isWatched && !user.watchList.includes(ticker)) {
+    await db.query("BEGIN");
+    let result;
+    const getWatchList = await db.query(
+      "SELECT watch_list from users where auth0_id=$1",
+      [auth?.sub],
+    );
+    const watchList = getWatchList.rows[0].watch_list;
+    if (isWatched && !watchList.includes(ticker)) {
       //Add
-      update = await users?.updateOne(
-        { sub: _id },
-        { $push: { watchList: ticker } },
+      result = await db.query(
+        "UPDATE users SET watch_list = array_append(watch_list, $1) WHERE auth0_id=$2 RETURNING watch_list",
+        [ticker, auth?.sub],
       );
-    } else if (!isWatched && user.watchList.includes(ticker)) {
+    } else if (!isWatched && watchList.includes(ticker)) {
       //Remove
-      update = await users?.updateOne(
-        { sub: _id },
-        { $pull: { watchList: ticker } },
+      watchList.splice(watchList.indexOf(ticker));
+      result = await db.query(
+        "UPDATE users SET watch_list = $1 WHERE auth0_id=$2 RETURNING watch_list",
+        [watchList, auth?.sub],
       );
+    } else {
+      //Do nothing
+      await db.query("ROLLBACK");
+      return res.status(200).json({ status: 200, message: "Not modified" });
     }
-
-    if (update.matchedCount === 0 || update.modifiedCount === 0) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "Could not update user watch list" });
-    }
-    const newUser = await users?.findOne<User>({ sub: _id });
-
+    await db.query("COMMIT");
     return res.status(200).json({
       status: 200,
       message: "Watch list updated successfully",
-      data: newUser?.watchList,
+      data: result?.rows[0],
     });
   } catch (error) {
-    return res.status(500).json({ status: 500, message: "Server error" });
+    if (error instanceof Error) {
+      await db.query("ROLLBACK");
+      return res
+        .status(500)
+        .json({ status: 500, message: "Server error", data: error.message });
+    }
+    return;
   }
 };

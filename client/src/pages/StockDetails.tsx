@@ -57,7 +57,7 @@ export default function StockDetails() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
-        setCurrentUser({ ...currentUser, watch_list: parsed.data });
+        setCurrentUser({ ...currentUser, watch_list: parsed.data.watch_list });
         return;
       }
     } catch (error) {
