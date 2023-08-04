@@ -2,13 +2,13 @@
 import { Response, Request } from "express";
 import { pool } from "../services/database.service";
 import type { User } from "../types";
+import { getPrice } from "../utils";
 
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
   const payload = req.auth?.payload;
-  const { quantity, currentPrice }: { quantity: number; currentPrice: number } =
-    req.body;
-  if (!id || !currentPrice || quantity === 0) {
+  const { quantity }: { quantity: number } = req.body;
+  if (!id || quantity === 0) {
     return res.status(400).json({
       status: 400,
       data: req.body,
@@ -18,6 +18,9 @@ export const buyStock = async (req: Request, res: Response) => {
   }
   const client = await pool.connect();
   try {
+    //fetch current price
+    const currentPrice = await getPrice(id);
+
     const amountToSubtract = Number(currentPrice) * quantity;
     await client.query("BEGIN");
     const balance = await client.query<Pick<User, "balance">>(

@@ -24,6 +24,7 @@ export default function Dashboard() {
       return;
     }
     async function setTotalValue(){
+    try{
         const accessToken = await getAccessTokenSilently();
         const holdings = await getHoldings(accessToken);
         if (holdings.length === 0) {
@@ -32,6 +33,9 @@ export default function Dashboard() {
         const total = await getTotalValue(holdings); //potentially expensive function call
         const modifiedObj: User = { ...currentUser, holdings, total, timestamp: Date.now()  };
         setCurrentUser(modifiedObj);
+      }catch(err) {
+        console.log(err)
+      }
       }
     setTotalValue();
   }, [getHoldings, setCurrentUser, isAuthenticated, getAccessTokenSilently]);

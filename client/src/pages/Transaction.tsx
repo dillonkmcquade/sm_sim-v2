@@ -104,7 +104,6 @@ export default function Transaction() {
         },
         body: JSON.stringify({
           quantity: Number(quantity),
-          currentPrice: quote!.c,
         }),
       });
       const parsed = await response.json();
