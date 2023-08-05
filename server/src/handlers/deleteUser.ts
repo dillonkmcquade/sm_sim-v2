@@ -1,23 +1,12 @@
 "use strict";
 import { Response, Request } from "express";
-import { collections } from "../services/database.service";
+import { pool } from "../services/database.service";
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const { _id } = req.body;
-  if (!_id) {
-    return res.status(400).json({ status: 400, message: "Missing client ID" });
-  }
-
+  const sub = req.auth?.payload.sub;
   try {
-    const { users } = collections;
-    const update = await users?.deleteOne({ sub: _id });
-    if (update?.deletedCount === 0) {
-      return res.status(404).json({
-        status: 404,
-        message: "Invalid user id",
-      });
-    }
-
+    await pool.query("DELETE FROM transactions WHERE transaction_id=$1", [sub]);
+    await pool.query("DELETE FROM users WHERE auth0_id=$1", [sub]);
     return res.status(200).json({ status: 200, message: "Account deleted" });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });

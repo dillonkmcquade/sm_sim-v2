@@ -66,8 +66,7 @@ export default function Profile() {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ _id: currentUser?.sub }),
+        }
       });
       const data = await response.json();
       if (data.status === 200) {

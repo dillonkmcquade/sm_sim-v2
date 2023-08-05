@@ -6,7 +6,7 @@ export async function connectToDatabase() {
   dotenv.config();
 
   const client = new Pool({
-    host: "127.0.0.1",
+    host: process.env.POSTGRES_HOST,
     port: 5432,
     database: "marketsim",
     user: "postgres",

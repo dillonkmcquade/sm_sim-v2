@@ -2,6 +2,19 @@ services:
   postgres:
     env_file:
       - .env
+    restart: always
     ports:
       - "5432:5432"
     build: ./postgres
+    networks:
+        - default
+  api:
+    build: .
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    networks:
+        - default
