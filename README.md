@@ -1,4 +1,4 @@
-# MarketSim
+# MarketSim-v2
 
 ![Dashboard](assets/dashboard.png)
 ![Stock Detail page](assets/stockDetails.png)
