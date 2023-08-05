@@ -40,21 +40,22 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   }
 
+  const client = await pool.connect();
   try {
-    await pool.query("BEGIN");
+    await client.query("BEGIN");
     const keys = Object.keys(req.body);
     const queries = keys.map(async (key) => {
       const sql = format("UPDATE users SET %I = $1 WHERE auth0_id=$2", key);
-      await pool.query(sql, [req.body[key], payload.sub]);
+      await client.query(sql, [req.body[key], payload.sub]);
     });
     await Promise.all(queries);
-    await pool.query("COMMIT");
+    await client.query("COMMIT");
     return res.status(200).json({
       status: 200,
       message: "User updated successfully.",
     });
   } catch (error) {
-    await pool.query("ROLLBACK");
+    await client.query("ROLLBACK");
     return res
       .status(500)
       .json({ status: 500, message: "Server error", data: req.body });

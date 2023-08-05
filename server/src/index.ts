@@ -44,3 +44,4 @@ connectToDatabase()
   });
 
 process.on("SIGINT", async () => await pool.end());
+process.on("SIGKILL", async () => await pool.end());
