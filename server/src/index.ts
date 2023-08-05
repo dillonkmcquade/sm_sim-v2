@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
 
-import { connectToDatabase } from "./services/database.service";
+import { connectToDatabase, pool } from "./services/database.service";
 import { queryTickerByName } from "./handlers/queryTickerByName";
 
 import userRouter from "./routes/user";
@@ -42,3 +42,5 @@ connectToDatabase()
     console.error("Database connection failed", error);
     process.exit();
   });
+
+process.on("SIGINT", async () => await pool.end());

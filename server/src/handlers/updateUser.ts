@@ -41,7 +41,7 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 
   try {
-    pool.query("BEGIN");
+    await pool.query("BEGIN");
     const keys = Object.keys(req.body);
     const queries = keys.map(async (key) => {
       const sql = format("UPDATE users SET %I = $1 WHERE auth0_id=$2", key);

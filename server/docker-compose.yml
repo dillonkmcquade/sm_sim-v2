@@ -7,14 +7,19 @@ services:
       - "5432:5432"
     build: ./postgres
     networks:
-        - default
+        - marketsim
   api:
     build: .
     depends_on:
       - postgres
+    stop_signal: SIGINT
     env_file:
       - .env
     ports:
       - "3001:3001"
     networks:
-        - default
+        - marketsim
+networks:
+  marketsim:
+    name: marketsim
+    external: true

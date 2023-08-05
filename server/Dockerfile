@@ -11,5 +11,3 @@ RUN npm install --global pnpm
 
 RUN pnpm install && pnpm build
 CMD ["node", "dist/index.js"]
-EXPOSE 3001
-

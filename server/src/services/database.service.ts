@@ -14,6 +14,9 @@ export async function connectToDatabase() {
   });
 
   await client.connect();
+  client.on("error", (err) => {
+    console.log(err);
+  });
   pool = client;
 
   console.log(`Successfully connected to database: marketsim`);
