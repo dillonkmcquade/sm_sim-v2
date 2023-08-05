@@ -3,11 +3,11 @@
 ![Dashboard](assets/dashboard.png)
 ![Stock Detail page](assets/stockDetails.png)
 
-**_Warning: work in progress_**
-
 MarketSim is a stock market simulator created using react, express, TypeScript(for the server), and PostgresQL. MarketSim was designed to be mobile-first, but also desktop friendly. The main goal of this project is to allow users to practice making investments without the risk of the real-world stock market. Feel free to make mistakes and try new things, because it's just a simulation.
 
 ## Features
+
+- Fork of [sm_sim](https://github.com/dillonkmcquade/sm_sim) rewritten with a PostgreSQL database
 
 - Search and gather information on up to 21,000 publically traded companies.
 
