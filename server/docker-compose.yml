@@ -12,6 +12,7 @@ services:
     build: .
     depends_on:
       - postgres
+    restart: unless-stopped
     stop_signal: SIGINT
     env_file:
       - .env
