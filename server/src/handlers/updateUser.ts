@@ -15,7 +15,7 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 
   //limit the updateable user fields
-  function isUpdate(obj: any): boolean {
+  function validated(obj: any): boolean {
     const dummyData: Update = {
       name: "string",
       nickname: "string",
@@ -25,15 +25,15 @@ export const updateUser = async (req: Request, res: Response) => {
     };
     let result = true;
     const keys = Object.keys(obj);
-    keys.forEach((key) => {
-      const expectedKeys = Object.keys(dummyData);
-      if (!expectedKeys.includes(key)) {
+    const expectedKeys = Object.keys(dummyData);
+    keys.forEach((key: string) => {
+      if (!expectedKeys.includes(key) || typeof obj[key] !== "string") {
         result = false;
       }
     });
     return result;
   }
-  if (!isUpdate(req.body)) {
+  if (!validated(req.body)) {
     return res.status(400).json({
       status: 400,
       message: "Bad request, unrecognized properties of request body",
