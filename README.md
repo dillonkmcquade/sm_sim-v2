@@ -39,7 +39,7 @@ git clone https://github.com/dillonkmcquade/sm_sim-v2.git
 
 ### Frontend
 
-Place the following environment variables in a .env in the client folder:
+Place the following environment variables in a .env.development in the client folder:
 
 - `REACT_APP_SERVER_URL="http://localhost:3001"`
 - `REACT_APP_POLYGON_KEY=<yourApiKey>`
