@@ -7,6 +7,8 @@ services:
     build: ./client/
     networks:
       - marketsim
+    depends_on:
+      - api
   postgres:
     env_file:
       - ./server/.env
