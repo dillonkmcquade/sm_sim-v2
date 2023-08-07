@@ -29,6 +29,46 @@ MarketSim is a stock market simulator created using react, express, TypeScript(f
 
 - Delete account if desired
 
+## Run it locally
+
+Get your own free api keys from [Finnhub.io](https://finnhub.io) and [Polygon.io](https://polygon.io).
+
+### Frontend
+
+Place the following environment variables in a .env in the client folder:
+
+- `REACT_APP_SERVER_URL="http://localhost:3001"`
+- `REACT_APP_POLYGON_KEY=<yourApiKey>`
+- `REACT_APP_FINNHUB_KEY=<yourApiKey>`
+
+```bash
+git clone https://github.com/dillonkmcquade/sm_sim-v2.git
+cd sm_sim-v2/client
+pnpm install #optionally use yarn/npm
+pnpm dev
+```
+
+### Backend
+
+Place the following environment variables in a .env in the server folder:
+
+- `POLYGON_KEY=<yourApiKey>`
+- `FINNHUB_KEY=<yourApiKey>`
+- `ALLOWED_ORIGIN="http://localhost:3000"`
+- `POSTGRES_PASSWORD=<yourpassword>`
+- `POSTGRES_USER="postgres"`
+- `POSTGRES_DB="marketsim"`
+- `POSTGRES_HOST="server-postgres-1"`
+
+To start:
+
+```bash
+cd server
+
+#with docker
+docker compose up
+```
+
 ## License
 
 This project is licensed under an MIT license.
