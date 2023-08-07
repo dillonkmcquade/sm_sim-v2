@@ -58,7 +58,7 @@ Place the following environment variables in a .env in the server folder:
 - `POSTGRES_PASSWORD=<anyPassword>`
 - `POSTGRES_USER="postgres"`
 - `POSTGRES_DB="marketsim"`
-- `POSTGRES_HOST="server-postgres-1"`
+- `POSTGRES_HOST="sm_sim-v2-postgres-1"`
 - `AUTH0_DOMAIN=<yourAuth0Domain>`
 - `AUTH0_AUDIENCE=<nameOfYourService>`
 
