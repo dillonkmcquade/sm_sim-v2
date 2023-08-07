@@ -1,21 +1,29 @@
 services:
+  frontend:
+    env_file:
+      - ./client/.env.development
+    ports:
+      - "3000:3000"
+    build: ./client/
+    networks:
+      - marketsim
   postgres:
     env_file:
-      - .env
+      - ./server/.env
     restart: always
     ports:
       - "5432:5432"
-    build: ./postgres
+    build: ./server/postgres/
     networks:
         - marketsim
   api:
-    build: .
+    build: ./server/
     depends_on:
       - postgres
     restart: unless-stopped
     stop_signal: SIGINT
     env_file:
-      - .env
+      - ./server/.env
     ports:
       - "3001:3001"
     networks:

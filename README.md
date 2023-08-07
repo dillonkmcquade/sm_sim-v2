@@ -33,6 +33,10 @@ MarketSim is a stock market simulator created using React, Express, TypeScript, 
 
 Get your own free api keys from [Finnhub.io](https://finnhub.io) and [Polygon.io](https://polygon.io).
 
+```bash
+git clone https://github.com/dillonkmcquade/sm_sim-v2.git
+```
+
 ### Frontend
 
 Place the following environment variables in a .env in the client folder:
@@ -43,13 +47,6 @@ Place the following environment variables in a .env in the client folder:
 - `REACT_APP_AUTH0_DOMAIN=<yourAuth0Domain>`
 - `REACT_APP_AUTH0_CLIENT_ID=<yourAuth0ClientId>`
 - `REACT_APP_AUTH0_AUDIENCE=<nameOfYourService>`
-
-```bash
-git clone https://github.com/dillonkmcquade/sm_sim-v2.git
-cd sm_sim-v2/client
-pnpm install #optionally use yarn/npm
-pnpm dev
-```
 
 ### Backend
 
@@ -68,9 +65,7 @@ Place the following environment variables in a .env in the server folder:
 To start:
 
 ```bash
-cd server
-
-#with docker
+cd sm_sim-v2
 docker compose up
 ```
 
