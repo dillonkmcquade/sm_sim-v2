@@ -12,13 +12,13 @@ const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 root.render(
   <BrowserRouter>
     <Auth0Provider
-      domain="dev-twp4lk0d7utxiu7i.us.auth0.com"
-      clientId="WiYBN3Xgh7Xb4P92grbyAX1gsET62VHQ"
+      domain={ process.env.REACT_APP_AUTH0_DOMAIN! }
+      clientId={ process.env.REACT_APP_AUTH0_CLIENT_ID! }
       useRefreshTokens
       cacheLocation="localstorage"
       authorizationParams={{
         redirect_uri: window.location.origin,
-        audience: "my-api",
+        audience: process.env.REACT_APP_AUTH0_AUDIENCE,
       }}
     >
       <UserProvider>

@@ -10,8 +10,8 @@ import { getHoldings } from "../handlers/getHoldings";
 const userRouter = Router();
 
 const jwtCheck = auth({
-  issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
-  audience: "my-api",
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: process.env.AUTH0_DOMAIN,
 });
 userRouter
   .use(jwtCheck)

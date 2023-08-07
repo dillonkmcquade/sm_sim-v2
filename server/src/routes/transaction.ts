@@ -5,8 +5,8 @@ import { sellStock } from "../handlers/sellStock";
 
 const transactionRouter = Router();
 const jwtCheck = auth({
-  audience: "my-api",
-  issuerBaseURL: "https://dev-twp4lk0d7utxiu7i.us.auth0.com/",
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: process.env.AUTH0_DOMAIN,
 });
 
 transactionRouter

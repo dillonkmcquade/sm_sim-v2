@@ -40,6 +40,9 @@ Place the following environment variables in a .env in the client folder:
 - `REACT_APP_SERVER_URL="http://localhost:3001"`
 - `REACT_APP_POLYGON_KEY=<yourApiKey>`
 - `REACT_APP_FINNHUB_KEY=<yourApiKey>`
+- `REACT_APP_AUTH0_DOMAIN=<yourAuth0Domain>`
+- `REACT_APP_AUTH0_CLIENT_ID=<yourAuth0ClientId>`
+- `REACT_APP_AUTH0_AUDIENCE=<nameOfYourService>`
 
 ```bash
 git clone https://github.com/dillonkmcquade/sm_sim-v2.git
@@ -55,10 +58,12 @@ Place the following environment variables in a .env in the server folder:
 - `POLYGON_KEY=<yourApiKey>`
 - `FINNHUB_KEY=<yourApiKey>`
 - `ALLOWED_ORIGIN="http://localhost:3000"`
-- `POSTGRES_PASSWORD=<yourpassword>`
+- `POSTGRES_PASSWORD=<anyPassword>`
 - `POSTGRES_USER="postgres"`
 - `POSTGRES_DB="marketsim"`
 - `POSTGRES_HOST="server-postgres-1"`
+- `AUTH0_DOMAIN=<yourAuth0Domain>`
+- `AUTH0_AUDIENCE=<nameOfYourService>`
 
 To start:
 
