@@ -9,11 +9,17 @@ services:
       - marketsim
     depends_on:
       api:
-        condition: service_started
+        condition: service_healthy
   postgres:
     env_file:
       - ./server/.env
     restart: always
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -d marketsim -U postgres"]
+      interval: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 80s
     ports:
       - "5432:5432"
     build: ./server/postgres/
@@ -23,8 +29,14 @@ services:
     build: ./server/
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck: 
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 0s
     env_file:
       - ./server/.env
     ports:
