@@ -31,7 +31,7 @@ connectToDatabase()
 
       .get("/search", queryTickerByName)
       .get("*", (_req, res) => {
-        return res.send("<h1>Does not exist</h1>");
+        return res.sendStatus(200);
       });
 
     server.listen(PORT, () => {

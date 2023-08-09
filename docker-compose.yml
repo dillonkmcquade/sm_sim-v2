@@ -8,7 +8,8 @@ services:
     networks:
       - marketsim
     depends_on:
-      - api
+      api:
+        condition: service_started
   postgres:
     env_file:
       - ./server/.env
@@ -21,9 +22,9 @@ services:
   api:
     build: ./server/
     depends_on:
-      - postgres
+      postgres:
+        condition: service_started
     restart: unless-stopped
-    stop_signal: SIGINT
     env_file:
       - ./server/.env
     ports:
