@@ -96,7 +96,7 @@ export default function Transaction() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/transaction/${action}/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/transaction/${action}/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,

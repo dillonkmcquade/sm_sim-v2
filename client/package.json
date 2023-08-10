@@ -11,6 +11,7 @@
     "type": "git",
     "url": "https://github.com/dillonkmcquade/sm_sim.git"
   },
+  "type": "module",
   "dependencies": {
     "@auth0/auth0-react": "^2.1.1",
     "@emotion/react": "^11.11.1",
@@ -23,24 +24,18 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@vitejs/plugin-react": "^4.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.0",
-    "react-scripts": "5.0.1",
-    "styled-components": "6.0.0-rc.3"
+    "styled-components": "6.0.0-rc.3",
+    "vite": "^4.4.9"
   },
   "scripts": {
-    "start": "NODE_ENV=production react-scripts start",
-    "dev": "NODE_ENV=development react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "dev": "vite --port 3000",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "browserslist": {
     "production": [
@@ -60,6 +55,11 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/styled-components": "^5.1.26",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "eslint": "^8.46.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.1.6"
   },
   "pnpm": {

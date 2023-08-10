@@ -19,7 +19,7 @@ export default function Profile() {
   const { formData, confirmed, error, loading } = state;
   const { currentUser } = useCurrentUser(); 
   const [open, setOpen] = useState(false);
-  const { REACT_APP_SERVER_URL } = process.env;
+  const { VITE_SERVER_URL } = import.meta.env;
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -27,7 +27,7 @@ export default function Profile() {
       setLoading();
       const accessToken = await getAccessTokenSilently();
       const response = await fetch(
-        `${REACT_APP_SERVER_URL}/user/update`,
+        `${VITE_SERVER_URL}/user/update`,
         {
           method: "PATCH",
           headers: {
@@ -61,7 +61,7 @@ export default function Profile() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${REACT_APP_SERVER_URL}/user`, {
+      const response = await fetch(`${VITE_SERVER_URL}/user`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

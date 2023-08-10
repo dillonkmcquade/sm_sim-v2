@@ -76,7 +76,9 @@ export default function useHistoricalData(ticker: string) {
       dispatch({ type: "loading" });
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_SERVER_URL}/stock/candle/${ticker}?resolution=${resolution}&from=${from}`,
+          `${
+            import.meta.env.VITE_SERVER_URL
+          }/stock/candle/${ticker}?resolution=${resolution}&from=${from}`,
         );
         const parsed = await response.json();
         setData(parsed.data);

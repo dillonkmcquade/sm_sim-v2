@@ -6,4 +6,4 @@ ENV PNPM_HOME="/root/.local/share/pnpm"
 ENV PATH="${PATH}:${PNPM_HOME}"
 RUN npm install --global pnpm
 RUN pnpm install
-CMD ["pnpm", "start"]
+CMD ["pnpm", "dev", "--host"]

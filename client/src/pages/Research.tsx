@@ -62,7 +62,7 @@ export default function Research() {
   const search = async () => {
     startSearch();
     try {
-      const { REACT_APP_SERVER_URL } = process.env;
+      const { VITE_SERVER_URL } = import.meta.env;
       const controller = new AbortController();
       const timeout = setTimeout(()=> {
         controller.abort("Timeout");
@@ -70,7 +70,7 @@ export default function Research() {
         return
       }, 5000)
       const request = await fetch(
-        `${REACT_APP_SERVER_URL}/search?name=${inputText}`, {
+        `${VITE_SERVER_URL}/search?name=${inputText}`, {
           signal: controller.signal
         }
       );

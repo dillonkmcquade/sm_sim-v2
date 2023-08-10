@@ -1,24 +1,24 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "lib": ["es6", "dom"],
-    "esModuleInterop": true,
-    "target": "es6",
+    "module": "ESNext",
+    "lib": ["ES2020", "dom", "DOM.Iterable"],
+    "target": "ES2020",
     "strict": true,
     "alwaysStrict": true,
     "jsx": "react-jsx",
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
     "noUnusedLocals": true,
+    "isolatedModules": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "outDir": "build",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "noEmit": true,
+    "outDir": "dist",
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

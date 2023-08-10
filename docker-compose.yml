@@ -1,7 +1,7 @@
 services:
   frontend:
     env_file:
-      - ./client/.env.development
+      - ./client/.env.local
     ports:
       - "3000:3000"
     build: ./client/
@@ -16,7 +16,7 @@ services:
     restart: always
     healthcheck: 
       test: ["CMD-SHELL", "pg_isready -d marketsim -U postgres"]
-      interval: 15s
+      interval: 5s
       timeout: 15s
       retries: 5
       start_period: 80s
@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
     healthcheck: 
       test: ["CMD-SHELL", "curl -f http://localhost:3001/"]
-      interval: 30s
+      interval: 5s
       timeout: 5s
       retries: 3
       start_period: 0s

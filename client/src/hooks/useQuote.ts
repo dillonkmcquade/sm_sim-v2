@@ -23,7 +23,7 @@ export default function useQuote(ticker: string) {
       setLoadingQuote(true);
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_SERVER_URL}/stock/quote/${ticker}`,
+          `${import.meta.env.VITE_SERVER_URL}/stock/quote/${ticker}`,
         );
         const parsed = await response.json();
         if (parsed.data.c) {

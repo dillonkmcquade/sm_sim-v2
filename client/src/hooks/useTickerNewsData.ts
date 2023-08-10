@@ -19,7 +19,7 @@ export default function useTickerNewsData(ticker: string) {
       setIsLoadingNews(true);
       try {
         const request = await fetch(
-          `${process.env.REACT_APP_SERVER_URL}/stock/news/${ticker}`,
+          `${import.meta.env.VITE_SERVER_URL}/stock/news/${ticker}`,
         );
         const response = await request.json();
         if (response.data.results) {

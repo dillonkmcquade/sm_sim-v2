@@ -23,9 +23,9 @@ export default function App() {
     async function authenticateUser() {
       // create user if does not already exist
       try {
-        const { REACT_APP_SERVER_URL } = process.env;
+        const { VITE_SERVER_URL } = import.meta.env;
         const accessToken = await getAccessTokenSilently();
-        const request = await fetch(`${REACT_APP_SERVER_URL}/user`, {
+        const request = await fetch(`${VITE_SERVER_URL}/user`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

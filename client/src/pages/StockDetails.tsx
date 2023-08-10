@@ -46,8 +46,8 @@ export default function StockDetails() {
   const updateWatched = async () => {
     try {
       const accessToken = await getAccessTokenSilently();
-      const { REACT_APP_SERVER_URL } = process.env;
-      const response = await fetch(`${REACT_APP_SERVER_URL}/user/toggleWatchList`, {
+      const { VITE_SERVER_URL } = import.meta.env;
+      const response = await fetch(`${VITE_SERVER_URL}/user/toggleWatchList`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,

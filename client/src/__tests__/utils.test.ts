@@ -1,19 +1,19 @@
 import { getUniques, getInvestedValue } from "../utils/utils";
 
 const holdings = [
-  { ticker: "BRK.A", quantity: 1, price: 523500 },
-  { ticker: "TSLA", quantity: 1000, price: 290.38 },
-  { ticker: "TSLA", quantity: 1, price: 288.39 },
-  { ticker: "AAPL", quantity: 1, price: 193.47 },
-  { ticker: "BRK.A", quantity: -1, price: 523500 },
+  { symbol: "BRK.A", quantity: 1, price: 523500 },
+  { symbol: "TSLA", quantity: 1000, price: 290.38 },
+  { symbol: "TSLA", quantity: 1, price: 288.39 },
+  { symbol: "AAPL", quantity: 1, price: 193.47 },
+  { symbol: "BRK.A", quantity: -1, price: 523500 },
 ];
 const holdings1 = [
-  { ticker: "BRK.A", quantity: 1, price: 523500 },
-  { ticker: "TSLA", quantity: 1000, price: 290.38 },
-  { ticker: "TSLA", quantity: 1, price: 288.39 },
-  { ticker: "AAPL", quantity: 1, price: 193.47 },
-  { ticker: "BRK.A", quantity: -1, price: 523500 },
-  { ticker: "BRK.A", quantity: -1, price: 523500 },
+  { symbol: "BRK.A", quantity: 1, price: 523500 },
+  { symbol: "TSLA", quantity: 1000, price: 290.38 },
+  { symbol: "TSLA", quantity: 1, price: 288.39 },
+  { symbol: "AAPL", quantity: 1, price: 193.47 },
+  { symbol: "BRK.A", quantity: -1, price: 523500 },
+  { symbol: "BRK.A", quantity: -1, price: 523500 },
 ];
 
 describe("testing getUniques", () => {

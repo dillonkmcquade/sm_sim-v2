@@ -24,7 +24,7 @@ export async function getPrices(holdings: Holding[]) {
         prices[ticker] = JSON.parse(cached).c;
       } else {
         const response = await fetch(
-          `${process.env.REACT_APP_SERVER_URL}/stock/quote/${ticker}`,
+          `${import.meta.env.VITE_SERVER_URL}/stock/quote/${ticker}`,
         );
         const parsed = await response.json();
         if (!parsed.data.c) {
@@ -77,7 +77,7 @@ export function getUniques(holdings: Holding[]) {
   return newArr.filter(Boolean);
 }
 
-export function debounce(fn: Function, t: number) {
+export function debounce(fn: (...args: any[]) => void, t: number) {
   let timer: NodeJS.Timeout;
   return function (...args: any[]) {
     if (timer !== undefined) {
@@ -91,8 +91,8 @@ export function debounce(fn: Function, t: number) {
 
 export async function getHoldings(accessToken: string) {
   try {
-    const { REACT_APP_SERVER_URL } = process.env;
-    const response = await fetch(`${REACT_APP_SERVER_URL}/user/holdings`, {
+    const { VITE_SERVER_URL } = import.meta.env;
+    const response = await fetch(`${VITE_SERVER_URL}/user/holdings`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
