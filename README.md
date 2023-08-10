@@ -39,14 +39,14 @@ git clone https://github.com/dillonkmcquade/sm_sim-v2.git
 
 ### Frontend
 
-Place the following environment variables in a .env.development in the client folder:
+Place the following environment variables in a .env.local in the client folder:
 
-- `REACT_APP_SERVER_URL="http://localhost:3001"`
-- `REACT_APP_POLYGON_KEY=<yourApiKey>`
-- `REACT_APP_FINNHUB_KEY=<yourApiKey>`
-- `REACT_APP_AUTH0_DOMAIN=<yourAuth0Domain>`
-- `REACT_APP_AUTH0_CLIENT_ID=<yourAuth0ClientId>`
-- `REACT_APP_AUTH0_AUDIENCE=<nameOfYourService>`
+- `VITE_SERVER_URL="http://localhost:3001"`
+- `VITE_POLYGON_KEY=<yourApiKey>`
+- `VITE_FINNHUB_KEY=<yourApiKey>`
+- `VITE_AUTH0_DOMAIN=<yourAuth0Domain>`
+- `VITE_AUTH0_CLIENT_ID=<yourAuth0ClientId>`
+- `VITE_AUTH0_AUDIENCE=<nameOfYourService>`
 
 ### Backend
 
