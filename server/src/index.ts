@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import dotenv from "dotenv";
+import "dotenv/config";
 import helmet from "helmet";
 import cors from "cors";
 
@@ -10,8 +10,6 @@ import { queryTickerByName } from "./handlers/queryTickerByName";
 import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
-
-dotenv.config();
 
 const server = express();
 const PORT = process.env.PORT || 3001;

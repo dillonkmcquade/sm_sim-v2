@@ -1,7 +1,7 @@
 "use strict";
 import { Response, Request } from "express";
 import { pool } from "../services/database.service";
-import { User } from "../types";
+import type { User } from "../types";
 
 export const getUser = async (req: Request, res: Response) => {
   const auth = req.auth;

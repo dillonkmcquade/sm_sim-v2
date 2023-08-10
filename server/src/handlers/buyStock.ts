@@ -1,8 +1,8 @@
 "use strict";
 import { Response, Request } from "express";
 import { pool } from "../services/database.service";
-import type { User } from "../types";
 import { getPrice } from "../utils";
+import type { User } from "../types";
 
 export const buyStock = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -22,28 +22,38 @@ export const buyStock = async (req: Request, res: Response) => {
     const currentPrice = await getPrice(id);
 
     const amountToSubtract = Number(currentPrice) * quantity;
+
     await client.query("BEGIN");
+
+    //get user balance so we can see if they have enough money
     const balance = await client.query<Pick<User, "balance">>(
       "SELECT balance FROM users WHERE auth0_id=$1",
       [payload?.sub],
     );
+
+    //if user has enough money to make the transaction, continue
     if (balance.rows[0].balance > amountToSubtract) {
       await client.query(
         "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
         [payload?.sub, id, quantity, currentPrice],
       );
+
       const update = await client.query<Pick<User, "balance">>(
         "UPDATE users SET balance = $1 RETURNING balance",
         [balance.rows[0].balance - amountToSubtract],
       );
+
       await client.query("COMMIT");
+
       return res.status(200).json({
         status: 200,
         message: "stock purchased successfully",
         balance: update.rows[0].balance,
       });
     } else {
+      //else discard query, return error
       await client.query("ROLLBACK");
+
       return res
         .status(400)
         .json({ status: 400, message: "Insufficient funds" });

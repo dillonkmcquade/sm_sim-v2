@@ -1,8 +1,8 @@
 "use strict";
 import { Response, Request } from "express";
 import { pool } from "../services/database.service";
-import { Holding, User } from "../types";
 import { getPrice } from "../utils";
+import type { Holding, User } from "../types";
 
 export const sellStock = async (req: Request, res: Response) => {
   const { id } = req.params;
