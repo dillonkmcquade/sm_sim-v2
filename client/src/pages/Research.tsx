@@ -9,11 +9,13 @@ import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDebounce } from "../hooks/useDebounce";
-import TickerCard from "../components/TickerCard";
 import useSearchReducer from "../hooks/useSearchReducer";
-import { ChangeEventHandler, KeyboardEventHandler } from "react";
+import { lazy, Suspense, ChangeEventHandler, KeyboardEventHandler } from "react";
 import { Result } from "../types";
 import Alert from "../components/Alert";
+
+const TickerCard = lazy(() => import("../components/TickerCard"));
+
 
 export default function Research() {
   const { startSearch, success, errorMessage, clear, updateField, state } =
@@ -156,11 +158,12 @@ export default function Research() {
 
       <RecentlyViewed>
         {recentlyViewed.map((key) => (
-          <TickerCard
-            key={key}
-            ticker={key}
-            handler={() => navigate(key)}
-          ></TickerCard>
+          <Suspense key={key} fallback={<CircularProgress />}>
+            <TickerCard
+              ticker={key}
+              handler={() => navigate(key)}
+            />
+          </Suspense>
         ))}
       </RecentlyViewed>
     </Wrapper>

@@ -1,4 +1,4 @@
-import {  useEffect } from "react";
+import {  useEffect, lazy, Suspense } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { getInvestedValue, getUniques, getHoldings, getTotalValue } from "../utils/utils";
 
 import PieChart from "../components/PieChart";
-import TickerCard from "../components/TickerCard";
 import { CircularProgress } from "@mui/material";
 import { useCurrentUser } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
+const TickerCard = lazy(() => import("../components/TickerCard"));
 
 import type { User } from "../types";
 
@@ -70,7 +70,7 @@ export default function Dashboard() {
         all time
       </Profit>
 
-      <div style={{ height: "500px", color: "black" }}>
+      <div style={{ display: "flex", height: "500px", color: "black" }}>
         {!currentUser.holdings?.length ? (
           <FourOhFour>Nothing here yet.</FourOhFour>
         ) : (
@@ -120,11 +120,13 @@ export default function Dashboard() {
       <WatchList>
         {currentUser.watch_list.length > 0 ? (
           currentUser.watch_list.map((item) => (
-            <TickerCard
-              key={item}
-              ticker={item}
-              handler={() => navigate(`/research/${item}`)}
-            />
+              <Suspense fallback={<CircularProgress /> } key={item}>
+                <TickerCard
+                  key={item}
+                  ticker={item}
+                  handler={() => navigate(`/research/${item}`)}
+                />
+              </Suspense>
           ))
         ) : (
           <FourOhFour>Nothing here yet.</FourOhFour>

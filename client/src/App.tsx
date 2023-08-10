@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { GlobalStyles } from "./GlobalStyles";
@@ -7,14 +7,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {useCurrentUser} from "./context/UserContext";
 
 import Header from "./components/Header";
-import Menu from "./components/Menu";
 import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import StockDetails from "./pages/StockDetails";
-import Research from "./pages/Research";
-import Transaction from "./pages/Transaction";
-import Profile from "./pages/Profile";
-// import { getTotalValue } from "./utils/utils";
+import { CircularProgress } from "@mui/material";
+
+const Menu = lazy(() => import('./components/Menu'));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Research = lazy(() => import("./pages/Research"));
+const StockDetails = lazy(() => import("./pages/StockDetails"));
+const Transaction = lazy(() => import("./pages/Transaction"));
+const Profile = lazy(() => import("./pages/Profile"));
 
 export default function App() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
@@ -54,26 +55,28 @@ export default function App() {
       <GlobalStyles />
       <Header />
       <Menu />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/research/:id" element={<StockDetails />} />
-        <Route path="/research" element={<Research />} />
+      <Suspense fallback={<CircularProgress sx={{ color: "#027326" }}/>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/research/:id" element={<StockDetails />} />
+          <Route path="/research" element={<Research />} />
 
-        {/*Login Required */}
-        <Route
-          path="/dashboard"
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/profile"
-          element={isAuthenticated ? <Profile /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/transaction/:transactionType/:id"
-          element={isAuthenticated ? <Transaction /> : <Navigate to="/" />}
-        />
-        <Route path="*" element={<h1>404</h1>} />
-      </Routes>
+          {/*Login Required */}
+          <Route
+            path="/dashboard"
+            element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/profile"
+            element={isAuthenticated ? <Profile /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/transaction/:transactionType/:id"
+            element={isAuthenticated ? <Transaction /> : <Navigate to="/" />}
+          />
+          <Route path="*" element={<h1>404</h1>} />
+        </Routes>
+      </Suspense>
     </>
   );
 }
