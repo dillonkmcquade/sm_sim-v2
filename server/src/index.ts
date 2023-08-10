@@ -11,12 +11,12 @@ import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
 
-const server = express();
+const app = express();
 const PORT = process.env.PORT || 3001;
 
 connectToDatabase()
   .then(() => {
-    server
+    app
       .use(express.json())
       .use(helmet())
       .use(morgan("dev"))
@@ -32,8 +32,17 @@ connectToDatabase()
         return res.sendStatus(200);
       });
 
-    server.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log("Listening on port %d", PORT);
+    });
+
+    process.on("SIGTERM", () => {
+      console.log("Shutting down...");
+      setTimeout(() => {
+        server.close(() => {
+          process.exit();
+        });
+      }, 10000);
     });
   })
   .catch((error: Error) => {
