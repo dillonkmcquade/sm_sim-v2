@@ -1,11 +1,14 @@
 "use strict";
 import { Response, Request } from "express";
-import { pool } from "../services/database.service";
-import format from "pg-format";
 import type { Update } from "../types";
+import type UserController from "../controllers/UserController";
 
-export const updateUser = async (req: Request, res: Response) => {
-  const payload = req.auth!.payload;
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  UserController: UserController,
+) => {
+  const auth = req.auth?.payload.sub;
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
       status: 400,
@@ -40,22 +43,13 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   }
 
-  const client = await pool.connect();
   try {
-    await client.query("BEGIN");
-    const keys = Object.keys(req.body);
-    const queries = keys.map(async (key) => {
-      const sql = format("UPDATE users SET %I = $1 WHERE auth0_id=$2", key);
-      await client.query(sql, [req.body[key], payload.sub]);
-    });
-    await Promise.all(queries);
-    await client.query("COMMIT");
+    await UserController.updateUser(req, auth!);
     return res.status(200).json({
       status: 200,
       message: "User updated successfully.",
     });
   } catch (error) {
-    await client.query("ROLLBACK");
     return res
       .status(500)
       .json({ status: 500, message: "Server error", data: req.body });

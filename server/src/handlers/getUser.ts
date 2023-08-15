@@ -1,18 +1,18 @@
 "use strict";
 import { Response, Request } from "express";
-import { pool } from "../services/database.service";
-import type { User } from "../types";
+import type UserController from "../controllers/UserController";
 
-export const getUser = async (req: Request, res: Response) => {
-  const auth = req.auth;
+export const getUser = async (
+  req: Request,
+  res: Response,
+  UserController: UserController,
+) => {
+  const auth = req.auth?.payload.sub;
   try {
-    const user = await pool.query<User>(
-      "SELECT * from users where auth0_id=$1",
-      [auth?.payload.sub],
-    );
+    const user = UserController.getUser(auth!);
     return res.status(200).json({
       status: 200,
-      data: user.rows[0],
+      data: user,
     });
   } catch (error: any) {
     return res.status(500).json({ status: 500, message: error.message });

@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
-import { pool } from "../services/database.service";
-import type { Holding } from "../types";
+import type UserController from "../controllers/UserController";
 
-export async function getHoldings(req: Request, res: Response) {
-  const auth = req.auth?.payload;
+export async function getHoldings(
+  req: Request,
+  res: Response,
+  UserController: UserController,
+) {
+  const auth = req.auth?.payload.sub;
 
   try {
-    const { rows } = await pool.query<Holding>(
-      "SELECT * FROM transactions WHERE transaction_id=$1",
-      [auth?.sub],
-    );
+    const holdings = await UserController.getHoldings(auth!);
     return res
       .status(200)
-      .json({ status: 200, message: "success", data: rows });
+      .json({ status: 200, message: "success", data: holdings });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
   }
