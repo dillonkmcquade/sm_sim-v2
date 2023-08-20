@@ -14,7 +14,7 @@ import Alert from "../components/Alert";
 import { useCurrentUser } from "../context/UserContext";
 import { getHoldings } from "../utils/utils";
 
-import type { User, Holding} from "../types";
+import type { User, Holding } from "../types";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -30,7 +30,7 @@ export default function Transaction() {
     state,
   } = usePurchaseReducer(transactionType!);
 
-  const { currentUser, setCurrentUser } = useCurrentUser() 
+  const { currentUser, setCurrentUser } = useCurrentUser();
   const { confirmed, quantity, action, loading, error } = state;
   const { quote } = useQuote(id!);
   const [alignment, setAlignment] = useState(transactionType);
@@ -38,7 +38,7 @@ export default function Transaction() {
   const { balance } = currentUser;
 
   useEffect(() => {
-  async function getShares(){
+    async function getShares() {
       const accessToken = await getAccessTokenSilently();
       const holdings = await getHoldings(accessToken);
       const numOfShares = holdings.reduce(
@@ -54,15 +54,17 @@ export default function Transaction() {
 
       if (numOfShares >= 0) {
         setShares(numOfShares);
-        setCurrentUser({...currentUser, holdings})
+        setCurrentUser({ ...currentUser, holdings });
       }
     }
     getShares();
-    
-  }, [ id, getAccessTokenSilently, getHoldings, setCurrentUser ]);
+  }, [id, getAccessTokenSilently, getHoldings, setCurrentUser]);
 
   //toggling buy/sell buttons
-  const toggleAction = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
+  const toggleAction = (
+    _event: React.MouseEvent<HTMLElement>,
+    newAlignment: string,
+  ) => {
     if (newAlignment === "sell" && quantity > shares) {
       updateQuantity(shares);
     }
@@ -72,11 +74,11 @@ export default function Transaction() {
 
   //changing quantity via number input
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (Number( event.target.value) * quote!.c  > balance) {
+    if (Number(event.target.value) * quote!.c > balance) {
       errorMessage("Insufficient funds");
       return;
     } else {
-      updateQuantity(Number( event.target.value ));
+      updateQuantity(Number(event.target.value));
     }
   };
 
@@ -88,24 +90,27 @@ export default function Transaction() {
     if (action === "sell" && quantity > shares) {
       return errorMessage("You cannot sell this many shares");
     }
-    if (action === "buy" && currentUser.balance <= 0) {
+    if (quote && action === "buy" && currentUser.balance < quote.c * quantity) {
       errorMessage("Insufficient funds");
-      return
+      return;
     }
 
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/transaction/${action}/${id}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/transaction/${action}/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            quantity: Number(quantity),
+          }),
         },
-        body: JSON.stringify({
-          quantity: Number(quantity),
-        }),
-      });
+      );
       const parsed = await response.json();
       if (parsed.status === 200) {
         const newUserObj: User = {
@@ -153,12 +158,8 @@ export default function Transaction() {
         onChange={toggleAction}
         aria-label="Platform"
       >
-        <Buy value="buy">
-          Buy
-        </Buy>
-        <Sell value="sell">
-          Sell
-        </Sell>
+        <Buy value="buy">Buy</Buy>
+        <Sell value="sell">Sell</Sell>
       </ToggleButtonGroup>
       <TransactionDetails>
         <h3>
@@ -189,6 +190,7 @@ export default function Transaction() {
           loading ||
           confirmed ||
           balance <= 0 ||
+          balance < quote.c * quantity ||
           (action === "sell" && shares === 0)
         }
         bradius="0"
@@ -235,8 +237,7 @@ const Sell = styled(Buy)`
   &.MuiButtonBase-root.Mui-selected {
     color: #d63c44;
   }
-
-`
+`;
 
 const Detail = styled.div`
   display: flex;
