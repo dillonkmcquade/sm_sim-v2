@@ -1,5 +1,5 @@
-import { Pool } from "pg";
-import { Request } from "express";
+import type { Pool } from "pg";
+import type { Request } from "express";
 import type { Holding, User } from "../types";
 import format from "pg-format";
 
@@ -12,7 +12,11 @@ export default class UserController {
 
   public async createUser(authKey: string, user: User): Promise<User> {
     const data = await this.pool.query<User>(
-      "INSERT INTO users (name, email, nickname, picture, balance, watch_list, created_at, auth0_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+      `INSERT INTO users 
+          (name, email, nickname, picture, balance, watch_list, created_at, auth0_id)
+       VALUES 
+          ($1, $2, $3, $4, $5, $6, $7, $8) 
+       RETURNING *`,
       [
         user.name,
         user.email,
@@ -95,7 +99,14 @@ export default class UserController {
       if (isWatched && !watchList.includes(ticker)) {
         //Add
         result = await client.query(
-          "UPDATE users SET watch_list = array_append(watch_list, $1) WHERE auth0_id=$2 RETURNING watch_list",
+          `UPDATE 
+              users 
+           SET 
+              watch_list = array_append(watch_list, $1) 
+           WHERE 
+              auth0_id=$2 
+           RETURNING 
+              watch_list`,
           [ticker, authKey],
         );
       } else if (!isWatched && watchList.includes(ticker)) {

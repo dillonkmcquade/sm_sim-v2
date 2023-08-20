@@ -1,18 +1,19 @@
 import { Response, Request } from "express";
-import dotenv from "dotenv";
-export async function getQuote(req: Request, res: Response) {
-  dotenv.config();
+import "dotenv/config";
+import type { StockController } from "../controllers/StockController";
+export async function getQuote(
+  req: Request,
+  res: Response,
+  StockController: StockController,
+) {
   const { ticker } = req.params;
   if (!ticker) {
     return res.status(400).json({ status: 400, message: "Missing ticker id" });
   }
   try {
-    const request = await fetch(
-      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.FINNHUB_KEY}`,
-    );
-    const data = await request.json();
-    if (data["c"]) {
-      return res.status(200).json({ status: 200, data });
+    const quote = await StockController.quote(ticker);
+    if (quote) {
+      return res.status(200).json({ status: 200, data: quote });
     } else {
       return res.status(404).json({
         status: 404,

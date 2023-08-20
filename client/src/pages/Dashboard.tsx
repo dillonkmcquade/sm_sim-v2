@@ -1,48 +1,64 @@
-import {  useEffect, lazy, Suspense } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-import { getInvestedValue, getUniques, getHoldings, getTotalValue } from "../utils/utils";
+import {
+  getInvestedValue,
+  getUniques,
+  getHoldings,
+  getTotalValue,
+} from "../utils/utils";
 
 import PieChart from "../components/PieChart";
 import { CircularProgress } from "@mui/material";
 import { useCurrentUser } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
-const TickerCard = lazy(() => import("../components/TickerCard"));
-
 import type { User } from "../types";
+
+const TickerCard = lazy(() => import("../components/TickerCard"));
 
 export default function Dashboard() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser } = useCurrentUser(); 
+  const { currentUser, setCurrentUser } = useCurrentUser();
 
   //get user object from backend
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
-    async function setTotalValue(){
-    try{
+    async function setTotalValue() {
+      try {
         const accessToken = await getAccessTokenSilently();
         const holdings = await getHoldings(accessToken);
         if (holdings.length === 0) {
-          return setCurrentUser({...currentUser, total: 0, holdings: [], timestamp: Date.now()})
-        };
+          return setCurrentUser({
+            ...currentUser,
+            total: 0,
+            holdings: [],
+            timestamp: Date.now(),
+          });
+        }
         const total = await getTotalValue(holdings); //potentially expensive function call
-        const modifiedObj: User = { ...currentUser, holdings, total, timestamp: Date.now()  };
+        const modifiedObj: User = {
+          ...currentUser,
+          holdings,
+          total,
+          timestamp: Date.now(),
+        };
         setCurrentUser(modifiedObj);
-      }catch(err) {
-        console.log(err)
+      } catch (err) {
+        console.log(err);
       }
-      }
+    }
     setTotalValue();
   }, [getHoldings, setCurrentUser, isAuthenticated, getAccessTokenSilently]);
 
-  const investedValue = currentUser.holdings && currentUser.holdings?.length
-    ? getInvestedValue(currentUser.holdings)
-    : 0;
+  const investedValue =
+    currentUser.holdings && currentUser.holdings?.length
+      ? getInvestedValue(currentUser.holdings)
+      : 0;
 
   return !currentUser ? (
     <Wrapper>
@@ -120,13 +136,13 @@ export default function Dashboard() {
       <WatchList>
         {currentUser.watch_list.length > 0 ? (
           currentUser.watch_list.map((item) => (
-              <Suspense fallback={<CircularProgress /> } key={item}>
-                <TickerCard
-                  key={item}
-                  ticker={item}
-                  handler={() => navigate(`/research/${item}`)}
-                />
-              </Suspense>
+            <Suspense fallback={<CircularProgress />} key={item}>
+              <TickerCard
+                key={item}
+                ticker={item}
+                handler={() => navigate(`/research/${item}`)}
+              />
+            </Suspense>
           ))
         ) : (
           <FourOhFour>Nothing here yet.</FourOhFour>

@@ -1,22 +1,25 @@
 import { Response, Request } from "express";
-import dotenv from "dotenv";
+import "dotenv/config";
+import type { StockController } from "../controllers/StockController";
 
-export async function getCandle(req: Request, res: Response) {
-  dotenv.config();
+export async function getCandle(
+  req: Request,
+  res: Response,
+  StockController: StockController,
+) {
   const { ticker } = req.params;
   const { resolution, from } = req.query;
-  if (!ticker) {
+  if (!ticker || !resolution || !from) {
     return res.status(400).json({ status: 400, message: "Missing ticker id" });
   }
   try {
-    const request = await fetch(
-      `https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=${resolution}&from=${from}&to=${Math.floor(
-        Date.now() / 1000,
-      )}&token=${process.env.FINNHUB_KEY}`,
+    const candle = await StockController.candle(
+      ticker,
+      resolution.toString(),
+      from.toString(),
     );
-    const data = await request.json();
-    if (data["c"]) {
-      return res.status(200).json({ status: 200, data });
+    if (candle) {
+      return res.status(200).json({ status: 200, data: candle });
     } else {
       return res.status(404).json({
         status: 404,
