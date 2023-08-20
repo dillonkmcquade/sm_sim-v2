@@ -1,9 +1,12 @@
 "use strict";
 import { Response, Request } from "express";
-import { pool } from "../services/database.service";
-import type { Ticker } from "../types";
+import { StockController } from "../controllers/StockController";
 
-export const queryTickerByName = async (req: Request, res: Response) => {
+export const queryTickerByName = async (
+  req: Request,
+  res: Response,
+  StockController: StockController,
+) => {
   const name = req.query.name as string;
   if (!name) {
     return res
@@ -11,16 +14,13 @@ export const queryTickerByName = async (req: Request, res: Response) => {
       .json({ status: 400, message: "No query string given" });
   }
   try {
-    const data = await pool.query<Ticker>(
-      "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
-      [name.toUpperCase() + "%"],
-    );
-    if (data.rows.length === 0) {
+    const results = await StockController.search(name);
+    if (!results) {
       return res.status(400).json({ status: 400, message: "Not found" });
     }
     return res.status(200).json({
       status: 200,
-      results: data.rows,
+      results,
     });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });

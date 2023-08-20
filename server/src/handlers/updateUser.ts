@@ -1,6 +1,5 @@
 "use strict";
 import { Response, Request } from "express";
-import type { Update } from "../types";
 import type UserController from "../controllers/UserController";
 
 export const updateUser = async (
@@ -19,7 +18,7 @@ export const updateUser = async (
 
   //limit the updateable user fields
   function validated(obj: any): boolean {
-    const dummyData: Update = {
+    const dummyData = {
       name: "string",
       nickname: "string",
       email: "string",

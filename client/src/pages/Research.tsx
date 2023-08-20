@@ -10,12 +10,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDebounce } from "../hooks/useDebounce";
 import useSearchReducer from "../hooks/useSearchReducer";
-import { lazy, Suspense, ChangeEventHandler, KeyboardEventHandler } from "react";
+import {
+  lazy,
+  Suspense,
+  ChangeEventHandler,
+  KeyboardEventHandler,
+} from "react";
 import { Result } from "../types";
 import Alert from "../components/Alert";
 
 const TickerCard = lazy(() => import("../components/TickerCard"));
-
 
 export default function Research() {
   const { startSearch, success, errorMessage, clear, updateField, state } =
@@ -23,7 +27,7 @@ export default function Research() {
   const { results, error, loading, inputText, isSelected } = state;
 
   const recentlyViewed = Object.keys(window.sessionStorage).filter(
-    (key) => key !== "user"
+    (key) => key !== "user",
   );
   const navigate = useNavigate();
 
@@ -58,7 +62,7 @@ export default function Research() {
       default:
         return;
     }
-  } ;
+  };
 
   //query to backend
   const search = async () => {
@@ -66,20 +70,23 @@ export default function Research() {
     try {
       const { VITE_SERVER_URL } = import.meta.env;
       const controller = new AbortController();
-      const timeout = setTimeout(()=> {
+      const timeout = setTimeout(() => {
         controller.abort("Timeout");
-        errorMessage("Please be patient, it may take a moment for the server to boot up after inactivity.");
-        return
-      }, 5000)
+        errorMessage(
+          "Please be patient, it may take a moment for the server to boot up after inactivity.",
+        );
+        return;
+      }, 5000);
       const request = await fetch(
-        `${VITE_SERVER_URL}/search?name=${inputText}`, {
-          signal: controller.signal
-        }
+        `${VITE_SERVER_URL}/stock/search?name=${inputText}`,
+        {
+          signal: controller.signal,
+        },
       );
       const response = await request.json();
       if (response.status === 200) {
         success(response.results);
-        clearTimeout(timeout)
+        clearTimeout(timeout);
       } else {
         errorMessage(response.message);
       }
@@ -145,9 +152,7 @@ export default function Research() {
 
       <div style={{ height: "20vh" }}>
         {error && (
-          <Alert
-            severity="error"
-          >
+          <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
             {error}
           </Alert>
@@ -159,10 +164,7 @@ export default function Research() {
       <RecentlyViewed>
         {recentlyViewed.map((key) => (
           <Suspense key={key} fallback={<CircularProgress />}>
-            <TickerCard
-              ticker={key}
-              handler={() => navigate(key)}
-            />
+            <TickerCard ticker={key} handler={() => navigate(key)} />
           </Suspense>
         ))}
       </RecentlyViewed>

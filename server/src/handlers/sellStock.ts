@@ -1,12 +1,15 @@
 "use strict";
 import { Response, Request } from "express";
-import { pool } from "../services/database.service";
 import { getPrice } from "../utils";
-import type { Holding, User } from "../types";
+import UserController from "../controllers/UserController";
 
-export const sellStock = async (req: Request, res: Response) => {
+export const sellStock = async (
+  req: Request,
+  res: Response,
+  UserController: UserController,
+) => {
   const { id } = req.params;
-  const payload = req.auth?.payload;
+  const auth = req.auth?.payload.sub as string;
   const { quantity }: { quantity: number } = req.body;
   if (!id || quantity === 0) {
     return res.status(400).json({
@@ -16,55 +19,41 @@ export const sellStock = async (req: Request, res: Response) => {
       message: "missing data",
     });
   }
-  const client = await pool.connect();
   try {
-    await client.query("BEGIN");
-
     //fetch current price
     const currentPrice = await getPrice(id);
-    const amountToSubtract = Number(currentPrice) * quantity;
 
     //check if user has enough shares to sell desired amount
-    const { rows } = await client.query<Holding>(
-      "SELECT * FROM transactions WHERE transaction_id=$1",
-      [payload?.sub],
-    );
-    const numOfShares = rows.reduce((accumulator, currentValue) => {
+    const holdings = await UserController.getHoldings(auth);
+    const numOfShares = holdings.reduce((accumulator, currentValue) => {
       if (currentValue.symbol === id) {
         return accumulator + currentValue.quantity;
       } else {
         return accumulator + 0;
       }
     }, 0);
+
     if (numOfShares < quantity) {
-      await client.query("ROLLBACK");
       return res.status(404).json({
         status: 404,
         message: "You don't own enough shares to sell this much",
       });
     }
 
-    //update user balance
-    const update = await client.query<Pick<User, "balance">>(
-      "UPDATE users SET balance = balance + $1 RETURNING balance",
-      [amountToSubtract],
-    );
+    //insert transaction to DB
+    await UserController.insertTransaction(auth, id, -quantity, currentPrice);
 
-    //create new transaction
-    await client.query(
-      "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
-      [payload?.sub, id, -quantity, currentPrice],
-    );
+    //update user balance, amountToAdd is negative to because the DB
+    //query is 'SET balance = balance - $1'
+    const amountToAdd = quantity * currentPrice;
+    const newBalance = await UserController.updateBalance(auth, -amountToAdd);
 
-    client.query("COMMIT");
     return res.status(200).json({
       status: 200,
       message: "stock sold successfully",
-      balance: update.rows[0].balance,
+      balance: newBalance,
     });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
-  } finally {
-    client.release();
   }
 };

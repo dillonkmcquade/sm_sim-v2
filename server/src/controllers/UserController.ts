@@ -1,7 +1,27 @@
 import type { Pool } from "pg";
 import type { Request } from "express";
-import type { Holding, User } from "../types";
 import format from "pg-format";
+
+interface User {
+  id?: string;
+  balance: number;
+  telephone?: string;
+  created_at?: Date;
+  total?: number;
+  address?: string;
+  picture: string;
+  name: string;
+  nickname: string;
+  email: string;
+  [key: string]: any;
+}
+
+interface Holding {
+  transaction_id: string;
+  quantity: number;
+  symbol: string;
+  price: number;
+}
 
 export default class UserController {
   private pool: Pool;
@@ -134,16 +154,43 @@ export default class UserController {
     }
   }
 
-  public async getHoldings(authKey: string): Promise<Holding[] | string> {
-    try {
-      const { rows } = await this.pool.query<Holding>(
-        "SELECT * FROM transactions WHERE transaction_id=$1",
-        [authKey],
-      );
-      return rows;
-    } catch (err) {
-      console.log(err);
-      return "Error fetching user";
-    }
+  public async getHoldings(authKey: string): Promise<Holding[]> {
+    const { rows } = await this.pool.query<Holding>(
+      "SELECT * FROM transactions WHERE transaction_id=$1",
+      [authKey],
+    );
+    return rows;
+  }
+
+  public async insertTransaction(
+    authKey: string,
+    id: string,
+    quantity: number,
+    currentPrice: number,
+  ): Promise<void> {
+    await this.pool.query(
+      "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
+      [authKey, id, quantity, currentPrice],
+    );
+  }
+
+  public async getBalance(authKey: string): Promise<number> {
+    const balance = await this.pool.query<Pick<User, "balance">>(
+      "SELECT balance FROM users WHERE auth0_id=$1",
+      [authKey],
+    );
+    return balance.rows[0].balance;
+  }
+
+  public async updateBalance(
+    authKey: string,
+    newBalance: number,
+  ): Promise<number | undefined> {
+    // update balance retrieve new balance
+    const rows = await this.pool.query<Pick<User, "balance">>(
+      "UPDATE users SET balance = balance - $1 WHERE auth0_id=$2 RETURNING balance",
+      [newBalance, authKey],
+    );
+    return rows.rows[0].balance;
   }
 }

@@ -1,12 +1,15 @@
 "use strict";
 import { Response, Request } from "express";
-import { pool } from "../services/database.service";
 import { getPrice } from "../utils";
-import type { User } from "../types";
+import type UserController from "../controllers/UserController";
 
-export const buyStock = async (req: Request, res: Response) => {
+export const buyStock = async (
+  req: Request,
+  res: Response,
+  UserController: UserController,
+) => {
   const { id } = req.params;
-  const payload = req.auth?.payload;
+  const auth = req.auth?.payload.sub as string;
   const { quantity }: { quantity: number } = req.body;
   if (!id || quantity === 0) {
     return res.status(400).json({
@@ -16,52 +19,42 @@ export const buyStock = async (req: Request, res: Response) => {
       message: "missing data",
     });
   }
-  const client = await pool.connect();
   try {
     //fetch current price
     const currentPrice = await getPrice(id);
-
     const amountToSubtract = Number(currentPrice) * quantity;
 
-    await client.query("BEGIN");
-
     //get user balance so we can see if they have enough money
-    const balance = await client.query<Pick<User, "balance">>(
-      "SELECT balance FROM users WHERE auth0_id=$1",
-      [payload?.sub],
-    );
+    const balance = await UserController.getBalance(auth);
 
-    //if user has enough money to make the transaction, continue
-    if (balance.rows[0].balance > amountToSubtract) {
-      await client.query(
-        "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
-        [payload?.sub, id, quantity, currentPrice],
-      );
-
-      const update = await client.query<Pick<User, "balance">>(
-        "UPDATE users SET balance = $1 RETURNING balance",
-        [balance.rows[0].balance - amountToSubtract],
-      );
-
-      await client.query("COMMIT");
-
-      return res.status(200).json({
-        status: 200,
-        message: "stock purchased successfully",
-        balance: update.rows[0].balance,
-      });
-    } else {
-      //else discard query, return error
-      await client.query("ROLLBACK");
-
+    // return undefined if user doesn't have enough money
+    if (balance < amountToSubtract) {
       return res
         .status(400)
         .json({ status: 400, message: "Insufficient funds" });
     }
+
+    //if user has enough money to make the transaction, continue
+    await UserController.insertTransaction(auth, id, quantity, currentPrice);
+
+    // buy stock
+    const newBalance = await UserController.updateBalance(
+      auth,
+      amountToSubtract,
+    );
+
+    // return error if insufficient funds
+    if (!newBalance) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Insufficient funds" });
+    }
+    return res.status(200).json({
+      status: 200,
+      message: "stock purchased successfully",
+      balance: newBalance,
+    });
   } catch (error) {
-    await client.query("ROLLBACK");
     return res.status(500).json({ status: 500, message: "Server error" });
-  } finally {
-    client.release();
   }
 };

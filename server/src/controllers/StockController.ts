@@ -1,5 +1,10 @@
 import "dotenv/config";
+import { Pool } from "pg";
 
+interface Ticker {
+  symbol: string;
+  description: string;
+}
 interface Candle {
   c: number[];
   h: number[];
@@ -39,6 +44,10 @@ interface Article {
 }
 
 export class StockController {
+  private db: Pool;
+  constructor(db: Pool) {
+    this.db = db;
+  }
   public async quote(ticker: string): Promise<Quote | undefined> {
     const request = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.FINNHUB_KEY}`,
@@ -73,5 +82,14 @@ export class StockController {
     const data = await request.json();
     if (data["c"]) return data;
     return undefined;
+  }
+
+  public async search(name: string): Promise<Ticker[] | undefined> {
+    const data = await this.db.query<Ticker>(
+      "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
+      [name.toUpperCase() + "%"],
+    );
+    if (data.rows.length === 0) return undefined;
+    return data.rows;
   }
 }

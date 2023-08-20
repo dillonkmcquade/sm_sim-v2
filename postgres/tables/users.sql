@@ -8,7 +8,7 @@ CREATE TABLE users (
   nickname VARCHAR(40),
   balance FLOAT,
   created_at TIMESTAMP,
-  picture VARCHAR(100),
+  picture TEXT,
   email VARCHAR(40),
   watch_list TEXT[]
 );
