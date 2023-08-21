@@ -21,6 +21,9 @@ export async function getQuote(
       });
     }
   } catch (error) {
-    return res.status(500).json({ status: 500, message: "Server error" });
+    if (error instanceof Error) {
+      return res.status(400).json({ status: 400, message: error.message });
+    }
+    return;
   }
 }

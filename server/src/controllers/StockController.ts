@@ -54,7 +54,7 @@ export class StockController {
     );
     const data = await request.json();
 
-    if (!data["c"]) throw Error("No data");
+    if (!data["c"]) throw new Error("No data");
     return data;
   }
 
@@ -63,7 +63,7 @@ export class StockController {
       `https://api.polygon.io/v2/reference/news?ticker=${ticker}&apiKey=${process.env.POLYGON_KEY}`,
     );
     const data = await request.json();
-    if (!data["results"]) throw Error("No data");
+    if (!data["results"]) throw new Error("No data");
     return data;
   }
 
@@ -71,23 +71,23 @@ export class StockController {
     ticker: string,
     resolution: string,
     from: string,
-  ): Promise<Candle[] | undefined> {
+  ): Promise<Candle[]> {
     const request = await fetch(
       `https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=${resolution}&from=${from}&to=${Math.floor(
         Date.now() / 1000,
       )}&token=${process.env.FINNHUB_KEY}`,
     );
     const data = await request.json();
-    if (data["c"]) return data;
-    return undefined;
+    if (!data["c"]) throw new Error("No data");
+    return data;
   }
 
-  public async search(name: string): Promise<Ticker[] | undefined> {
+  public async search(name: string): Promise<Ticker[]> {
     const data = await this.db.query<Ticker>(
       "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
       [name.toUpperCase() + "%"],
     );
-    if (data.rows.length === 0) return undefined;
+    if (data.rows.length === 0) throw new Error("No results");
     return data.rows;
   }
 }
