@@ -1,12 +1,13 @@
 "use strict";
 import { Response, Request } from "express";
-import { getPrice } from "../utils";
 import type UserController from "../controllers/UserController";
+import type { StockController } from "../controllers/StockController";
 
 export const buyStock = async (
   req: Request,
   res: Response,
   UserController: UserController,
+  StockController: StockController,
 ) => {
   const { id } = req.params;
   const auth = req.auth?.payload.sub as string;
@@ -21,7 +22,8 @@ export const buyStock = async (
   }
   try {
     //fetch current price
-    const currentPrice = await getPrice(id);
+    const quote = await StockController.quote(id);
+    const currentPrice = quote["c"];
     const amountToSubtract = Number(currentPrice) * quantity;
 
     //get user balance so we can see if they have enough money

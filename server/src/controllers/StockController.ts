@@ -48,25 +48,23 @@ export class StockController {
   constructor(db: Pool) {
     this.db = db;
   }
-  public async quote(ticker: string): Promise<Quote | undefined> {
+  public async quote(ticker: string): Promise<Quote> {
     const request = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.FINNHUB_KEY}`,
     );
     const data = await request.json();
 
-    if (data["c"]) {
-      return data;
-    }
-    return undefined;
+    if (!data["c"]) throw Error("No data");
+    return data;
   }
 
-  public async news(ticker: string): Promise<Article[] | undefined> {
+  public async news(ticker: string): Promise<Article[]> {
     const request = await fetch(
       `https://api.polygon.io/v2/reference/news?ticker=${ticker}&apiKey=${process.env.POLYGON_KEY}`,
     );
     const data = await request.json();
-    if (data["results"]) return data;
-    return undefined;
+    if (!data["results"]) throw Error("No data");
+    return data;
   }
 
   public async candle(

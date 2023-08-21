@@ -99,27 +99,20 @@ export default class UserController {
     }
   }
 
-  public async toggleWatchList(
+  private async getWatchList(authKey: string): Promise<string[]> {
+    const query = await this.pool.query(
+      "SELECT watch_list from users where auth0_id=$1",
+      [authKey],
+    );
+    return query.rows[0].watch_list;
+  }
+
+  private async addToWatchList(
     authKey: string,
-    isWatched: boolean,
     ticker: string,
-  ): Promise<string[] | undefined> {
-    const client = await this.pool.connect();
-    try {
-      await client.query("BEGIN");
-      let result;
-
-      const getWatchList = await client.query(
-        "SELECT watch_list from users where auth0_id=$1",
-        [authKey],
-      );
-
-      const watchList = getWatchList.rows[0].watch_list;
-
-      if (isWatched && !watchList.includes(ticker)) {
-        //Add
-        result = await client.query(
-          `UPDATE 
+  ): Promise<string[]> {
+    const query = await this.pool.query(
+      `UPDATE 
               users 
            SET 
               watch_list = array_append(watch_list, $1) 
@@ -127,31 +120,43 @@ export default class UserController {
               auth0_id=$2 
            RETURNING 
               watch_list`,
-          [ticker, authKey],
-        );
-      } else if (!isWatched && watchList.includes(ticker)) {
-        //Remove
-        watchList.splice(watchList.indexOf(ticker));
+      [ticker, authKey],
+    );
+    return query.rows[0].watch_list;
+  }
 
-        result = await client.query(
-          "UPDATE users SET watch_list = $1 WHERE auth0_id=$2 RETURNING watch_list",
-          [watchList, authKey],
-        );
-      } else {
-        //Do nothing
-        await client.query("ROLLBACK");
+  private async removeFromWatchList(
+    authKey: string,
+    watchList: string[],
+  ): Promise<string[]> {
+    const query = await this.pool.query(
+      "UPDATE users SET watch_list = $1 WHERE auth0_id=$2 RETURNING watch_list",
+      [watchList, authKey],
+    );
 
-        return;
-      }
-      await client.query("COMMIT");
-      return result.rows[0].watch_list;
-    } catch (err) {
-      console.log(err);
-      await client.query("ROLLBACK");
+    return query.rows[0].watch_list;
+  }
+
+  public async toggleWatchList(
+    authKey: string,
+    isWatched: boolean,
+    ticker: string,
+  ): Promise<string[] | undefined> {
+    let result;
+    const watchList = await this.getWatchList(authKey);
+
+    if (isWatched && !watchList.includes(ticker)) {
+      //Add
+      result = await this.addToWatchList(authKey, ticker);
+    } else if (!isWatched && watchList.includes(ticker)) {
+      //Remove
+      watchList.splice(watchList.indexOf(ticker));
+      result = this.removeFromWatchList(authKey, watchList);
+    } else {
+      //Do nothing
       return;
-    } finally {
-      client.release();
     }
+    return result;
   }
 
   public async getHoldings(authKey: string): Promise<Holding[]> {

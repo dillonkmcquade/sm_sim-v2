@@ -1,12 +1,13 @@
 "use strict";
 import { Response, Request } from "express";
-import { getPrice } from "../utils";
-import UserController from "../controllers/UserController";
+import type UserController from "../controllers/UserController";
+import type { StockController } from "../controllers/StockController";
 
 export const sellStock = async (
   req: Request,
   res: Response,
   UserController: UserController,
+  StockController: StockController,
 ) => {
   const { id } = req.params;
   const auth = req.auth?.payload.sub as string;
@@ -20,9 +21,6 @@ export const sellStock = async (
     });
   }
   try {
-    //fetch current price
-    const currentPrice = await getPrice(id);
-
     //check if user has enough shares to sell desired amount
     const holdings = await UserController.getHoldings(auth);
     const numOfShares = holdings.reduce((accumulator, currentValue) => {
@@ -39,6 +37,10 @@ export const sellStock = async (
         message: "You don't own enough shares to sell this much",
       });
     }
+
+    //fetch current price
+    const quote = await StockController.quote(id);
+    const currentPrice = quote["c"];
 
     //insert transaction to DB
     await UserController.insertTransaction(auth, id, -quantity, currentPrice);
