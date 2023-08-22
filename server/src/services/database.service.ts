@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import dotenv from "dotenv";
+import "dotenv/config";
 
 export const pool = new Pool({
   host: process.env.POSTGRES_HOST,
@@ -10,8 +10,6 @@ export const pool = new Pool({
 });
 
 export async function connectToDatabase() {
-  dotenv.config();
-
   await pool.connect();
   pool.on("error", (err) => {
     console.log(err);
