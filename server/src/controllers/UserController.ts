@@ -88,7 +88,7 @@ export default class UserController {
   }
 
   public async getUser(authKey: string): Promise<User | undefined> {
-    const data = await this.pool.query(
+    const data = await this.pool.query<User>(
       "SELECT * FROM users WHERE auth0_id=$1",
       [authKey],
     );
@@ -129,7 +129,8 @@ export default class UserController {
     authKey: string,
     watchList: string[],
   ): Promise<string[]> {
-    const query = await this.pool.query(
+    // overwrite old watch list with new watch list
+    const query = await this.pool.query<{ watch_list: string[] }>(
       "UPDATE users SET watch_list = $1 WHERE auth0_id=$2 RETURNING watch_list",
       [watchList, authKey],
     );
@@ -179,23 +180,23 @@ export default class UserController {
     );
   }
 
-  public async getBalance(authKey: string): Promise<number> {
+  public async getBalance(authKey: string): Promise<number | undefined> {
     const balance = await this.pool.query<Pick<User, "balance">>(
       "SELECT balance FROM users WHERE auth0_id=$1",
       [authKey],
     );
-    return balance.rows[0].balance;
+    return balance.rows[0]?.balance;
   }
 
   public async updateBalance(
     authKey: string,
     newBalance: number,
-  ): Promise<number | undefined> {
+  ): Promise<number> {
     // update balance retrieve new balance
     const rows = await this.pool.query<Pick<User, "balance">>(
       "UPDATE users SET balance = balance - $1 WHERE auth0_id=$2 RETURNING balance",
       [newBalance, authKey],
     );
-    return rows.rows[0].balance;
+    return rows.rows[0]?.balance;
   }
 }
