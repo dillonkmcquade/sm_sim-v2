@@ -3,7 +3,7 @@ import { auth } from "express-oauth2-jwt-bearer";
 import { buyStock } from "../handlers/buyStock";
 import { sellStock } from "../handlers/sellStock";
 import UserController from "../controllers/UserController";
-import { pool } from "../services/database.service";
+import { pool } from "../index";
 import { StockController } from "../controllers/StockController";
 
 const transactionRouter = Router();

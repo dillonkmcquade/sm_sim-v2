@@ -7,7 +7,7 @@ import { toggleWatchList } from "../handlers/toggleWatchList";
 import { getUser } from "../handlers/getUser";
 import { getHoldings } from "../handlers/getHoldings";
 import UserController from "../controllers/UserController";
-import { pool } from "../services/database.service";
+import { pool } from "../index";
 
 const userRouter = Router();
 const userController = new UserController(pool);

@@ -4,7 +4,7 @@ import { getCandle } from "../handlers/getCandle";
 import { getNews } from "../handlers/getNews";
 import { StockController } from "../controllers/StockController";
 import { queryTickerByName } from "../handlers/queryTickerByName";
-import { pool } from "../services/database.service";
+import { pool } from "../index";
 
 const stockRouter = Router();
 const stockController = new StockController(pool);

@@ -4,17 +4,26 @@ import "dotenv/config";
 import helmet from "helmet";
 import cors from "cors";
 
-import { connectToDatabase } from "./services/database.service";
-
 import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
+import { Pool } from "pg";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-connectToDatabase()
+export const pool = new Pool({
+  host: process.env.POSTGRES_HOST,
+  port: 5432,
+  database: "marketsim",
+  user: "postgres",
+  password: process.env.POSTGRES_PASSWORD,
+});
+
+pool
+  .connect()
   .then(() => {
+    console.log(`Successfully connected to database: marketsim`);
     app
       .use(express.json())
       .use(helmet())
@@ -34,6 +43,7 @@ connectToDatabase()
       console.log("Listening on port %d", PORT);
     });
 
+    // Graceful shutdown
     process.on("SIGTERM", () => {
       console.log("Shutting down...");
       setTimeout(() => {
