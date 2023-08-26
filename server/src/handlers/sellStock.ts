@@ -45,8 +45,7 @@ export const sellStock = async (
     //insert transaction to DB
     await UserController.insertTransaction(auth, id, -quantity, currentPrice);
 
-    //update user balance, amountToAdd is negative to because the DB
-    //query is 'SET balance = balance - $1'
+    //update user balance, !!! amountToAdd must be negative
     const amountToAdd = quantity * currentPrice;
     const newBalance = await UserController.updateBalance(auth, -amountToAdd);
 

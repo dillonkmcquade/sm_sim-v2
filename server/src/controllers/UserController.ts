@@ -180,12 +180,12 @@ export default class UserController {
     );
   }
 
-  public async getBalance(authKey: string): Promise<number | undefined> {
+  public async getBalance(authKey: string): Promise<number> {
     const balance = await this.pool.query<Pick<User, "balance">>(
       "SELECT balance FROM users WHERE auth0_id=$1",
       [authKey],
     );
-    return balance.rows[0]?.balance;
+    return balance?.rows[0].balance;
   }
 
   public async updateBalance(
