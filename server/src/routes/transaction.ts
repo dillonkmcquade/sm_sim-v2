@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import { sellStock } from "../handlers/sellStock";
 import { pool } from "../index";
+
 import UserController from "../models/UserController";
 import { StockController } from "../models/StockController";
 import { Transaction } from "../models/Transaction";

@@ -1,12 +1,6 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import { createUser } from "../handlers/createUser";
-import { deleteUser } from "../handlers/deleteUser";
-import { updateUser } from "../handlers/updateUser";
-import { toggleWatchList } from "../handlers/toggleWatchList";
-import { getUser } from "../handlers/getUser";
-import { getHoldings } from "../handlers/getHoldings";
-import UserController from "../controllers/UserController";
+import UserController from "../models/UserController";
 import { pool } from "../index";
 
 const userRouter = Router();
@@ -17,15 +11,154 @@ const jwtCheck = auth({
   issuerBaseURL: process.env.AUTH0_DOMAIN,
 });
 
-userRouter
-  .use(jwtCheck)
-  .post("/", (req, res) => createUser(req, res, userController))
-  .get("/", (req, res) => getUser(req, res, userController))
-  .get("/holdings", (req, res) => getHoldings(req, res, userController))
-  .patch("/toggleWatchList", (req, res) =>
-    toggleWatchList(req, res, userController),
-  )
-  .patch("/update", (req, res) => updateUser(req, res, userController))
-  .delete("/", (req, res) => deleteUser(req, res, userController));
+userRouter.use(jwtCheck);
+
+userRouter.post("/", async (req, res) => {
+  const { user } = req.body;
+  const auth = req.auth!;
+  if (!user) {
+    return res.status(400).json({ status: 400, message: "missing user UUID" });
+  }
+  try {
+    let data;
+    const duplicate = await userController.getUser(auth.payload.sub!);
+    if (duplicate) {
+      return res.status(200).json({
+        status: 200,
+        message: "User authenticated",
+        data: duplicate,
+      });
+    } else {
+      data = await userController.createUser(auth.payload.sub!, user);
+    }
+    return res.status(201).json({
+      status: 201,
+      message: "User created",
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({ status: 500, message: "Server error" });
+  }
+});
+
+userRouter.get("/", async (req, res) => {
+  const auth = req.auth?.payload.sub;
+  try {
+    const user = userController.getUser(auth!);
+    return res.status(200).json({
+      status: 200,
+      data: user,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ status: 500, message: error.message });
+  }
+});
+
+userRouter.get("/holdings", async (req, res) => {
+  const auth = req.auth?.payload.sub;
+
+  try {
+    const holdings = await userController.getHoldings(auth!);
+    return res
+      .status(200)
+      .json({ status: 200, message: "success", data: holdings });
+  } catch (error) {
+    return res.status(500).json({ status: 500, message: "Server error" });
+  }
+});
+
+userRouter.patch("/toggleWatchList", async (req, res) => {
+  const { ticker, isWatched }: { ticker: string; isWatched: boolean } =
+    req.body;
+  const auth = req.auth?.payload.sub;
+  if (!ticker || isWatched === undefined) {
+    return res.status(400).json({
+      status: 400,
+      data: req.body,
+      message: "missing data",
+    });
+  }
+  try {
+    const watchList = await userController.toggleWatchList(
+      auth!,
+      isWatched,
+      ticker,
+    );
+    if (!watchList) {
+      return res.status(200).json({ status: 200, message: "Nothing changed" });
+    }
+    return res.status(200).json({
+      status: 200,
+      message: "Watch list updated successfully",
+      data: watchList,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res
+        .status(500)
+        .json({ status: 500, message: "Server error", data: error.message });
+    }
+    return;
+  }
+});
+
+userRouter.patch("/update", async (req, res) => {
+  const auth = req.auth?.payload.sub;
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      status: 400,
+      message: "No update paramaters given.",
+      data: req.body,
+    });
+  }
+
+  //limit the updateable user fields
+  function validated(obj: any): boolean {
+    const dummyData = {
+      name: "string",
+      nickname: "string",
+      email: "string",
+      address: "string",
+      telephone: "string",
+    };
+    let result = true;
+    const keys = Object.keys(obj);
+    const expectedKeys = Object.keys(dummyData);
+    keys.forEach((key: string) => {
+      if (!expectedKeys.includes(key) || typeof obj[key] !== "string") {
+        result = false;
+      }
+    });
+    return result;
+  }
+  if (!validated(req.body)) {
+    return res.status(400).json({
+      status: 400,
+      message: "Bad request, unrecognized properties of request body",
+    });
+  }
+
+  try {
+    await userController.updateUser(req, auth!);
+    return res.status(200).json({
+      status: 200,
+      message: "User updated successfully.",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: 500, message: "Server error", data: req.body });
+  }
+});
+
+userRouter.delete("/", async (req, res) => {
+  const sub = req.auth?.payload.sub;
+  try {
+    await userController.deleteUser(sub!);
+    return res.status(200).json({ status: 200, message: "Account deleted" });
+  } catch (error) {
+    return res.status(500).json({ status: 500, message: "Server error" });
+  }
+});
 
 export default userRouter;
