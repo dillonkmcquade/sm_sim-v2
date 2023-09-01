@@ -9,7 +9,7 @@ import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
 import { Pool } from "pg";
 import { StockController } from "./models/StockController";
-import UserController from "./models/UserController";
+import { UserController } from "./models/UserController";
 
 const PORT = process.env.PORT || 3001;
 

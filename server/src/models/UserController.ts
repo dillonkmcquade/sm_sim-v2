@@ -24,7 +24,7 @@ interface Holding {
   price: number;
 }
 
-export default class UserController {
+export class UserController {
   private pool: Pool;
 
   constructor(pool: Pool) {
