@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 import type { Request } from "express";
+import type { Transaction } from "./Transaction";
 import format from "pg-format";
 
 interface User {
@@ -168,15 +169,15 @@ export default class UserController {
     return rows;
   }
 
-  public async insertTransaction(
-    authKey: string,
-    id: string,
-    quantity: number,
-    currentPrice: number,
-  ): Promise<void> {
+  public async insertTransaction(transaction: Transaction): Promise<void> {
     await this.pool.query(
       "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
-      [authKey, id, quantity, currentPrice],
+      [
+        transaction.transaction_id,
+        transaction.symbol,
+        transaction.quantity,
+        transaction.price,
+      ],
     );
   }
 

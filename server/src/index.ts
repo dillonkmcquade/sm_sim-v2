@@ -20,40 +20,45 @@ export const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
 });
 
+// Connect to db
 pool
   .connect()
   .then(() => {
     console.log(`Successfully connected to database: marketsim`);
-    app
-      .use(express.json())
-      .use(helmet())
-      .use(morgan("dev"))
-      .use(cors({ origin: process.env.ALLOWED_ORIGIN }))
-      .use("/stock", stockRouter)
-
-      //Auth required
-      .use("/user", userRouter)
-      .use("/transaction", transactionRouter)
-
-      .get("*", (_req, res) => {
-        return res.sendStatus(200);
-      });
-
-    const server = app.listen(PORT, () => {
-      console.log("Listening on port %d", PORT);
-    });
-
-    // Graceful shutdown
-    process.on("SIGTERM", () => {
-      console.log("Shutting down...");
-      setTimeout(() => {
-        server.close(() => {
-          process.exit();
-        });
-      }, 10000);
-    });
   })
   .catch((error: Error) => {
     console.error("Database connection failed", error);
     process.exitCode = 1;
   });
+
+// middleware
+app.use(express.json());
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN }));
+
+// Routes
+app.use("/stock", stockRouter);
+//Auth required
+app.use("/user", userRouter);
+app.use("/transaction", transactionRouter);
+
+// 404
+app.get("*", (_req, res) => {
+  return res.sendStatus(404);
+});
+
+// This is where the app is served
+const server = app.listen(PORT, () => {
+  console.log("Listening on port %d", PORT);
+});
+
+// Graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("Shutting down...");
+  setTimeout(() => {
+    server.close(() => {
+      process.exit();
+    });
+  }, 10000);
+});
