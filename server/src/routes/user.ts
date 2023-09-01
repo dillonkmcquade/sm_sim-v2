@@ -1,10 +1,8 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import UserController from "../models/UserController";
-import { pool } from "../index";
+import { userController } from "../index";
 
 const userRouter = Router();
-const userController = new UserController(pool);
 
 const jwtCheck = auth({
   audience: process.env.AUTH0_AUDIENCE,

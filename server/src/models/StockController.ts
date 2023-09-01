@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Pool } from "pg";
+import type { Pool } from "pg";
 
 interface Ticker {
   symbol: string;
@@ -45,8 +45,8 @@ interface Article {
 
 export class StockController {
   private db: Pool;
-  constructor(db: Pool) {
-    this.db = db;
+  constructor(pool: Pool) {
+    this.db = pool;
   }
   public async quote(ticker: string): Promise<Quote> {
     const request = await fetch(

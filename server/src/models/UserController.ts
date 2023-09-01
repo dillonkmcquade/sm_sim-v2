@@ -27,8 +27,8 @@ interface Holding {
 export default class UserController {
   private pool: Pool;
 
-  constructor(db: Pool) {
-    this.pool = db;
+  constructor(pool: Pool) {
+    this.pool = pool;
   }
 
   public async createUser(authKey: string, user: User): Promise<User> {

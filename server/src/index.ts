@@ -8,11 +8,12 @@ import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
 import { Pool } from "pg";
+import { StockController } from "./models/StockController";
+import UserController from "./models/UserController";
 
-const app = express();
 const PORT = process.env.PORT || 3001;
 
-export const pool = new Pool({
+const pool = new Pool({
   host: process.env.POSTGRES_HOST,
   port: 5432,
   database: "marketsim",
@@ -20,17 +21,10 @@ export const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
 });
 
-// Connect to db
-pool
-  .connect()
-  .then(() => {
-    console.log(`Successfully connected to database: marketsim`);
-  })
-  .catch((error: Error) => {
-    console.error("Database connection failed", error);
-    process.exitCode = 1;
-  });
+export const userController = new UserController(pool);
+export const stockController = new StockController(pool);
 
+const app = express();
 // middleware
 app.use(express.json());
 app.use(helmet());
@@ -43,8 +37,13 @@ app.use("/stock", stockRouter);
 app.use("/user", userRouter);
 app.use("/transaction", transactionRouter);
 
+//health-check
+app.get("/check", async (_, res) => {
+  return res.sendStatus(200);
+});
+
 // 404
-app.get("*", (_req, res) => {
+app.get("*", async (_, res) => {
   return res.sendStatus(404);
 });
 

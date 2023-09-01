@@ -1,9 +1,7 @@
 import { Router } from "express";
-import { StockController } from "../models/StockController";
-import { pool } from "../index";
+import { stockController } from "../index";
 
 const stockRouter = Router();
-const stockController = new StockController(pool);
 
 stockRouter.get("/news/:ticker", async (req, res) => {
   const { ticker } = req.params;
@@ -80,7 +78,7 @@ stockRouter.get("/candle/:ticker", async (req, res) => {
 });
 
 stockRouter.get("/search", async (req, res) => {
-  const name = req.query.name as string;
+  const name = req.query?.name as string;
   if (!name) {
     return res
       .status(400)
@@ -97,6 +95,7 @@ stockRouter.get("/search", async (req, res) => {
     });
   } catch (error) {
     if (error instanceof Error) {
+      console.error(error);
       return res.status(400).json({ status: 400, message: error.message });
     }
     return;
