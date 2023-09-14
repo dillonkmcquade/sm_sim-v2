@@ -6,10 +6,11 @@ CREATE TABLE users (
   telephone VARCHAR(15),
   name VARCHAR(40),
   nickname VARCHAR(40),
-  balance FLOAT,
-  created_at TIMESTAMP,
+  balance FLOAT NOT NULL,
+  created_at TIMESTAMP NOT NULL,
   picture TEXT,
   email VARCHAR(40),
-  watch_list TEXT[]
+  watch_list TEXT[],
+  UNIQUE(auth0_id)
 );
 COMMIT;

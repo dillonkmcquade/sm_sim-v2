@@ -18,7 +18,7 @@ interface User {
 }
 
 interface Holding {
-  transaction_id: string;
+  user_id: string;
   quantity: number;
   symbol: string;
   price: number;
@@ -75,7 +75,7 @@ export class UserController {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
-      await client.query("DELETE FROM transactions WHERE transaction_id=$1", [
+      await client.query("DELETE FROM transactions WHERE user_id=$1", [
         authKey,
       ]);
       await client.query("DELETE FROM users WHERE auth0_id=$1", [authKey]);
@@ -163,7 +163,7 @@ export class UserController {
 
   public async getHoldings(authKey: string): Promise<Holding[]> {
     const { rows } = await this.pool.query<Holding>(
-      "SELECT * FROM transactions WHERE transaction_id=$1",
+      "SELECT * FROM transactions WHERE user_id=$1",
       [authKey],
     );
     return rows;
@@ -171,9 +171,9 @@ export class UserController {
 
   public async insertTransaction(transaction: Transaction): Promise<void> {
     await this.pool.query(
-      "INSERT INTO transactions (transaction_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO transactions (user_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
       [
-        transaction.transaction_id,
+        transaction.user_id,
         transaction.symbol,
         transaction.quantity,
         transaction.price,

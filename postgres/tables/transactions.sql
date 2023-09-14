@@ -1,8 +1,11 @@
 BEGIN TRANSACTION;
 CREATE TABLE transactions (
-  transaction_id TEXT,
-  symbol VARCHAR(10),
-  price FLOAT,
-  quantity INT
+  id INTEGER PRIMARY KEY,
+  user_id VARCHAR(30) NOT NULL,
+  symbol VARCHAR(10) NOT NULL,
+  price FLOAT NOT NULL,
+  quantity INT NOT NULL,
+  FOREIGN KEY (user_id)
+  REFERENCES users(auth0_id)
 );
 COMMIT;

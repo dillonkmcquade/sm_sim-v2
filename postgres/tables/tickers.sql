@@ -1,6 +1,7 @@
 BEGIN TRANSACTION;
 CREATE TABLE tickers (
   description TEXT,
-  symbol VARCHAR(10)
+  symbol TEXT NOT NULL,
+  PRIMARY KEY (symbol)
 );
 COMMIT;
