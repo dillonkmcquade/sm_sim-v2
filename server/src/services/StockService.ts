@@ -2,6 +2,7 @@ import "dotenv/config";
 import type { Pool } from "pg";
 
 type Ticker = {
+  id: string;
   symbol: string;
   description: string;
 };
