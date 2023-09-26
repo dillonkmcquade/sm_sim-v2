@@ -8,8 +8,8 @@ import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
 import { Pool } from "pg";
-import { StockController } from "./models/StockController";
-import { UserController } from "./models/UserController";
+import { StockService } from "./services/StockService";
+import { UserService } from "./services/UserService";
 
 const PORT = process.env.PORT || 3001;
 
@@ -21,8 +21,8 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
 });
 
-export const userController = new UserController(pool);
-export const stockController = new StockController(pool);
+export const userService = new UserService(pool);
+export const stockService = new StockService(pool);
 
 const app = express();
 // middleware

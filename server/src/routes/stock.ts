@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { stockController } from "../index";
+import { stockService } from "../index";
 
 const stockRouter = Router();
 
@@ -9,7 +9,7 @@ stockRouter.get("/news/:ticker", async (req, res) => {
     return res.status(400).json({ status: 400, message: "Missing ticker id" });
   }
   try {
-    const news = await stockController.news(ticker);
+    const news = await stockService.news(ticker);
     if (news) {
       return res.status(200).json({ status: 200, data: news });
     } else {
@@ -32,7 +32,7 @@ stockRouter.get("/quote/:ticker", async (req, res) => {
     return res.status(400).json({ status: 400, message: "Missing ticker id" });
   }
   try {
-    const quote = await stockController.quote(ticker);
+    const quote = await stockService.quote(ticker);
     if (quote) {
       return res.status(200).json({ status: 200, data: quote });
     } else {
@@ -56,7 +56,7 @@ stockRouter.get("/candle/:ticker", async (req, res) => {
     return res.status(400).json({ status: 400, message: "Missing ticker id" });
   }
   try {
-    const candle = await stockController.candle(
+    const candle = await stockService.candle(
       ticker,
       resolution.toString(),
       from.toString(),
@@ -85,7 +85,7 @@ stockRouter.get("/search", async (req, res) => {
       .json({ status: 400, message: "No query string given" });
   }
   try {
-    const results = await stockController.search(name);
+    const results = await stockService.search(name);
     if (!results) {
       return res.status(400).json({ status: 400, message: "Not found" });
     }

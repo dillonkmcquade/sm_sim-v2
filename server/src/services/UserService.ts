@@ -1,9 +1,10 @@
 import type { Pool } from "pg";
 import type { Request } from "express";
-import type { Transaction } from "./Transaction";
+import type { Transaction } from "../models/Transaction";
+import { User } from "../models/User";
 import format from "pg-format";
 
-interface User {
+export type TUser = {
   id?: string;
   balance: number;
   telephone?: string;
@@ -14,25 +15,26 @@ interface User {
   name: string;
   nickname: string;
   email: string;
+  auth0_id: string;
   [key: string]: any;
-}
+};
 
-interface Holding {
+type Holding = {
   user_id: string;
   quantity: number;
   symbol: string;
   price: number;
-}
+};
 
-export class UserController {
+export class UserService {
   private pool: Pool;
 
   constructor(pool: Pool) {
     this.pool = pool;
   }
 
-  public async createUser(authKey: string, user: User): Promise<User> {
-    const data = await this.pool.query<User>(
+  public async createUser(user: TUser): Promise<User> {
+    const data = await this.pool.query<TUser>(
       `INSERT INTO users 
           (name, email, nickname, picture, balance, watch_list, created_at, auth0_id)
        VALUES 
@@ -46,10 +48,11 @@ export class UserController {
         1000000,
         [],
         new Date(),
-        authKey,
+        user.getId(),
       ],
     );
-    return data.rows[0];
+
+    return new User(data.rows[0]);
   }
 
   public async updateUser(req: Request, authKey: string): Promise<void> {
@@ -89,71 +92,70 @@ export class UserController {
   }
 
   public async getUser(authKey: string): Promise<User | undefined> {
-    const data = await this.pool.query<User>(
+    const data = await this.pool.query<TUser>(
       "SELECT * FROM users WHERE auth0_id=$1",
       [authKey],
     );
     if (data.rowCount) {
-      return data.rows[0];
+      return new User(data.rows[0]);
     } else {
       return undefined;
     }
   }
 
-  private async getWatchList(authKey: string): Promise<string[]> {
+  private async getWatchList(auth: string): Promise<string[]> {
     const query = await this.pool.query(
       "SELECT watch_list from users where auth0_id=$1",
-      [authKey],
+      [auth],
     );
     return query.rows[0].watch_list;
   }
 
   private async addToWatchList(
-    authKey: string,
+    auth: string,
     ticker: string,
   ): Promise<string[]> {
     const query = await this.pool.query(
       `UPDATE 
-              users 
-           SET 
-              watch_list = array_append(watch_list, $1) 
-           WHERE 
-              auth0_id=$2 
-           RETURNING 
-              watch_list`,
-      [ticker, authKey],
+          users 
+       SET 
+          watch_list = array_append(watch_list, $1) 
+       WHERE 
+          auth0_id=$2 
+       RETURNING 
+          watch_list`,
+      [ticker, auth],
     );
     return query.rows[0].watch_list;
   }
 
   private async removeFromWatchList(
-    authKey: string,
+    auth: string,
     watchList: string[],
   ): Promise<string[]> {
     // overwrite old watch list with new watch list
     const query = await this.pool.query<{ watch_list: string[] }>(
       "UPDATE users SET watch_list = $1 WHERE auth0_id=$2 RETURNING watch_list",
-      [watchList, authKey],
+      [watchList, auth],
     );
 
     return query.rows[0].watch_list;
   }
 
   public async toggleWatchList(
-    authKey: string,
+    auth: string,
     isWatched: boolean,
     ticker: string,
   ): Promise<string[] | undefined> {
     let result;
-    const watchList = await this.getWatchList(authKey);
-
-    if (isWatched && !watchList.includes(ticker)) {
+    const watchList = await this.getWatchList(auth);
+    if (isWatched && !watchList?.includes(ticker)) {
       //Add
-      result = await this.addToWatchList(authKey, ticker);
-    } else if (!isWatched && watchList.includes(ticker)) {
+      result = await this.addToWatchList(auth, ticker);
+    } else if (!isWatched && watchList?.includes(ticker)) {
       //Remove
       watchList.splice(watchList.indexOf(ticker));
-      result = this.removeFromWatchList(authKey, watchList);
+      result = this.removeFromWatchList(auth, watchList);
     } else {
       //Do nothing
       return;
@@ -181,20 +183,20 @@ export class UserController {
     );
   }
 
-  public async getBalance(authKey: string): Promise<number> {
-    const balance = await this.pool.query<Pick<User, "balance">>(
+  public async getBalance(auth: string): Promise<number> {
+    const balance = await this.pool.query<Pick<TUser, "balance">>(
       "SELECT balance FROM users WHERE auth0_id=$1",
-      [authKey],
+      [auth],
     );
     return balance?.rows[0].balance;
   }
 
-  public async updateBalance(
+  public async setBalance(
     authKey: string,
     newBalance: number,
   ): Promise<number> {
     // update balance retrieve new balance
-    const rows = await this.pool.query<Pick<User, "balance">>(
+    const rows = await this.pool.query<Pick<TUser, "balance">>(
       "UPDATE users SET balance = balance - $1 WHERE auth0_id=$2 RETURNING balance",
       [newBalance, authKey],
     );

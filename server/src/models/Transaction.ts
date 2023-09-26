@@ -1,8 +1,8 @@
 export class Transaction {
-  readonly symbol: string;
-  readonly quantity: number;
-  readonly price: number;
-  readonly user_id: string;
+  public symbol: string;
+  public quantity: number;
+  public price: number;
+  public user_id: string;
 
   constructor(
     symbol: string,
@@ -14,5 +14,8 @@ export class Transaction {
     this.quantity = quantity;
     this.price = price;
     this.user_id = user_id;
+  }
+  public getTotalPrice(): number {
+    return this.quantity * this.price;
   }
 }

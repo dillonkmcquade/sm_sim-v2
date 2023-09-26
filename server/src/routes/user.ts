@@ -1,6 +1,7 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import { userController } from "../index";
+import { userService } from "../index";
+import { TUser } from "../services/UserService";
 
 const userRouter = Router();
 
@@ -19,7 +20,7 @@ userRouter.post("/", async (req, res) => {
   }
   try {
     let data;
-    const duplicate = await userController.getUser(auth.payload.sub!);
+    const duplicate = await userService.getUser(auth.payload.sub!);
     if (duplicate) {
       return res.status(200).json({
         status: 200,
@@ -27,7 +28,7 @@ userRouter.post("/", async (req, res) => {
         data: duplicate,
       });
     } else {
-      data = await userController.createUser(auth.payload.sub!, user);
+      data = await userService.createUser(auth.payload as TUser);
     }
     return res.status(201).json({
       status: 201,
@@ -42,7 +43,7 @@ userRouter.post("/", async (req, res) => {
 userRouter.get("/", async (req, res) => {
   const auth = req.auth?.payload.sub;
   try {
-    const user = userController.getUser(auth!);
+    const user = userService.getUser(auth!);
     return res.status(200).json({
       status: 200,
       data: user,
@@ -56,7 +57,7 @@ userRouter.get("/holdings", async (req, res) => {
   const auth = req.auth?.payload.sub;
 
   try {
-    const holdings = await userController.getHoldings(auth!);
+    const holdings = await userService.getHoldings(auth!);
     return res
       .status(200)
       .json({ status: 200, message: "success", data: holdings });
@@ -77,7 +78,7 @@ userRouter.patch("/toggleWatchList", async (req, res) => {
     });
   }
   try {
-    const watchList = await userController.toggleWatchList(
+    const watchList = await userService.toggleWatchList(
       auth!,
       isWatched,
       ticker,
@@ -137,7 +138,7 @@ userRouter.patch("/update", async (req, res) => {
   }
 
   try {
-    await userController.updateUser(req, auth!);
+    await userService.updateUser(req, auth!);
     return res.status(200).json({
       status: 200,
       message: "User updated successfully.",
@@ -152,7 +153,7 @@ userRouter.patch("/update", async (req, res) => {
 userRouter.delete("/", async (req, res) => {
   const sub = req.auth?.payload.sub;
   try {
-    await userController.deleteUser(sub!);
+    await userService.deleteUser(sub!);
     return res.status(200).json({ status: 200, message: "Account deleted" });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });

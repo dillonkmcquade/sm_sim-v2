@@ -1,11 +1,11 @@
 import "dotenv/config";
 import type { Pool } from "pg";
 
-interface Ticker {
+type Ticker = {
   symbol: string;
   description: string;
-}
-interface Candle {
+};
+type Candle = {
   c: number[];
   h: number[];
   l: number[];
@@ -13,9 +13,9 @@ interface Candle {
   s: string;
   t: number[];
   v: number[];
-}
+};
 
-interface Quote {
+type Quote = {
   c: number;
   h: number;
   l: number;
@@ -24,9 +24,9 @@ interface Quote {
   t: number;
   d: number;
   dp: string;
-}
+};
 
-interface Article {
+type Article = {
   id: string;
   publisher: {
     name: string;
@@ -41,9 +41,9 @@ interface Article {
   image_url: string;
   description: string;
   keywords: string[];
-}
+};
 
-export class StockController {
+export class StockService {
   private db: Pool;
   constructor(pool: Pool) {
     this.db = pool;
