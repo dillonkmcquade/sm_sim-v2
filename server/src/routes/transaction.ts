@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
 import { userService, stockService } from "../index";
-
-import { Transaction } from "../models/Transaction";
+import { Purchase, Sale } from "../models/Transaction";
 
 const transactionRouter = Router();
 
@@ -42,7 +41,7 @@ transactionRouter.patch("/buy/:id", async (req, res) => {
     }
 
     //if user has enough money to make the transaction, continue
-    const transaction = new Transaction(id, quantity, currentPrice, userId);
+    const transaction = new Purchase(id, quantity, currentPrice, userId);
     await userService.insertTransaction(transaction);
 
     // buy stock
@@ -103,7 +102,7 @@ transactionRouter.patch("/sell/:id", async (req, res) => {
 
     //insert transaction to DB
 
-    const transaction = new Transaction(id, -quantity, currentPrice, auth);
+    const transaction = new Sale(id, -quantity, currentPrice, auth);
     await userService.insertTransaction(transaction);
 
     //update user balance, !!! amountToAdd must be negative
