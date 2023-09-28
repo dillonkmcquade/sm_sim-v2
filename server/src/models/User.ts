@@ -2,12 +2,12 @@ import { TUser } from "../services/UserService";
 
 export class User {
   private auth0_id: string;
-  private balance?: number;
+  public balance?: number;
   public email?: string;
   public name?: string;
   public nickname?: string;
   public picture?: string;
-  private watch_list?: string[];
+  public watch_list?: string[];
 
   constructor(user: TUser) {
     this.auth0_id = user.auth0_id;
@@ -15,6 +15,8 @@ export class User {
     this.name = user.name;
     this.nickname = user.nickname;
     this.picture = user.picture;
+    this.balance = user.balance;
+    this.watch_list = user.watch_list;
   }
 
   public getBalance(): number | undefined {

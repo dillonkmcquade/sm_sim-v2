@@ -27,8 +27,6 @@ services:
     build: ./postgres/
     networks:
       - marketsim
-    volumes:
-      - marketsim:/var/lib/postgresql/data
   api:
     build: ./server/
     depends_on:
@@ -47,8 +45,6 @@ services:
       - "3001:3001"
     networks:
       - marketsim
-    volumes:
-      - ./server:/marketsim/server
 networks:
   marketsim:
     name: marketsim

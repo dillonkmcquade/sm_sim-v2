@@ -3,21 +3,23 @@ import type { Request } from "express";
 import type { Transaction } from "../models/Transaction";
 import { User } from "../models/User";
 import format from "pg-format";
+import { JWTPayload } from "express-oauth2-jwt-bearer";
 
-export type TUser = {
+export interface TUser extends JWTPayload {
+  nickname: string;
+  name: string;
+  email: string;
+  picture: string;
+  sub: string;
   id?: string;
   balance: number;
   telephone?: string;
   created_at?: Date;
   total?: number;
   address?: string;
-  picture: string;
-  name: string;
-  nickname: string;
-  email: string;
   auth0_id: string;
-  [key: string]: any;
-};
+  watch_list: string[];
+}
 
 type Holding = {
   user_id: string;
@@ -33,7 +35,7 @@ export class UserService {
     this.pool = pool;
   }
 
-  public async createUser(user: TUser): Promise<User> {
+  public async createUser(payload: JWTPayload): Promise<User> {
     const data = await this.pool.query<TUser>(
       `INSERT INTO users 
           (name, email, nickname, picture, balance, watch_list, created_at, auth0_id)
@@ -41,14 +43,14 @@ export class UserService {
           ($1, $2, $3, $4, $5, $6, $7, $8) 
        RETURNING *`,
       [
-        user.name,
-        user.email,
-        user.nickname,
-        user.picture,
+        payload.name,
+        payload.email,
+        payload.nickname,
+        payload.picture,
         1000000,
         [],
         new Date(),
-        user.getId(),
+        payload.sub,
       ],
     );
 
@@ -67,7 +69,6 @@ export class UserService {
       await Promise.all(queries);
       await client.query("COMMIT");
     } catch (err) {
-      console.log(err);
       await client.query("ROLLBACK");
     } finally {
       client.release();
@@ -85,7 +86,6 @@ export class UserService {
       await client.query("COMMIT");
     } catch (err) {
       await client.query("ROLLBACK");
-      console.log(err);
     } finally {
       client.release();
     }
