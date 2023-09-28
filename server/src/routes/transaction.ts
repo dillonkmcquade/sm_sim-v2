@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
 import { userService, stockService } from "../index";
-import { Purchase, Sale } from "../models/Transaction";
+import { TransactionBuilder } from "../models/Transaction";
 
 const transactionRouter = Router();
 
@@ -12,11 +12,13 @@ const jwtCheck = auth({
 
 transactionRouter.use(jwtCheck);
 
-transactionRouter.patch("/buy/:id", async (req, res) => {
-  const { id } = req.params;
+transactionRouter.patch("/:type/:id", async (req, res) => {
+  const { id, type } = req.params;
   const userId = req.auth?.payload.sub as string;
   const { quantity }: { quantity: number } = req.body;
-  if (!id || quantity === 0) {
+  const types = ["buy", "sell"];
+
+  if (!id || quantity === 0 || !type || !types.includes(type)) {
     return res.status(400).json({
       status: 400,
       data: req.body,
@@ -28,23 +30,44 @@ transactionRouter.patch("/buy/:id", async (req, res) => {
     //fetch current price
     const quote = await stockService.quote(id);
     const currentPrice = quote["c"];
-    const amountToSubtract = Number(currentPrice) * quantity;
 
-    //get user balance so we can see if they have enough money
-    const balance = await userService.getBalance(userId);
+    // Create transaction builder that will return the specified transaction once complete
+    const transactionBuilder = new TransactionBuilder(type);
 
-    // return undefined if user doesn't have enough money
-    if (balance < amountToSubtract) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "Insufficient funds" });
+    transactionBuilder
+      .addQuantity(quantity)
+      .addPrice(currentPrice)
+      .addSymbol(id)
+      .addUserId(userId);
+
+    // Create the new transaction
+    const transaction = transactionBuilder.getTransaction();
+
+    // Verify if user can make the transaction before continuing
+    let verified: boolean = false;
+
+    if (type === "buy") {
+      const balance = await userService.getBalance(userId);
+      verified = transaction.verify(balance);
     }
 
-    //if user has enough money to make the transaction, continue
-    const transaction = new Purchase(id, quantity, currentPrice, userId);
+    if (type === "sell") {
+      const numShares = await userService.getNumSharesBySymbol(userId);
+      verified = transaction.verify(numShares);
+    }
+
+    if (!verified) {
+      return res.status(400).json({
+        status: 400,
+        message:
+          "You can not make this transaction, either not enough shares or insufficient funds",
+      });
+    }
+
+    //if user has enough money/shares to make the transaction, continue
     await userService.insertTransaction(transaction);
 
-    // buy stock
+    // update user balance
     const newBalance = await userService.setBalance(
       userId,
       transaction.getTotalPrice(),
@@ -66,7 +89,7 @@ transactionRouter.patch("/buy/:id", async (req, res) => {
   }
 });
 
-transactionRouter.patch("/sell/:id", async (req, res) => {
+/* transactionRouter.patch("/sell/:id", async (req, res) => {
   const { id } = req.params;
   const auth = req.auth?.payload.sub as string;
   const { quantity }: { quantity: number } = req.body;
@@ -79,7 +102,13 @@ transactionRouter.patch("/sell/:id", async (req, res) => {
     });
   }
   try {
+    //fetch current price
+    const quote = await stockService.quote(id);
+    const currentPrice = quote["c"];
+
     //check if user has enough shares to sell desired amount
+    // -------------------------------------------------
+    // Create custom query for this
     const holdings = await userService.getHoldings(auth);
     const numOfShares = holdings.reduce((accumulator, currentValue) => {
       if (currentValue.symbol === id) {
@@ -89,20 +118,22 @@ transactionRouter.patch("/sell/:id", async (req, res) => {
       }
     }, 0);
 
-    if (numOfShares < quantity) {
+    const transaction = transactionFactory.getTransaction(
+      id,
+      -quantity,
+      currentPrice,
+      auth,
+    );
+    if (!transaction.verify(userService, auth)) {
       return res.status(404).json({
         status: 404,
         message: "You don't own enough shares to sell this much",
       });
     }
-
-    //fetch current price
-    const quote = await stockService.quote(id);
-    const currentPrice = quote["c"];
+    // ------------------------------------------------
 
     //insert transaction to DB
 
-    const transaction = new Sale(id, -quantity, currentPrice, auth);
     await userService.insertTransaction(transaction);
 
     //update user balance, !!! amountToAdd must be negative
@@ -119,6 +150,6 @@ transactionRouter.patch("/sell/:id", async (req, res) => {
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
   }
-});
+}); */
 
 export default transactionRouter;

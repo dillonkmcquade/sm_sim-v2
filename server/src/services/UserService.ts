@@ -170,6 +170,20 @@ export class UserService {
     );
     return rows;
   }
+  public async getNumSharesBySymbol(authKey: string): Promise<number> {
+    const rows = await this.pool.query(
+      `
+    SELECT 
+      sum(quantity) as numShares
+    FROM
+      transactions
+    WHERE
+      user_id=$1
+`,
+      [authKey],
+    );
+    return rows.rows[0].numShares;
+  }
 
   public async insertTransaction(transaction: Transaction): Promise<void> {
     await this.pool.query(
