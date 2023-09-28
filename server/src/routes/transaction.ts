@@ -34,6 +34,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     // Create transaction builder that will return the specified transaction once complete
     const transactionBuilder = new TransactionBuilder(type);
 
+    // Build the transaction
     transactionBuilder
       .addQuantity(quantity)
       .addPrice(currentPrice)
@@ -44,7 +45,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     const transaction = transactionBuilder.getTransaction();
 
     // Verify if user can make the transaction before continuing
-    let verified: boolean = false;
+    let verified = false;
 
     if (type === "buy") {
       const balance = await userService.getBalance(userId);
@@ -85,6 +86,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
       balance: newBalance,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ status: 500, message: "Server error" });
   }
 });

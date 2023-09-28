@@ -10,6 +10,7 @@ export interface Transaction {
   getTotalPrice(): number;
   verify(arg0: number): boolean;
 }
+
 class Purchase implements Transaction {
   public symbol: string;
   public quantity: number;
@@ -109,7 +110,7 @@ export class TransactionBuilder {
           this.price,
           this.user_id,
         );
-      case "sale":
+      case "sell":
         return new Sale(this.symbol, -this.quantity, this.price, this.user_id);
       default:
         throw new Error("Transaction type does not exist");

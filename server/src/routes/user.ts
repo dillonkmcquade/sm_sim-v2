@@ -1,7 +1,7 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
 import { userService } from "../index";
-import { TUser } from "../services/UserService";
+import { User } from "../models/User";
 
 const userRouter = Router();
 
@@ -19,7 +19,7 @@ userRouter.post("/", async (req, res) => {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
-    let data;
+    let data: User;
     const duplicate = await userService.getUser(auth.payload.sub!);
     if (duplicate) {
       return res.status(200).json({
@@ -28,7 +28,7 @@ userRouter.post("/", async (req, res) => {
         data: duplicate,
       });
     } else {
-      data = await userService.createUser(auth.payload as TUser);
+      data = await userService.createUser(user);
     }
     return res.status(201).json({
       status: 201,
