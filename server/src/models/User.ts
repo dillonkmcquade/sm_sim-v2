@@ -19,23 +19,7 @@ export class User {
     this.watch_list = user.watch_list;
   }
 
-  public getBalance(): number | undefined {
-    return this.balance;
-  }
-
-  public setBalance(balance: number): void {
-    this.balance = balance;
-  }
-
   public getId(): string | undefined {
     return this.auth0_id;
-  }
-
-  public setWatchList(watch_list: string[]): void {
-    this.watch_list = watch_list;
-  }
-
-  public getWatchList(): string[] | undefined {
-    return this.watch_list;
   }
 }
