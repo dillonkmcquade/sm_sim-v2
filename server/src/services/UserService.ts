@@ -5,29 +5,6 @@ import { User } from "../models/User";
 import format from "pg-format";
 import { JWTPayload } from "express-oauth2-jwt-bearer";
 
-export interface TUser extends JWTPayload {
-  nickname: string;
-  name: string;
-  email: string;
-  picture: string;
-  sub: string;
-  id?: string;
-  balance: number;
-  telephone?: string;
-  created_at?: Date;
-  total?: number;
-  address?: string;
-  auth0_id: string;
-  watch_list: string[];
-}
-
-type Holding = {
-  user_id: string;
-  quantity: number;
-  symbol: string;
-  price: number;
-};
-
 export class UserService {
   private pool: Pool;
 
@@ -36,7 +13,7 @@ export class UserService {
   }
 
   public async createUser(payload: JWTPayload): Promise<User> {
-    const data = await this.pool.query<TUser>(
+    const data = await this.pool.query<User>(
       `INSERT INTO users 
           (name, email, nickname, picture, balance, watch_list, auth0_id)
        VALUES 
@@ -95,7 +72,7 @@ export class UserService {
   }
 
   public async getUser(authKey: string): Promise<User | undefined> {
-    const data = await this.pool.query<TUser>(
+    const data = await this.pool.query<User>(
       "SELECT * FROM users WHERE auth0_id=$1",
       [authKey],
     );
@@ -107,7 +84,7 @@ export class UserService {
   }
 
   private async getWatchList(auth: string): Promise<string[]> {
-    const query = await this.pool.query(
+    const query = await this.pool.query<User>(
       "SELECT watch_list from users where auth0_id=$1",
       [auth],
     );
@@ -118,7 +95,7 @@ export class UserService {
     auth: string,
     ticker: string,
   ): Promise<string[]> {
-    const query = await this.pool.query(
+    const query = await this.pool.query<User>(
       `UPDATE 
           users 
        SET 
@@ -138,7 +115,7 @@ export class UserService {
     watchList: string[],
   ): Promise<string[]> {
     // overwrite old watch list with new watch list
-    const query = await this.pool.query<{ watch_list: string[] }>(
+    const query = await this.pool.query<User>(
       `UPDATE users
       SET 
         watch_list = $1,
@@ -160,7 +137,7 @@ export class UserService {
   ): Promise<string[] | undefined> {
     let result;
     const watchList = await this.getWatchList(auth);
-    if (isWatched && !watchList?.includes(ticker)) {
+    if (isWatched && !watchList.includes(ticker)) {
       //Add
       result = await this.addToWatchList(auth, ticker);
     } else if (!isWatched && watchList?.includes(ticker)) {
@@ -174,8 +151,8 @@ export class UserService {
     return result;
   }
 
-  public async getHoldings(authKey: string): Promise<Holding[]> {
-    const { rows } = await this.pool.query<Holding>(
+  public async getHoldings(authKey: string): Promise<Transaction[]> {
+    const { rows } = await this.pool.query<Transaction>(
       "SELECT * FROM transactions WHERE user_id=$1",
       [authKey],
     );
@@ -209,11 +186,11 @@ export class UserService {
   }
 
   public async getBalance(auth: string): Promise<number> {
-    const balance = await this.pool.query<Pick<TUser, "balance">>(
+    const balance = await this.pool.query<User>(
       "SELECT balance FROM users WHERE auth0_id=$1",
       [auth],
     );
-    return balance?.rows[0].balance;
+    return balance.rows[0].balance;
   }
 
   public async setBalance(
@@ -221,10 +198,10 @@ export class UserService {
     newBalance: number,
   ): Promise<number> {
     // update balance retrieve new balance
-    const rows = await this.pool.query<Pick<TUser, "balance">>(
+    const rows = await this.pool.query<User>(
       "UPDATE users SET balance = balance - $1 WHERE auth0_id=$2 RETURNING balance",
       [newBalance, authKey],
     );
-    return rows.rows[0]?.balance;
+    return rows.rows[0].balance;
   }
 }
