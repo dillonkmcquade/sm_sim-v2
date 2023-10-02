@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -30,7 +30,7 @@ export default function StockDetails() {
   const { news, isLoadingNews } = useNewsData(id!);
 
   //Context
-  const { currentUser, setCurrentUser } = useCurrentUser(); 
+  const { currentUser, setCurrentUser } = useCurrentUser();
 
   //state
   const { range } = state;
@@ -57,11 +57,11 @@ export default function StockDetails() {
       });
       const parsed = await response.json();
       if (parsed.status === 200) {
-        setCurrentUser({ ...currentUser, watch_list: parsed.data.watch_list });
+        setCurrentUser({ ...currentUser, watch_list: parsed.data });
         return;
       }
     } catch (error) {
-      if (error instanceof Error){
+      if (error instanceof Error) {
         console.error(error.message);
       }
     }
@@ -125,11 +125,7 @@ export default function StockDetails() {
         </SecondaryText>
       </CurrentPrice>
 
-      {error && (
-        <Alert severity="warning">
-          {error}
-        </Alert>
-      )}
+      {error && <Alert severity="warning">{error}</Alert>}
       <ChartWrapper>
         {!data || loading ? (
           <CircularProgress sx={{ color: "#027326" }} />
@@ -172,7 +168,7 @@ export default function StockDetails() {
         {isLoadingNews || !news ? (
           <CircularProgress />
         ) : (
-          news.map((article: typeof news[0]) => (
+          news.map((article: (typeof news)[0]) => (
             <NewsArticle article={article} key={article.id} />
           ))
         )}
