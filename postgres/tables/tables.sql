@@ -8,10 +8,11 @@ CREATE TABLE users (
   name VARCHAR(40),
   nickname VARCHAR(40),
   balance FLOAT NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  picture TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_on TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  picture TEXT NOT NULL,
   email VARCHAR(40),
-  watch_list TEXT[],
+  watch_list TEXT[] NOT NULL,
   UNIQUE(auth0_id)
 );
 
@@ -27,8 +28,11 @@ CREATE TABLE transactions (
   symbol VARCHAR(10) NOT NULL,
   price FLOAT NOT NULL,
   quantity INT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
   FOREIGN KEY (user_id)
-  REFERENCES users(auth0_id)
+  REFERENCES users(auth0_id),
+  FOREIGN KEY (symbol)
+  REFERENCES tickers(symbol)
 );
 
 

@@ -38,9 +38,9 @@ export class UserService {
   public async createUser(payload: JWTPayload): Promise<User> {
     const data = await this.pool.query<TUser>(
       `INSERT INTO users 
-          (name, email, nickname, picture, balance, watch_list, created_at, auth0_id)
+          (name, email, nickname, picture, balance, watch_list, auth0_id)
        VALUES 
-          ($1, $2, $3, $4, $5, $6, $7, $8) 
+          ($1, $2, $3, $4, $5, $6, $7) 
        RETURNING *`,
       [
         payload.name,
@@ -49,7 +49,6 @@ export class UserService {
         payload.picture,
         1000000,
         [],
-        new Date(),
         payload.sub,
       ],
     );
@@ -67,6 +66,10 @@ export class UserService {
         await client.query(sql, [req.body[key], authKey]);
       });
       await Promise.all(queries);
+      await client.query(
+        `UPDATE users SET updated_on = CURRENT_TIMESTAMP WHERE auth0_id=$1`,
+        [authKey],
+      );
       await client.query("COMMIT");
     } catch (err) {
       await client.query("ROLLBACK");
@@ -119,7 +122,8 @@ export class UserService {
       `UPDATE 
           users 
        SET 
-          watch_list = array_append(watch_list, $1) 
+          watch_list = array_append(watch_list, $1),
+          updated_on = CURRENT_TIMESTAMP
        WHERE 
           auth0_id=$2 
        RETURNING 
@@ -135,7 +139,14 @@ export class UserService {
   ): Promise<string[]> {
     // overwrite old watch list with new watch list
     const query = await this.pool.query<{ watch_list: string[] }>(
-      "UPDATE users SET watch_list = $1 WHERE auth0_id=$2 RETURNING watch_list",
+      `UPDATE users
+      SET 
+        watch_list = $1,
+        updated_on = CURRENT_TIMESTAMP
+      WHERE 
+        auth0_id=$2
+      RETURNING
+        watch_list`,
       [watchList, auth],
     );
 
