@@ -1,5 +1,6 @@
 import "dotenv/config";
 import type { Pool } from "pg";
+import { DatabaseServiceModel } from "./DatabaseServiceModel";
 
 type Ticker = {
   id: string;
@@ -44,10 +45,9 @@ type Article = {
   keywords: string[];
 };
 
-export class StockService {
-  private db: Pool;
+export class StockService extends DatabaseServiceModel<Ticker> {
   constructor(pool: Pool) {
-    this.db = pool;
+    super(pool);
   }
   public async quote(ticker: string): Promise<Quote> {
     const request = await fetch(
@@ -84,7 +84,7 @@ export class StockService {
   }
 
   public async search(name: string): Promise<Ticker[]> {
-    const data = await this.db.query<Ticker>(
+    const data = await this.query(
       "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
       [name.toUpperCase() + "%"],
     );

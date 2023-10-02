@@ -1,6 +1,6 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import { userService } from "../index";
+import { userService, transactionService } from "../index";
 import { User } from "../models/User";
 
 const userRouter = Router();
@@ -57,7 +57,7 @@ userRouter.get("/holdings", async (req, res) => {
   const auth = req.auth?.payload.sub;
 
   try {
-    const holdings = await userService.getHoldings(auth!);
+    const holdings = await transactionService.getTransactions(auth!);
     return res
       .status(200)
       .json({ status: 200, message: "success", data: holdings });

@@ -8,8 +8,10 @@ import userRouter from "./routes/user";
 import transactionRouter from "./routes/transaction";
 import stockRouter from "./routes/stock";
 import { Pool } from "pg";
+
 import { StockService } from "./services/StockService";
 import { UserService } from "./services/UserService";
+import { TransactionService } from "./services/TransactionService";
 
 const PORT = process.env.PORT || 3001;
 
@@ -23,6 +25,7 @@ const pool = new Pool({
 
 export const userService = new UserService(pool);
 export const stockService = new StockService(pool);
+export const transactionService = new TransactionService(pool);
 
 const app = express();
 // middleware

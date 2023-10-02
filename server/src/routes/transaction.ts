@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import { userService, stockService } from "../index";
+import { userService, stockService, transactionService } from "../index";
 import { TransactionBuilder } from "../models/Transaction";
 
 const transactionRouter = Router();
@@ -53,7 +53,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     }
 
     if (type === "sell") {
-      const numShares = await userService.getNumSharesBySymbol(userId);
+      const numShares = await transactionService.getNumSharesBySymbol(userId);
       verified = transaction.verify(numShares);
     }
 
@@ -66,7 +66,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     }
 
     //if user has enough money/shares to make the transaction, continue
-    await userService.insertTransaction(transaction);
+    await transactionService.insertTransaction(transaction);
 
     // update user balance
     const newBalance = await userService.setBalance(
@@ -86,7 +86,6 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
       balance: newBalance,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ status: 500, message: "Server error" });
   }
 });

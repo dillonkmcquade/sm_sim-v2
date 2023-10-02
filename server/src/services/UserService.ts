@@ -1,19 +1,17 @@
 import type { Pool } from "pg";
 import type { Request } from "express";
-import type { Transaction } from "../models/Transaction";
 import { User } from "../models/User";
 import format from "pg-format";
 import { JWTPayload } from "express-oauth2-jwt-bearer";
+import { DatabaseServiceModel } from "./DatabaseServiceModel";
 
-export class UserService {
-  private pool: Pool;
-
+export class UserService extends DatabaseServiceModel<User> {
   constructor(pool: Pool) {
-    this.pool = pool;
+    super(pool);
   }
 
   public async createUser(payload: JWTPayload): Promise<User> {
-    const data = await this.pool.query<User>(
+    const data = await this.query(
       `INSERT INTO users 
           (name, email, nickname, picture, balance, watch_list, auth0_id)
        VALUES 
@@ -72,10 +70,9 @@ export class UserService {
   }
 
   public async getUser(authKey: string): Promise<User | undefined> {
-    const data = await this.pool.query<User>(
-      "SELECT * FROM users WHERE auth0_id=$1",
-      [authKey],
-    );
+    const data = await this.query("SELECT * FROM users WHERE auth0_id=$1", [
+      authKey,
+    ]);
     if (data.rowCount) {
       return new User(data.rows[0]);
     } else {
@@ -84,7 +81,7 @@ export class UserService {
   }
 
   private async getWatchList(auth: string): Promise<string[]> {
-    const query = await this.pool.query<User>(
+    const query = await this.query(
       "SELECT watch_list from users where auth0_id=$1",
       [auth],
     );
@@ -95,7 +92,7 @@ export class UserService {
     auth: string,
     ticker: string,
   ): Promise<string[]> {
-    const query = await this.pool.query<User>(
+    const query = await this.query(
       `UPDATE 
           users 
        SET 
@@ -115,7 +112,7 @@ export class UserService {
     watchList: string[],
   ): Promise<string[]> {
     // overwrite old watch list with new watch list
-    const query = await this.pool.query<User>(
+    const query = await this.query(
       `UPDATE users
       SET 
         watch_list = $1,
@@ -151,42 +148,8 @@ export class UserService {
     return result;
   }
 
-  public async getHoldings(authKey: string): Promise<Transaction[]> {
-    const { rows } = await this.pool.query<Transaction>(
-      "SELECT * FROM transactions WHERE user_id=$1",
-      [authKey],
-    );
-    return rows;
-  }
-  public async getNumSharesBySymbol(authKey: string): Promise<number> {
-    const rows = await this.pool.query(
-      `
-    SELECT 
-      sum(quantity) as numShares
-    FROM
-      transactions
-    WHERE
-      user_id=$1
-`,
-      [authKey],
-    );
-    return rows.rows[0].numShares;
-  }
-
-  public async insertTransaction(transaction: Transaction): Promise<void> {
-    await this.pool.query(
-      "INSERT INTO transactions (user_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
-      [
-        transaction.user_id,
-        transaction.symbol,
-        transaction.quantity,
-        transaction.price,
-      ],
-    );
-  }
-
   public async getBalance(auth: string): Promise<number> {
-    const balance = await this.pool.query<User>(
+    const balance = await this.query(
       "SELECT balance FROM users WHERE auth0_id=$1",
       [auth],
     );
@@ -198,7 +161,7 @@ export class UserService {
     newBalance: number,
   ): Promise<number> {
     // update balance retrieve new balance
-    const rows = await this.pool.query<User>(
+    const rows = await this.query(
       "UPDATE users SET balance = balance - $1 WHERE auth0_id=$2 RETURNING balance",
       [newBalance, authKey],
     );
