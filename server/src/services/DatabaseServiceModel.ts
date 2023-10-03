@@ -11,7 +11,9 @@ export abstract class DatabaseServiceModel<T extends QueryResultRow> {
    * manually inputting the generic each time.
    */
   protected async query<R extends QueryResultRow = T>(
+    // eslint-disable-next-line
     queryString: string | QueryConfig<any[]>,
+    // eslint-disable-next-line
     args: any[] | undefined,
   ) {
     return this.pool.query<R>(queryString, args);

@@ -24,7 +24,7 @@ services:
       start_period: 80s
     ports:
       - "5432:5432"
-    build: ./postgres/
+    build: ./database/
     networks:
       - marketsim
   api:

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 export function validated(reqBody: any): boolean {
   const dummyData = {
     name: "string",

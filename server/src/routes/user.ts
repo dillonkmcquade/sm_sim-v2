@@ -49,8 +49,13 @@ userRouter.get("/", async (req, res) => {
       status: 200,
       data: user,
     });
-  } catch (error: any) {
-    return res.status(500).json({ status: 500, message: error.message });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ status: 500, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ status: 500, message: "Internal server error" });
   }
 });
 
