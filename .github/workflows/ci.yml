@@ -93,6 +93,14 @@ jobs:
         run: pnpm install
         working-directory: ${{env.working-directory}}
 
+      - name: "lint"
+        run: pnpm lint
+        working-directory: ${{env.working-directory}}
+
+      - name: "format"
+        run: pnpm format
+        working-directory: ${{env.working-directory}}
+
       - name: "build"
         run: pnpm build
         working-directory: ${{env.working-directory}}
