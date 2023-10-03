@@ -2,6 +2,7 @@ import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
 import { userService, transactionService } from "../index";
 import { User } from "../models/User";
+import { validated } from "../utils/validateBody";
 
 const userRouter = Router();
 
@@ -112,24 +113,6 @@ userRouter.patch("/update", async (req, res) => {
   }
 
   //limit the updateable user fields
-  function validated(obj: any): boolean {
-    const dummyData = {
-      name: "string",
-      nickname: "string",
-      email: "string",
-      address: "string",
-      telephone: "string",
-    };
-    let result = true;
-    const keys = Object.keys(obj);
-    const expectedKeys = Object.keys(dummyData);
-    keys.forEach((key: string) => {
-      if (!expectedKeys.includes(key) || typeof obj[key] !== "string") {
-        result = false;
-      }
-    });
-    return result;
-  }
   if (!validated(req.body)) {
     return res.status(400).json({
       status: 400,
