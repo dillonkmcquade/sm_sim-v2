@@ -1,6 +1,6 @@
 import { Pool } from "pg";
-import { DatabaseServiceModel } from "./DatabaseServiceModel";
-import { Transaction } from "../models/Transaction";
+import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
+import { Transaction } from "./models/Transaction";
 
 export class TransactionService extends DatabaseServiceModel<Transaction> {
   constructor(db: Pool) {

@@ -1,8 +1,8 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import { userService, transactionService } from "../index";
-import { User } from "../models/User";
-import { validated } from "../utils/validateBody";
+import { User } from "./models/User";
+import { validated } from "../../utils/validateBody";
+import { transactionService, userService } from "../../index";
 
 const userRouter = Router();
 

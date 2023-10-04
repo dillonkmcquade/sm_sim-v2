@@ -1,6 +1,6 @@
 import "dotenv/config";
 import type { Pool } from "pg";
-import { DatabaseServiceModel } from "./DatabaseServiceModel";
+import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
 
 type Ticker = {
   id: string;

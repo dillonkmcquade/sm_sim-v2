@@ -1,9 +1,9 @@
 import type { Pool } from "pg";
 import type { Request } from "express";
-import { User } from "../models/User";
+import { User } from "./models/User";
 import format from "pg-format";
 import { JWTPayload } from "express-oauth2-jwt-bearer";
-import { DatabaseServiceModel } from "./DatabaseServiceModel";
+import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
 
 export class UserService extends DatabaseServiceModel<User> {
   constructor(pool: Pool) {

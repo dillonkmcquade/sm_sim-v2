@@ -4,14 +4,13 @@ import "dotenv/config";
 import helmet from "helmet";
 import cors from "cors";
 
-import userRouter from "./routes/user";
-import transactionRouter from "./routes/transaction";
-import stockRouter from "./routes/stock";
+import userRouter from "./resources/user/user.controller";
+import transactionRouter from "./resources/transaction/transaction.controller";
+import stockRouter from "./resources/stock/stock.controller";
 import { Pool } from "pg";
-
-import { StockService } from "./services/StockService";
-import { UserService } from "./services/UserService";
-import { TransactionService } from "./services/TransactionService";
+import { StockService } from "./resources/stock/stock.service";
+import { UserService } from "./resources/user/user.service";
+import { TransactionService } from "./resources/transaction/transaction.service";
 
 const PORT = process.env.PORT || 3001;
 
@@ -23,8 +22,8 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
 });
 
-export const userService = new UserService(pool);
 export const stockService = new StockService(pool);
+export const userService = new UserService(pool);
 export const transactionService = new TransactionService(pool);
 
 const app = express();

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import { userService, stockService, transactionService } from "../index";
-import { TransactionBuilder } from "../models/Transaction";
+import { TransactionBuilder } from "./models/Transaction";
+import { stockService, userService, transactionService } from "../../index";
 
 const transactionRouter = Router();
 
