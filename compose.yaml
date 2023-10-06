@@ -39,8 +39,9 @@ services:
       timeout: 5s
       retries: 3
       start_period: 0s
-    env_file:
-      - ./server/.env
+    environment:
+      POSTGRES_HOST: "sm_sim-v2-postgres-1"
+      POSTGRES_PASSWORD: "password"
     ports:
       - "3001:3001"
     networks:

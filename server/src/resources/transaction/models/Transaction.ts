@@ -1,6 +1,3 @@
-/*
- * The transaction interface allows us to extend the application to include other types of transactions
- */
 export interface ITransaction {
   symbol: string;
   quantity: number;
@@ -59,6 +56,11 @@ class Sale extends Transaction {
   ) {
     super(symbol, quantity, price, user_id);
   }
+  /**
+   * Verify that the user has enough shares to sell
+   * @param numShares - The number of shares owned by the user
+   * @returns true if numShares is greater than the quantity in the transaction
+   */
   public verify(numShares: number): boolean {
     if (numShares > -this.quantity) {
       return true;
@@ -67,14 +69,18 @@ class Sale extends Transaction {
   }
 }
 
+type TransactionType = "buy" | "sell";
+/**
+ * @constructor
+ */
 export class TransactionBuilder {
   private symbol?: string;
   private quantity?: number;
   private price?: number;
   private user_id?: string;
-  public readonly type: string;
+  public readonly type: TransactionType;
 
-  constructor(type: string) {
+  constructor(type: TransactionType) {
     this.type = type;
   }
 
@@ -94,6 +100,10 @@ export class TransactionBuilder {
     this.user_id = userId;
     return this;
   }
+  /**
+   * @throws Error if transaction incomplete or an invalid transaction type is given
+   * @returns A complete transaction that implements the ITransaction interface
+   */
   public getTransaction(): ITransaction {
     if (
       this.symbol === undefined ||

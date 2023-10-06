@@ -4,13 +4,22 @@
 import type { Holding } from "../types";
 
 //price = purchase price
-export function getInvestedValue(holdings: Holding[]) {
+/**
+ * @param holdings - An array of objects of type Holding
+ * @returns The total invested value as a number
+ */
+export function getInvestedValue(holdings: Holding[]): number {
   return holdings.reduce((accumulator, currentValue) => {
     return accumulator + Number(currentValue.quantity) * currentValue.price;
   }, 0);
 }
 
-//create object containing {ticker: price} combinations
+/**
+ * Create object containing {ticker: price} combinations
+ *
+ * @returns A promise that returns a new Map<string, number> representing the price of each ticker
+ *
+ */
 export async function getPrices(holdings: Holding[]) {
   const prices: { [key: string]: number } = {};
   const uniqueTickers = Array.from(
