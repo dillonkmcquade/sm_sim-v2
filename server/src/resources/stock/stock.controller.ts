@@ -86,7 +86,7 @@ stockRouter.get("/search", async (req, res) => {
   }
   try {
     const results = await stockService.search(name);
-    if (!results) {
+    if (!results || results.length === 0) {
       return res.status(400).json({ status: 400, message: "Not found" });
     }
     return res.status(200).json({

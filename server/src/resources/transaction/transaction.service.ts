@@ -1,42 +1,36 @@
-import { Pool } from "pg";
+import { Repository } from "typeorm";
+import { Transaction } from "./models/transaction.entity";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
-import { Transaction } from "./models/Transaction";
 
 export class TransactionService extends DatabaseServiceModel<Transaction> {
-  constructor(db: Pool) {
-    super(db);
+  constructor(repository: Repository<Transaction>) {
+    super(repository);
   }
-  public async insertTransaction(transaction: Transaction): Promise<void> {
-    await this.query(
-      "INSERT INTO transactions (user_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
-      [
-        transaction.user_id,
-        transaction.symbol,
-        transaction.quantity,
-        transaction.price,
-      ],
-    );
+  public async insert(t: Transaction): Promise<void> {
+    await this.repository.insert(t);
   }
-  public async getTransactions(authKey: string): Promise<Transaction[]> {
-    const { rows } = await this.query(
-      "SELECT * FROM transactions WHERE user_id=$1",
-      [authKey],
-    );
-    return rows;
+  public async findById(id: string): Promise<Transaction[]> {
+    return this.repository.findBy({ user: { id: id } });
+  }
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete({ user: { id: id } });
   }
 
-  public async getNumSharesBySymbol(authKey: string): Promise<number> {
-    const rows = await this.query<{ numShares: number }>(
-      `
-    SELECT 
-      sum(quantity) as numShares
-    FROM
-      transactions
-    WHERE
-      user_id=$1
-`,
-      [authKey],
-    );
-    return rows.rows[0].numShares;
+  /**
+   *
+   * Get the number of shares of a particular company
+   * @param id - User id
+   * @param ticker - Company ticker i.e. 'TSLA'
+   */
+  public async numShares(id: string, ticker: string): Promise<number> {
+    const shares = await this.repository.sum("quantity", {
+      user: { id: id },
+      symbol: ticker,
+    });
+    console.log(shares);
+    if (!shares) {
+      return 0;
+    }
+    return shares;
   }
 }

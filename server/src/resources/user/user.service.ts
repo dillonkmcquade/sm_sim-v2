@@ -1,170 +1,68 @@
-import type { Pool } from "pg";
-import type { Request } from "express";
-import { User } from "./models/User";
-import format from "pg-format";
-import { JWTPayload } from "express-oauth2-jwt-bearer";
+import { User } from "./models/User.entity";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
+import { Repository } from "typeorm";
+
+export interface userDto {
+  id: string;
+  email: string;
+  name: string;
+  nickname: string;
+  picture: string;
+  telephone: string;
+}
 
 export class UserService extends DatabaseServiceModel<User> {
-  constructor(pool: Pool) {
-    super(pool);
+  constructor(repository: Repository<User>) {
+    super(repository);
   }
 
-  public async createUser(payload: JWTPayload): Promise<User> {
-    const data = await this.query(
-      `INSERT INTO users 
-          (name, email, nickname, picture, balance, watch_list, auth0_id)
-       VALUES 
-          ($1, $2, $3, $4, $5, $6, $7) 
-       RETURNING *`,
-      [
-        payload.name,
-        payload.email,
-        payload.nickname,
-        payload.picture,
-        1000000,
-        [],
-        payload.sub,
-      ],
-    );
-
-    return new User(data.rows[0]);
+  public async create(u: userDto): Promise<User> {
+    const user = this.repository.create(u);
+    await this.repository.save(user);
+    return user;
   }
 
-  public async updateUser(req: Request, authKey: string): Promise<void> {
-    const client = await this.pool.connect();
-    try {
-      await client.query("BEGIN");
-      const keys = Object.keys(req.body);
-      const queries = keys.map(async (key) => {
-        const sql = format("UPDATE users SET %I = $1 WHERE auth0_id=$2", key);
-        await client.query(sql, [req.body[key], authKey]);
-      });
-      await Promise.all(queries);
-      await client.query(
-        `UPDATE users SET updated_on = CURRENT_TIMESTAMP WHERE auth0_id=$1`,
-        [authKey],
-      );
-      await client.query("COMMIT");
-    } catch (err) {
-      await client.query("ROLLBACK");
-    } finally {
-      client.release();
-    }
+  public async findById(id: string): Promise<User> {
+    return this.repository.findOneByOrFail({ id: id });
   }
 
-  public async deleteUser(authKey: string): Promise<void> {
-    const client = await this.pool.connect();
-    try {
-      await client.query("BEGIN");
-      await client.query("DELETE FROM transactions WHERE user_id=$1", [
-        authKey,
-      ]);
-      await client.query("DELETE FROM users WHERE auth0_id=$1", [authKey]);
-      await client.query("COMMIT");
-    } catch (err) {
-      await client.query("ROLLBACK");
-    } finally {
-      client.release();
-    }
+  public async update(req: Partial<User>, id: string): Promise<void> {
+    await this.repository.update(id, req);
   }
 
-  public async getUser(authKey: string): Promise<User | undefined> {
-    const data = await this.query("SELECT * FROM users WHERE auth0_id=$1", [
-      authKey,
-    ]);
-    if (data.rowCount) {
-      return new User(data.rows[0]);
-    } else {
-      return undefined;
-    }
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
   }
 
-  private async getWatchList(auth: string): Promise<string[]> {
-    const query = await this.query(
-      "SELECT watch_list from users where auth0_id=$1",
-      [auth],
-    );
-    return query.rows[0].watch_list;
+  public async getBalance(id: string): Promise<User | null> {
+    return this.repository.findOne({
+      select: { balance: true, id: true },
+      where: { id: id },
+    });
   }
 
-  private async addToWatchList(
-    auth: string,
-    ticker: string,
-  ): Promise<string[]> {
-    const query = await this.query(
-      `UPDATE 
-          users 
-       SET 
-          watch_list = array_append(watch_list, $1),
-          updated_on = CURRENT_TIMESTAMP
-       WHERE 
-          auth0_id=$2 
-       RETURNING 
-          watch_list`,
-      [ticker, auth],
-    );
-    return query.rows[0].watch_list;
-  }
-
-  private async removeFromWatchList(
-    auth: string,
-    watchList: string[],
-  ): Promise<string[]> {
-    // overwrite old watch list with new watch list
-    const query = await this.query(
-      `UPDATE users
-      SET 
-        watch_list = $1,
-        updated_on = CURRENT_TIMESTAMP
-      WHERE 
-        auth0_id=$2
-      RETURNING
-        watch_list`,
-      [watchList, auth],
-    );
-
-    return query.rows[0].watch_list;
+  public async setBalance(id: string, newBalance: number): Promise<void> {
+    // update balance retrieve new balance
+    await this.repository.decrement({ id: id }, "balance", newBalance);
   }
 
   public async toggleWatchList(
-    auth: string,
+    id: string,
     isWatched: boolean,
     ticker: string,
   ): Promise<string[] | undefined> {
-    let result;
-    const watchList = await this.getWatchList(auth);
-    if (isWatched && !watchList.includes(ticker)) {
+    const user = await this.findById(id);
+    if (isWatched && !user.watch_list.includes(ticker)) {
       //Add
-      result = await this.addToWatchList(auth, ticker);
-    } else if (!isWatched && watchList?.includes(ticker)) {
+      user.watch_list.push(ticker);
+    } else if (!isWatched && user.watch_list?.includes(ticker)) {
       //Remove
-      watchList.splice(watchList.indexOf(ticker));
-      result = this.removeFromWatchList(auth, watchList);
+      user.watch_list.splice(user.watch_list.indexOf(ticker));
     } else {
       //Do nothing
       return;
     }
-    return result;
-  }
-
-  public async getBalance(auth: string): Promise<number> {
-    const balance = await this.query(
-      "SELECT balance FROM users WHERE auth0_id=$1",
-      [auth],
-    );
-    return balance.rows[0].balance;
-  }
-
-  public async setBalance(
-    authKey: string,
-    newBalance: number,
-  ): Promise<number> {
-    // update balance retrieve new balance
-    const rows = await this.query(
-      "UPDATE users SET balance = balance - $1 WHERE auth0_id=$2 RETURNING balance",
-      [newBalance, authKey],
-    );
-    return rows.rows[0].balance;
+    await this.repository.save(user);
+    return user.watch_list;
   }
 }
