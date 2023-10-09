@@ -1,34 +1,12 @@
 import type { Pool } from "pg";
 import type { Request } from "express";
-import { User } from "./models/User";
+import { User } from "./models/User.entity";
 import format from "pg-format";
-import { JWTPayload } from "express-oauth2-jwt-bearer";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
 
 export class UserService extends DatabaseServiceModel<User> {
   constructor(pool: Pool) {
     super(pool);
-  }
-
-  public async createUser(payload: JWTPayload): Promise<User> {
-    const data = await this.query(
-      `INSERT INTO users 
-          (name, email, nickname, picture, balance, watch_list, auth0_id)
-       VALUES 
-          ($1, $2, $3, $4, $5, $6, $7) 
-       RETURNING *`,
-      [
-        payload.name,
-        payload.email,
-        payload.nickname,
-        payload.picture,
-        1000000,
-        [],
-        payload.sub,
-      ],
-    );
-
-    return new User(data.rows[0]);
   }
 
   public async updateUser(req: Request, authKey: string): Promise<void> {
@@ -66,17 +44,6 @@ export class UserService extends DatabaseServiceModel<User> {
       await client.query("ROLLBACK");
     } finally {
       client.release();
-    }
-  }
-
-  public async getUser(authKey: string): Promise<User | undefined> {
-    const data = await this.query("SELECT * FROM users WHERE auth0_id=$1", [
-      authKey,
-    ]);
-    if (data.rowCount) {
-      return new User(data.rows[0]);
-    } else {
-      return undefined;
     }
   }
 

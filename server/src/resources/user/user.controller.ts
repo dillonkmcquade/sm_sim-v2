@@ -1,8 +1,8 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import { User } from "./models/User";
-import { validated } from "../../utils/validateBody";
-import { transactionService, userService } from "../../index";
+import { User, UserBuilder } from "./models/User.entity";
+/* import { validated } from "../../utils/validateBody";
+import { Transaction } from "../transaction/models/transaction.entity"; */
 
 const userRouter = Router();
 
@@ -14,14 +14,15 @@ const jwtCheck = auth({
 userRouter.use(jwtCheck);
 
 userRouter.post("/", async (req, res) => {
-  const { user } = req.body;
+  const user = req.body.user;
   const auth = req.auth!;
   if (!user) {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
     let data: User;
-    const duplicate = await userService.getUser(auth.payload.sub!);
+    const duplicate = await User.findOneBy({ id: auth.payload.sub! });
+
     if (duplicate) {
       return res.status(200).json({
         status: 200,
@@ -29,7 +30,15 @@ userRouter.post("/", async (req, res) => {
         data: duplicate,
       });
     } else {
-      data = await userService.createUser(user);
+      const userBuilder = new UserBuilder();
+      data = userBuilder
+        .auth0_id(user.sub!)
+        .email(user.email)
+        .name(user.name)
+        .picture(user.picture)
+        .telephone(user.telephone)
+        .build();
+      await data.save();
     }
     return res.status(201).json({
       status: 201,
@@ -44,7 +53,7 @@ userRouter.post("/", async (req, res) => {
 userRouter.get("/", async (req, res) => {
   const auth = req.auth?.payload.sub;
   try {
-    const user = userService.getUser(auth!);
+    const user = User.findOneBy({ id: auth! });
     return res.status(200).json({
       status: 200,
       data: user,
@@ -63,16 +72,26 @@ userRouter.get("/holdings", async (req, res) => {
   const auth = req.auth?.payload.sub;
 
   try {
-    const holdings = await transactionService.getTransactions(auth!);
+    const user = await User.findOne({
+      relations: {
+        transactions: true,
+      },
+      where: {
+        id: auth,
+      },
+    });
+    if (!user) {
+      return res.status(404).json({ status: 404, message: "User not found" });
+    }
     return res
       .status(200)
-      .json({ status: 200, message: "success", data: holdings });
+      .json({ status: 200, message: "success", data: user.transactions });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
   }
 });
 
-userRouter.patch("/toggleWatchList", async (req, res) => {
+/* userRouter.patch("/toggleWatchList", async (req, res) => {
   const { ticker, isWatched }: { ticker: string; isWatched: boolean } =
     req.body;
   const auth = req.auth?.payload.sub;
@@ -106,8 +125,8 @@ userRouter.patch("/toggleWatchList", async (req, res) => {
     return;
   }
 });
-
-userRouter.patch("/update", async (req, res) => {
+*/
+/* userRouter.patch("/update", async (req, res) => {
   const auth = req.auth?.payload.sub;
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
@@ -136,12 +155,16 @@ userRouter.patch("/update", async (req, res) => {
       .status(500)
       .json({ status: 500, message: "Server error", data: req.body });
   }
-});
+}); */
 
 userRouter.delete("/", async (req, res) => {
   const sub = req.auth?.payload.sub;
   try {
-    await userService.deleteUser(sub!);
+    const user = await User.findOneBy({ id: sub });
+    if (!user) {
+      return res.sendStatus(404);
+    }
+    await user.remove();
     return res.status(200).json({ status: 200, message: "Account deleted" });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });

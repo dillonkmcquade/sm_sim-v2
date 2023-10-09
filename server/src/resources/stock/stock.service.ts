@@ -1,12 +1,13 @@
 import "dotenv/config";
-import type { Pool } from "pg";
+/* import type { Pool } from "pg";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
+import { Ticker } from "./models/ticker.entity"; */
 
-type Ticker = {
+/* type Ticker = {
   id: string;
   symbol: string;
   description: string;
-};
+}; */
 type Candle = {
   c: number[];
   h: number[];
@@ -45,10 +46,7 @@ type Article = {
   keywords: string[];
 };
 
-export class StockService extends DatabaseServiceModel<Ticker> {
-  constructor(pool: Pool) {
-    super(pool);
-  }
+export class StockService {
   public async quote(ticker: string): Promise<Quote> {
     const request = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.FINNHUB_KEY}`,
@@ -81,14 +79,5 @@ export class StockService extends DatabaseServiceModel<Ticker> {
     const data = await request.json();
     if (!data["c"]) throw new Error("No data");
     return data;
-  }
-
-  public async search(name: string): Promise<Ticker[]> {
-    const data = await this.query(
-      "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
-      [name.toUpperCase() + "%"],
-    );
-    if (data.rows.length === 0) throw new Error("No results");
-    return data.rows;
   }
 }

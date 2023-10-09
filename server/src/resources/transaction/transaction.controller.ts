@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import { TransactionBuilder } from "./models/Transaction";
-import { stockService, userService, transactionService } from "../../index";
+import {
+  Purchase,
+  Sale,
+  TransactionBuilder,
+} from "./models/transaction.entity";
+import { stockService } from "../../index";
+import { TransactionType } from "./models/transaction.entity";
+import { User } from "../user/models/User.entity";
 
 const transactionRouter = Router();
 
@@ -27,34 +33,45 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     });
   }
   try {
+    const user = await User.createQueryBuilder("users")
+      .leftJoinAndSelect(
+        "sum(users.transactions.quantity)",
+        "numShares",
+        "transactions.quantity = :symbol",
+        { symbol: id },
+      )
+      .leftJoinAndSelect("users.transactions", "transactions")
+      .where("users.name = :name", { name: userId })
+      .getOne();
+
+    if (!user) {
+      res.status(400).json({ status: 400, message: "User not found" });
+      return;
+    }
     //fetch current price
     const quote = await stockService.quote(id);
     const currentPrice = quote["c"];
 
     // Create transaction builder that will return the specified transaction once complete
-    const transactionBuilder = new TransactionBuilder(type);
+    const transactionBuilder = new TransactionBuilder(type as TransactionType);
 
     // Build the transaction
-    transactionBuilder
+    const transaction = transactionBuilder
       .addQuantity(quantity)
       .addPrice(currentPrice)
       .addSymbol(id)
-      .addUserId(userId);
-
-    // Create the new transaction
-    const transaction = transactionBuilder.getTransaction();
+      .addUserId(user)
+      .getTransaction();
 
     // Verify if user can make the transaction before continuing
     let verified = false;
 
-    if (type === "buy") {
-      const balance = await userService.getBalance(userId);
-      verified = transaction.verify(balance);
+    if (transaction instanceof Purchase) {
+      verified = transaction.verify(user.balance);
     }
 
-    if (type === "sell") {
-      const numShares = await transactionService.getNumSharesBySymbol(userId);
-      verified = transaction.verify(numShares);
+    if (transaction instanceof Sale) {
+      verified = transaction.verify(user.numShares!);
     }
 
     if (!verified) {
@@ -65,25 +82,15 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
       });
     }
 
-    //if user has enough money/shares to make the transaction, continue
-    await transactionService.insertTransaction(transaction);
-
     // update user balance
-    const newBalance = await userService.setBalance(
-      userId,
-      transaction.getTotalPrice(),
-    );
+    user.balance = user.balance - transaction.getTotalPrice();
+    user.transactions?.push(transaction);
+    await user.save();
 
-    // return error if insufficient funds
-    if (!newBalance) {
-      return res
-        .status(400)
-        .json({ status: 400, message: "Insufficient funds" });
-    }
     return res.status(200).json({
       status: 200,
       message: "stock purchased successfully",
-      balance: newBalance,
+      balance: user.balance,
     });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
