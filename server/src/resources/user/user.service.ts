@@ -10,7 +10,7 @@ export class UserService extends DatabaseServiceModel<User> {
     super(pool);
   }
 
-  public async createUser(payload: JWTPayload): Promise<User> {
+  public async create(payload: JWTPayload): Promise<User> {
     const data = await this.query(
       `INSERT INTO users 
           (name, email, nickname, picture, balance, watch_list, auth0_id)
@@ -28,10 +28,10 @@ export class UserService extends DatabaseServiceModel<User> {
       ],
     );
 
-    return new User(data.rows[0]);
+    return data.rows[0];
   }
 
-  public async updateUser(req: Request, authKey: string): Promise<void> {
+  public async update(req: Request, authKey: string): Promise<void> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -53,7 +53,7 @@ export class UserService extends DatabaseServiceModel<User> {
     }
   }
 
-  public async deleteUser(authKey: string): Promise<void> {
+  public async delete(authKey: string): Promise<void> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -69,12 +69,12 @@ export class UserService extends DatabaseServiceModel<User> {
     }
   }
 
-  public async getUser(authKey: string): Promise<User | undefined> {
+  public async findById(authKey: string): Promise<User | undefined> {
     const data = await this.query("SELECT * FROM users WHERE auth0_id=$1", [
       authKey,
     ]);
     if (data.rowCount) {
-      return new User(data.rows[0]);
+      return data.rows[0];
     } else {
       return undefined;
     }

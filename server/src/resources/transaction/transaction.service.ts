@@ -6,7 +6,7 @@ export class TransactionService extends DatabaseServiceModel<Transaction> {
   constructor(db: Pool) {
     super(db);
   }
-  public async insertTransaction(transaction: Transaction): Promise<void> {
+  public async create(transaction: Transaction): Promise<void> {
     await this.query(
       "INSERT INTO transactions (user_id, symbol, quantity, price) VALUES ($1, $2, $3, $4)",
       [
@@ -17,16 +17,19 @@ export class TransactionService extends DatabaseServiceModel<Transaction> {
       ],
     );
   }
-  public async getTransactions(authKey: string): Promise<Transaction[]> {
+  public async findById(userId: string): Promise<Transaction[]> {
     const { rows } = await this.query(
       "SELECT * FROM transactions WHERE user_id=$1",
-      [authKey],
+      [userId],
     );
     return rows;
   }
 
-  public async getNumSharesBySymbol(authKey: string): Promise<number> {
-    const rows = await this.query<{ numShares: number }>(
+  public async getNumSharesBySymbol(
+    userId: string,
+    symbol: string,
+  ): Promise<number> {
+    const { rows } = await this.query<{ numShares: number }>(
       `
     SELECT 
       sum(quantity) as numShares
@@ -34,9 +37,11 @@ export class TransactionService extends DatabaseServiceModel<Transaction> {
       transactions
     WHERE
       user_id=$1
+    AND
+      symbol=$2
 `,
-      [authKey],
+      [userId, symbol],
     );
-    return rows.rows[0].numShares;
+    return rows[0].numShares;
   }
 }

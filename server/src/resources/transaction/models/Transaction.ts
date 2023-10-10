@@ -69,10 +69,8 @@ class Sale extends Transaction {
   }
 }
 
-type TransactionType = "buy" | "sell";
-/**
- * @constructor
- */
+export type TransactionType = "buy" | "sell";
+
 export class TransactionBuilder {
   private symbol?: string;
   private quantity?: number;

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import { TransactionBuilder } from "./models/Transaction";
+import { TransactionBuilder, TransactionType } from "./models/Transaction";
 import { stockService, userService, transactionService } from "../../index";
 
 const transactionRouter = Router();
@@ -32,7 +32,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     const currentPrice = quote["c"];
 
     // Create transaction builder that will return the specified transaction once complete
-    const transactionBuilder = new TransactionBuilder(type);
+    const transactionBuilder = new TransactionBuilder(type as TransactionType);
 
     // Build the transaction
     transactionBuilder
@@ -53,7 +53,10 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     }
 
     if (type === "sell") {
-      const numShares = await transactionService.getNumSharesBySymbol(userId);
+      const numShares = await transactionService.getNumSharesBySymbol(
+        userId,
+        id,
+      );
       verified = transaction.verify(numShares);
     }
 
@@ -66,7 +69,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     }
 
     //if user has enough money/shares to make the transaction, continue
-    await transactionService.insertTransaction(transaction);
+    await transactionService.create(transaction);
 
     // update user balance
     const newBalance = await userService.setBalance(
