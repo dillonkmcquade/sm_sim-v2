@@ -39,7 +39,9 @@ export class User extends BaseEntity {
   @Column("simple-array")
   watch_list: string[] = [];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  @OneToMany(() => Transaction, (transaction) => transaction.user, {
+    cascade: ["insert", "update"],
+  })
   transactions?: Transaction[];
 
   @CreateDateColumn()
@@ -49,36 +51,4 @@ export class User extends BaseEntity {
   updated_on?: Date;
 
   numShares?: number;
-}
-
-export class UserBuilder {
-  private user = new User();
-
-  public auth0_id(auth0_id: string): UserBuilder {
-    this.user.id = auth0_id;
-    return this;
-  }
-  public email(email: string): UserBuilder {
-    this.user.email = email;
-    return this;
-  }
-  public name(name: string): UserBuilder {
-    this.user.name = name;
-    return this;
-  }
-  public nickname(nickname: string): UserBuilder {
-    this.user.nickname = nickname;
-    return this;
-  }
-  public telephone(telephone: string): UserBuilder {
-    this.user.telephone = telephone;
-    return this;
-  }
-  public picture(picture: string): UserBuilder {
-    this.user.picture = picture;
-    return this;
-  }
-  public build(): User {
-    return this.user;
-  }
 }

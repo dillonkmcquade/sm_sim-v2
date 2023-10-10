@@ -33,16 +33,8 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     });
   }
   try {
-    const user = await User.createQueryBuilder("users")
-      .leftJoinAndSelect(
-        "sum(users.transactions.quantity)",
-        "numShares",
-        "transactions.quantity = :symbol",
-        { symbol: id },
-      )
-      .leftJoinAndSelect("users.transactions", "transactions")
-      .where("users.name = :name", { name: userId })
-      .getOne();
+    //P
+    const user = await User.findOneBy({ id: userId });
 
     if (!user) {
       res.status(400).json({ status: 400, message: "User not found" });
@@ -60,7 +52,6 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
       .addQuantity(quantity)
       .addPrice(currentPrice)
       .addSymbol(id)
-      .addUserId(user)
       .getTransaction();
 
     // Verify if user can make the transaction before continuing
@@ -82,10 +73,15 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
       });
     }
 
-    // update user balance
+    // Update user balance
     user.balance = user.balance - transaction.getTotalPrice();
-    user.transactions?.push(transaction);
     await user.save();
+
+    //Insert transaction
+    await User.createQueryBuilder()
+      .relation(User, "transactions")
+      .of(user)
+      .add(transaction);
 
     return res.status(200).json({
       status: 200,

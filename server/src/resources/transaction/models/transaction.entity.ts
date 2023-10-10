@@ -56,6 +56,7 @@ export class Sale extends Transaction {
     if (numShares > -this.quantity!) {
       return true;
     }
+
     return false;
   }
 }
@@ -100,8 +101,7 @@ export class TransactionBuilder {
     if (
       this.transaction.symbol === undefined ||
       this.transaction.quantity === undefined ||
-      this.transaction.price === undefined ||
-      this.transaction.user === undefined
+      this.transaction.price === undefined
     ) {
       throw new Error("Transaction is missing fields");
     }

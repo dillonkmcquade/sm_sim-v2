@@ -1,8 +1,9 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Router } from "express";
-import { User, UserBuilder } from "./models/User.entity";
+import { User } from "./models/User.entity";
+// import { Transaction } from "../transaction/models/transaction.entity";
 /* import { validated } from "../../utils/validateBody";
-import { Transaction } from "../transaction/models/transaction.entity"; */
+// import { Transaction } from "../transaction/models/transaction.entity"; */
 
 const userRouter = Router();
 
@@ -14,36 +15,35 @@ const jwtCheck = auth({
 userRouter.use(jwtCheck);
 
 userRouter.post("/", async (req, res) => {
-  const user = req.body.user;
+  const userDto = req.body.user;
   const auth = req.auth!;
-  if (!user) {
+  if (!userDto) {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
-    let data: User;
-    const duplicate = await User.findOneBy({ id: auth.payload.sub! });
+    let user = await User.findOneBy({ id: auth.payload.sub! });
 
-    if (duplicate) {
+    if (user) {
       return res.status(200).json({
         status: 200,
         message: "User authenticated",
-        data: duplicate,
+        data: user,
       });
     } else {
-      const userBuilder = new UserBuilder();
-      data = userBuilder
-        .auth0_id(user.sub!)
-        .email(user.email)
-        .name(user.name)
-        .picture(user.picture)
-        .telephone(user.telephone)
-        .build();
-      await data.save();
+      user = User.create({
+        id: userDto.sub,
+        email: userDto.email,
+        name: userDto.name,
+        nickname: userDto.nickname,
+        picture: userDto.picture,
+        telephone: userDto.telephone,
+      });
+      await user.save();
     }
     return res.status(201).json({
       status: 201,
       message: "User created",
-      data,
+      data: user,
     });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
@@ -72,17 +72,21 @@ userRouter.get("/holdings", async (req, res) => {
   const auth = req.auth?.payload.sub;
 
   try {
-    const user = await User.findOne({
+    /* const user = await User.findOne({
       relations: {
         transactions: true,
       },
       where: {
         id: auth,
       },
-    });
+    }); */
+    const { transactions } = await User.createQueryBuilder("users").select([
+      "",
+    ]);
     if (!user) {
       return res.status(404).json({ status: 404, message: "User not found" });
     }
+    console.log(user);
     return res
       .status(200)
       .json({ status: 200, message: "success", data: user.transactions });
