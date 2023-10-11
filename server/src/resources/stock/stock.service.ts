@@ -78,6 +78,7 @@ export class StockService extends DatabaseServiceModel<Ticker> {
     if (!data["c"]) throw new Error("No data");
     return data;
   }
+
   public async search(name: string): Promise<Ticker[]> {
     return this.repository.find({
       where: { description: ILike(`%${name}%`) },

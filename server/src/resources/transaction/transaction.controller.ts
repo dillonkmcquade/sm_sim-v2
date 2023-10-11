@@ -40,7 +40,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     const currentPrice = quote["c"];
 
     // Create transaction builder that will return the specified transaction once complete
-    const transactionBuilder = new TransactionBuilder(type as TransactionType);
+    const transactionBuilder = new TransactionBuilder(type);
 
     // Build the transaction
     const transaction = transactionBuilder
