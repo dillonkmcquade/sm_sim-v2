@@ -15,12 +15,12 @@ userRouter.use(jwtCheck);
 
 userRouter.post("/", async (req, res) => {
   const reqBody = req.body.user;
-  const auth = req.auth!;
+  const id = req.auth?.payload.sub;
   if (!reqBody) {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
-    let user = await userService.findById(auth.payload.sub!);
+    let user = await userService.findById(id!);
 
     if (user) {
       return res.status(200).json({
@@ -30,7 +30,7 @@ userRouter.post("/", async (req, res) => {
       });
     } else {
       user = await userService.create({
-        id: reqBody.sub,
+        id: id!,
         email: reqBody.email,
         name: reqBody.name,
         nickname: reqBody.nickname,
@@ -49,9 +49,9 @@ userRouter.post("/", async (req, res) => {
 });
 
 userRouter.get("/", async (req, res) => {
-  const auth = req.auth?.payload.sub;
+  const id = req.auth?.payload.sub;
   try {
-    const user = userService.findById(auth!);
+    const user = userService.findById(id!);
     return res.status(200).json({
       status: 200,
       data: user,
@@ -67,10 +67,10 @@ userRouter.get("/", async (req, res) => {
 });
 
 userRouter.get("/holdings", async (req, res) => {
-  const auth = req.auth?.payload.sub;
+  const id = req.auth?.payload.sub;
 
   try {
-    const transactions = await transactionService.findById(auth!);
+    const transactions = await transactionService.findById(id!);
     return res
       .status(200)
       .json({ status: 200, message: "success", data: transactions });
@@ -115,7 +115,7 @@ userRouter.patch("/toggleWatchList", async (req, res) => {
 });
 
 userRouter.patch("/update", async (req, res) => {
-  const auth = req.auth?.payload.sub;
+  const id = req.auth?.payload.sub;
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
       status: 400,
@@ -133,7 +133,7 @@ userRouter.patch("/update", async (req, res) => {
   }
 
   try {
-    await userService.update(req.body as Partial<User>, auth!);
+    await userService.update(req.body as Partial<User>, id!);
     return res.status(200).json({
       status: 200,
       message: "User updated successfully.",
@@ -146,11 +146,11 @@ userRouter.patch("/update", async (req, res) => {
 });
 
 userRouter.delete("/", async (req, res) => {
-  const sub = req.auth?.payload.sub;
+  const id = req.auth?.payload.sub;
   try {
     // Must delete transactions first, or else we violate foreign key constraint on transactions
-    await transactionService.delete(sub!);
-    await userService.delete(sub!);
+    await transactionService.delete(id!);
+    await userService.delete(id!);
     return res.status(200).json({ status: 200, message: "Account deleted" });
   } catch (error) {
     return res.status(500).json({ status: 500, message: "Server error" });
