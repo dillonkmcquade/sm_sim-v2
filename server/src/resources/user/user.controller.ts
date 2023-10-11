@@ -3,7 +3,6 @@ import { Router } from "express";
 import { transactionService, userService } from "../../index";
 import { User } from "./models/User.entity";
 import { validated } from "../../utils/validateBody";
-// import { Transaction } from "../transaction/models/transaction.entity"; */
 
 const userRouter = Router();
 

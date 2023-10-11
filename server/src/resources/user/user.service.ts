@@ -1,4 +1,3 @@
-// import type { Request } from "express";
 import { User } from "./models/User.entity";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
 import { Repository } from "typeorm";
