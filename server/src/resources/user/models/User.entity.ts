@@ -4,14 +4,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  BaseEntity,
   PrimaryColumn,
 } from "typeorm";
 
 import { Transaction } from "../../transaction/models/transaction.entity";
 
 @Entity("users")
-export class User extends BaseEntity {
+export class User {
   @PrimaryColumn()
   id?: string;
 
@@ -39,9 +38,7 @@ export class User extends BaseEntity {
   @Column("simple-array")
   watch_list: string[] = [];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.user, {
-    cascade: ["insert", "update"],
-  })
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions?: Transaction[];
 
   @CreateDateColumn()
@@ -49,6 +46,4 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn()
   updated_on?: Date;
-
-  numShares?: number;
 }

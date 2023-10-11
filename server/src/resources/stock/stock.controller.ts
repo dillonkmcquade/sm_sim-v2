@@ -1,7 +1,5 @@
 import { Router } from "express";
 import { stockService } from "../../index";
-import { Ticker } from "./models/ticker.entity";
-import { Like } from "typeorm";
 
 const stockRouter = Router();
 
@@ -87,9 +85,7 @@ stockRouter.get("/search", async (req, res) => {
       .json({ status: 400, message: "No query string given" });
   }
   try {
-    const results = await Ticker.findBy({
-      description: Like(`%${name}%`),
-    });
+    const results = await stockService.search(name);
     if (!results || results.length === 0) {
       return res.status(400).json({ status: 400, message: "Not found" });
     }

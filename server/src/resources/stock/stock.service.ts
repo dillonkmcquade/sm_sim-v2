@@ -1,13 +1,8 @@
 import "dotenv/config";
-/* import type { Pool } from "pg";
+import { ILike, Repository } from "typeorm";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
-import { Ticker } from "./models/ticker.entity"; */
+import { Ticker } from "./models/ticker.entity";
 
-/* type Ticker = {
-  id: string;
-  symbol: string;
-  description: string;
-}; */
 type Candle = {
   c: number[];
   h: number[];
@@ -46,7 +41,10 @@ type Article = {
   keywords: string[];
 };
 
-export class StockService {
+export class StockService extends DatabaseServiceModel<Ticker> {
+  constructor(repository: Repository<Ticker>) {
+    super(repository);
+  }
   public async quote(ticker: string): Promise<Quote> {
     const request = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.FINNHUB_KEY}`,
@@ -79,5 +77,11 @@ export class StockService {
     const data = await request.json();
     if (!data["c"]) throw new Error("No data");
     return data;
+  }
+  public async search(name: string): Promise<Ticker[]> {
+    return this.repository.find({
+      where: { description: ILike(`%${name}%`) },
+      take: 10,
+    });
   }
 }

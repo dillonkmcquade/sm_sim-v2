@@ -5,9 +5,7 @@ import {
   Sale,
   TransactionBuilder,
 } from "./models/transaction.entity";
-import { stockService } from "../../index";
-import { TransactionType } from "./models/transaction.entity";
-import { User } from "../user/models/User.entity";
+import { stockService, transactionService, userService } from "../../index";
 
 const transactionRouter = Router();
 
@@ -33,36 +31,35 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     });
   }
   try {
-    //P
-    const user = await User.findOneBy({ id: userId });
-
+    const user = await userService.findById(userId);
     if (!user) {
-      res.status(400).json({ status: 400, message: "User not found" });
-      return;
+      return res.status(400).json({ status: 400, error: "User not found" });
     }
     //fetch current price
     const quote = await stockService.quote(id);
     const currentPrice = quote["c"];
 
     // Create transaction builder that will return the specified transaction once complete
-    const transactionBuilder = new TransactionBuilder(type as TransactionType);
+    const transactionBuilder = new TransactionBuilder(type);
 
     // Build the transaction
     const transaction = transactionBuilder
       .addQuantity(quantity)
       .addPrice(currentPrice)
       .addSymbol(id)
+      .addUserId(user)
       .getTransaction();
 
     // Verify if user can make the transaction before continuing
     let verified = false;
 
     if (transaction instanceof Purchase) {
-      verified = transaction.verify(user.balance);
+      verified = transaction.verify();
     }
 
     if (transaction instanceof Sale) {
-      verified = transaction.verify(user.numShares!);
+      const numShares = await transactionService.numShares(userId, id);
+      verified = transaction.verify(numShares);
     }
 
     if (!verified) {
@@ -74,21 +71,18 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     }
 
     // Update user balance
-    user.balance = user.balance - transaction.getTotalPrice();
-    await user.save();
+    await userService.setBalance(userId, transaction.getTotalPrice());
 
     //Insert transaction
-    await User.createQueryBuilder()
-      .relation(User, "transactions")
-      .of(user)
-      .add(transaction);
+    await transactionService.insert(transaction);
 
     return res.status(200).json({
       status: 200,
       message: "stock purchased successfully",
-      balance: user.balance,
+      balance: user.balance - transaction.getTotalPrice(),
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ status: 500, message: "Server error" });
   }
 });

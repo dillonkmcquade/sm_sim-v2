@@ -12,6 +12,8 @@ import { StockService } from "./resources/stock/stock.service";
 import { User } from "./resources/user/models/User.entity";
 import { Ticker } from "./resources/stock/models/ticker.entity";
 import { Transaction } from "./resources/transaction/models/transaction.entity";
+import { UserService } from "./resources/user/user.service";
+import { TransactionService } from "./resources/transaction/transaction.service";
 
 const PORT = process.env.PORT || 3001;
 
@@ -31,9 +33,11 @@ dataSource
   .then(() => console.log("Migrations complete"))
   .catch((err) => console.error(err));
 
-export const stockService = new StockService();
-// export const userService = new UserService(pool);
-// export const transactionService = new TransactionService(pool);
+export const stockService = new StockService(dataSource.getRepository(Ticker));
+export const userService = new UserService(dataSource.getRepository(User));
+export const transactionService = new TransactionService(
+  dataSource.getRepository(Transaction),
+);
 
 const app = express();
 // middleware

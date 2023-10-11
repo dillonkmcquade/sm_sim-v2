@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,18 +8,18 @@ import {
 import { User } from "../../user/models/User.entity";
 
 @Entity("transactions")
-export abstract class Transaction extends BaseEntity {
+export abstract class Transaction {
   @PrimaryGeneratedColumn()
-  public id!: number;
+  public id?: number;
 
   @Column()
-  public symbol?: string;
+  public symbol!: string;
 
   @Column()
-  public quantity?: number;
+  public quantity!: number;
 
-  @Column()
-  public price?: number;
+  @Column("float")
+  public price!: number;
 
   @ManyToOne(() => User, (user) => user.transactions)
   user?: User;
@@ -31,7 +30,9 @@ export abstract class Transaction extends BaseEntity {
   public getTotalPrice(): number {
     return this.quantity! * this.price!;
   }
-  abstract verify(arg0: number): boolean;
+
+  abstract verify(numShares: number): boolean;
+  abstract verify(): boolean;
 }
 
 export class Purchase extends Transaction {
@@ -39,8 +40,11 @@ export class Purchase extends Transaction {
    * Verifies if the user has enough money to make the purchase
    * @param balance - The user's current balance
    */
-  public verify(balance: number): boolean {
-    if (balance > Number(this.price)) {
+  public verify(): boolean {
+    if (!this.user) {
+      return false;
+    }
+    if (this.user.balance > Number(this.price)) {
       return true;
     }
     return false;
@@ -52,8 +56,8 @@ export class Sale extends Transaction {
    * Verifies if the user has enough shares to make the sale
    *@param numShares - The number of shares of this stock owned by the user
    */
-  public verify(numShares: number): boolean {
-    if (numShares > -this.quantity!) {
+  public verify(numShares: number = 0): boolean {
+    if (numShares >= -this.quantity!) {
       return true;
     }
 
@@ -61,12 +65,10 @@ export class Sale extends Transaction {
   }
 }
 
-export type TransactionType = "buy" | "sell";
-
 export class TransactionBuilder {
   private transaction: Transaction;
 
-  constructor(type: TransactionType) {
+  constructor(type: string) {
     if (type === "buy") {
       this.transaction = new Purchase();
     } else if (type === "sell") {
@@ -82,7 +84,11 @@ export class TransactionBuilder {
     return this;
   }
   public addQuantity(quantity: number): TransactionBuilder {
-    this.transaction.quantity = quantity;
+    if (this.transaction instanceof Sale) {
+      this.transaction.quantity = -quantity;
+    } else {
+      this.transaction.quantity = quantity;
+    }
     return this;
   }
   public addPrice(price: number): TransactionBuilder {
