@@ -26,9 +26,6 @@ dependencies:
   pg:
     specifier: ^8.11.2
     version: 8.11.2
-  pg-format:
-    specifier: ^1.0.4
-    version: 1.0.4
   reflect-metadata:
     specifier: ^0.1.13
     version: 0.1.13
@@ -3206,11 +3203,6 @@ packages:
 
   /pg-connection-string@2.6.2:
     resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
-    dev: false
-
-  /pg-format@1.0.4:
-    resolution: {integrity: sha512-YyKEF78pEA6wwTAqOUaHIN/rWpfzzIuMh9KdAhc3rSLQ/7zkRFcCgYBAEGatDstLyZw4g0s9SNICmaTGnBVeyw==}
-    engines: {node: '>=4.0'}
     dev: false
 
   /pg-int8@1.0.1:
