@@ -1,12 +1,8 @@
 import "dotenv/config";
-import type { Pool } from "pg";
+import { ILike, Repository } from "typeorm";
 import { DatabaseServiceModel } from "../../lib/DatabaseServiceModel";
+import { Ticker } from "./models/ticker.entity";
 
-type Ticker = {
-  id: string;
-  symbol: string;
-  description: string;
-};
 type Candle = {
   c: number[];
   h: number[];
@@ -46,8 +42,8 @@ type Article = {
 };
 
 export class StockService extends DatabaseServiceModel<Ticker> {
-  constructor(pool: Pool) {
-    super(pool);
+  constructor(repository: Repository<Ticker>) {
+    super(repository);
   }
   public async quote(ticker: string): Promise<Quote> {
     const request = await fetch(
@@ -84,11 +80,9 @@ export class StockService extends DatabaseServiceModel<Ticker> {
   }
 
   public async search(name: string): Promise<Ticker[]> {
-    const data = await this.query(
-      "SELECT * FROM tickers WHERE description LIKE $1 LIMIT 10",
-      [name.toUpperCase() + "%"],
-    );
-    if (data.rows.length === 0) throw new Error("No results");
-    return data.rows;
+    return this.repository.find({
+      where: { description: ILike(`%${name}%`) },
+      take: 10,
+    });
   }
 }

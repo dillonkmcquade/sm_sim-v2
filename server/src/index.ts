@@ -7,24 +7,37 @@ import cors from "cors";
 import userRouter from "./resources/user/user.controller";
 import transactionRouter from "./resources/transaction/transaction.controller";
 import stockRouter from "./resources/stock/stock.controller";
-import { Pool } from "pg";
+import { DataSource } from "typeorm";
 import { StockService } from "./resources/stock/stock.service";
+import { User } from "./resources/user/models/User.entity";
+import { Ticker } from "./resources/stock/models/ticker.entity";
+import { Transaction } from "./resources/transaction/models/transaction.entity";
 import { UserService } from "./resources/user/user.service";
 import { TransactionService } from "./resources/transaction/transaction.service";
 
 const PORT = process.env.PORT || 3001;
 
-const pool = new Pool({
+export const dataSource = new DataSource({
+  type: "postgres",
   host: process.env.POSTGRES_HOST,
   port: 5432,
-  database: "marketsim",
-  user: "postgres",
+  username: "postgres",
   password: process.env.POSTGRES_PASSWORD,
+  database: "marketsim",
+  entities: [User, Ticker, Transaction],
+  synchronize: true,
 });
 
-export const stockService = new StockService(pool);
-export const userService = new UserService(pool);
-export const transactionService = new TransactionService(pool);
+dataSource
+  .initialize()
+  .then(() => console.log("Migrations complete"))
+  .catch((err) => console.error(err));
+
+export const stockService = new StockService(dataSource.getRepository(Ticker));
+export const userService = new UserService(dataSource.getRepository(User));
+export const transactionService = new TransactionService(
+  dataSource.getRepository(Transaction),
+);
 
 const app = express();
 // middleware
