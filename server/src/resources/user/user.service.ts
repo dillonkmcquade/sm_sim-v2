@@ -22,7 +22,7 @@ export class UserService extends DatabaseServiceModel<User> {
     return user;
   }
 
-  public async findById(id: string): Promise<User> {
+  public async findOne(id: string): Promise<User> {
     return this.repository.findOneByOrFail({ id: id });
   }
 
@@ -51,7 +51,7 @@ export class UserService extends DatabaseServiceModel<User> {
     isWatched: boolean,
     ticker: string,
   ): Promise<string[] | undefined> {
-    const user = await this.findById(id);
+    const user = await this.findOne(id);
     if (isWatched && !user.watch_list.includes(ticker)) {
       //Add
       user.watch_list.push(ticker);

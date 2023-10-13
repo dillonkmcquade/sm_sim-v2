@@ -20,7 +20,7 @@ userRouter.post("/", async (req, res) => {
     return res.status(400).json({ status: 400, message: "missing user UUID" });
   }
   try {
-    let user = await userService.findById(id!);
+    let user = await userService.findOne(id!);
 
     if (user) {
       return res.status(200).json({
@@ -51,7 +51,7 @@ userRouter.post("/", async (req, res) => {
 userRouter.get("/", async (req, res) => {
   const id = req.auth?.payload.sub;
   try {
-    const user = userService.findById(id!);
+    const user = userService.findOne(id!);
     return res.status(200).json({
       status: 200,
       data: user,
@@ -70,7 +70,7 @@ userRouter.get("/holdings", async (req, res) => {
   const id = req.auth?.payload.sub;
 
   try {
-    const transactions = await transactionService.findById(id!);
+    const transactions = await transactionService.findMany(id!);
     return res
       .status(200)
       .json({ status: 200, message: "success", data: transactions });

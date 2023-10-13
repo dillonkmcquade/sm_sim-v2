@@ -9,7 +9,7 @@ export class TransactionService extends DatabaseServiceModel<Transaction> {
   public async insert(t: Transaction): Promise<void> {
     await this.repository.insert(t);
   }
-  public async findById(id: string): Promise<Transaction[]> {
+  public async findMany(id: string): Promise<Transaction[]> {
     return this.repository.findBy({ user: { id: id } });
   }
   public async delete(id: string): Promise<void> {

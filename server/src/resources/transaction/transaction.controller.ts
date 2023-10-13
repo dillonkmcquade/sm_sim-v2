@@ -31,7 +31,7 @@ transactionRouter.patch("/:type/:id", async (req, res) => {
     });
   }
   try {
-    const user = await userService.findById(userId);
+    const user = await userService.findOne(userId);
     if (!user) {
       return res.status(400).json({ status: 400, error: "User not found" });
     }
