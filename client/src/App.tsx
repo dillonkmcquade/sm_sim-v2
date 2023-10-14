@@ -4,13 +4,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { GlobalStyles } from "./GlobalStyles";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import {useCurrentUser} from "./context/UserContext";
+import { useCurrentUser } from "./context/UserContext";
 
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import { CircularProgress } from "@mui/material";
 
-const Menu = lazy(() => import('./components/Menu'));
+const Menu = lazy(() => import("./components/Menu"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Research = lazy(() => import("./pages/Research"));
 const StockDetails = lazy(() => import("./pages/StockDetails"));
@@ -32,7 +32,7 @@ export default function App() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ user }),
+          body: JSON.stringify(user),
         });
         const response = await request.json();
         if (response.status === 200 || response.status === 201) {
@@ -48,14 +48,20 @@ export default function App() {
     if (isAuthenticated && !currentUser) {
       authenticateUser();
     }
-  }, [getAccessTokenSilently, user, setCurrentUser, isAuthenticated, currentUser]);
+  }, [
+    getAccessTokenSilently,
+    user,
+    setCurrentUser,
+    isAuthenticated,
+    currentUser,
+  ]);
 
   return (
     <>
       <GlobalStyles />
       <Header />
       <Menu />
-      <Suspense fallback={<CircularProgress sx={{ color: "#027326" }}/>}>
+      <Suspense fallback={<CircularProgress sx={{ color: "#027326" }} />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/research/:id" element={<StockDetails />} />
