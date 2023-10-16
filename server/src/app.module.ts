@@ -27,4 +27,3 @@ export class AppModule implements NestModule {
     consumer.apply(jwtCheck).forRoutes('users', 'transactions');
   }
 }
-// export class AppModule {}

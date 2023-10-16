@@ -6,7 +6,6 @@ import {
   Patch,
   Delete,
   Req,
-  HttpCode,
   InternalServerErrorException,
   Res,
 } from '@nestjs/common';
@@ -36,6 +35,7 @@ export class UsersController {
     let user = await this.usersService.findOne(createUserDto.sub);
     if (user) {
       res.status(200).json(user);
+      return;
     }
     user = await this.usersService.create(createUserDto);
     return user;
