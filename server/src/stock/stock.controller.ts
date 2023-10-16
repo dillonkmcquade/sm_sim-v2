@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { Ticker } from './entities/ticker.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('stock')
 @Controller('stock')
@@ -16,6 +16,7 @@ export class StockController {
   constructor(private readonly stockService: StockService) {}
 
   @Get('candle/:ticker')
+  @ApiOperation({ summary: 'Get candle data for a specific ticker' })
   async candle(
     @Param('ticker') ticker: string,
     @Query('resolution') resolution: string,
@@ -34,6 +35,7 @@ export class StockController {
   }
 
   @Get('news/:ticker')
+  @ApiOperation({ summary: 'Get related news articles' })
   async news(@Param('ticker') ticker: string) {
     if (!ticker) {
       throw new BadRequestException('Missing url parameter');
@@ -48,6 +50,7 @@ export class StockController {
   }
 
   @Get('quote/:ticker')
+  @ApiOperation({ summary: 'Get the latest price' })
   async quote(@Param('ticker') ticker: string) {
     if (!ticker) {
       throw new BadRequestException('Missing url parameter');
@@ -62,6 +65,7 @@ export class StockController {
   }
 
   @Get('search')
+  @ApiOperation({ summary: 'Search for companies' })
   async search(@Query('name') name: string): Promise<Ticker[]> {
     if (!name) {
       throw new BadRequestException('Missing search query');
