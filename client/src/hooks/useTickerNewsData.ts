@@ -22,12 +22,9 @@ export default function useTickerNewsData(ticker: string) {
           `${import.meta.env.VITE_SERVER_URL}/stock/news/${ticker}`,
         );
         const response = await request.json();
-        if (response.data.results) {
-          setNews(response["data"].results);
-          window.localStorage.setItem(
-            `${ticker}`,
-            JSON.stringify(response["data"].results),
-          );
+        if (response) {
+          setNews(response);
+          window.localStorage.setItem(`${ticker}`, JSON.stringify(response));
         }
       } catch (err) {
         if (err instanceof Error) {

@@ -8,11 +8,12 @@ import {
 } from 'typeorm';
 
 import { Transaction } from '../../transactions/entities/transaction.entity';
+import { ApiHideProperty } from '@nestjs/swagger';
 
 @Entity('users')
 export class User {
   @PrimaryColumn()
-  id?: string;
+  id: string;
 
   @Column('float')
   balance: number = 1_000_000;
@@ -38,12 +39,15 @@ export class User {
   @Column('simple-array')
   watch_list: string[] = [];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.user)
-  transactions?: Transaction[];
+  @ApiHideProperty()
+  @OneToMany(() => Transaction, (transaction) => transaction.user, {
+    cascade: ['remove'],
+  })
+  transactions: Transaction[];
 
   @CreateDateColumn()
-  created_on?: Date;
+  created_on: Date;
 
   @UpdateDateColumn()
-  updated_on?: Date;
+  updated_on: Date;
 }

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ToggleWatchListDto } from './dto/toggle-watchList.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,32 +12,45 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create({
       ...createUserDto,
       id: createUserDto.sub,
     });
-    return this.usersRepository.save(user);
+    await this.usersRepository.insert(user);
+    return user;
   }
 
-  findOne(id: string): Promise<User> {
+  findOneOrFail(id: string): Promise<User> {
     return this.usersRepository.findOneByOrFail({ id: id });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-    return this.usersRepository.update({ id }, updateUserDto);
+  findOne(id: string): Promise<User> {
+    return this.usersRepository.findOneBy({ id: id });
   }
 
-  remove(id: string): Promise<DeleteResult> {
-    return this.usersRepository.delete({ id });
+  findOneWithRelations(id: string): Promise<User> {
+    return this.usersRepository.findOneOrFail({
+      relations: { transactions: true },
+      where: { id: id },
+    });
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.usersRepository.findOneByOrFail({ id });
+    const updatedUser = this.usersRepository.merge(user, updateUserDto);
+    return this.usersRepository.save(updatedUser);
+  }
+
+  remove(user: User): Promise<User> {
+    return this.usersRepository.remove(user);
   }
 
   async toggleWatchList(
     id: string,
-    isWatched: boolean,
-    ticker: string,
+    { isWatched, ticker }: ToggleWatchListDto,
   ): Promise<string[]> {
-    const user = await this.findOne(id);
+    const user = await this.findOneOrFail(id);
     if (isWatched && !user.watch_list.includes(ticker)) {
       //Add
       user.watch_list.push(ticker);
@@ -49,5 +63,10 @@ export class UsersService {
     }
     await this.usersRepository.save(user);
     return user.watch_list;
+  }
+
+  async setBalance(id: string, newBalance: number): Promise<void> {
+    // update balance retrieve new balance
+    await this.usersRepository.decrement({ id: id }, 'balance', newBalance);
   }
 }

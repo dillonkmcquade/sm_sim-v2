@@ -26,7 +26,7 @@ export default function App() {
       try {
         const { VITE_SERVER_URL } = import.meta.env;
         const accessToken = await getAccessTokenSilently();
-        const request = await fetch(`${VITE_SERVER_URL}/user`, {
+        const request = await fetch(`${VITE_SERVER_URL}/users`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -35,10 +35,7 @@ export default function App() {
           body: JSON.stringify(user),
         });
         const response = await request.json();
-        if (response.status === 200 || response.status === 201) {
-          // const total = await getTotalValue(response.data.holdings) || 0;
-          setCurrentUser({ ...response.data, timestamp: Date.now() });
-        }
+        setCurrentUser(response);
       } catch (err) {
         if (err instanceof Error) {
           console.error(err.message);

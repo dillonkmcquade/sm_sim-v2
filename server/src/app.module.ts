@@ -22,12 +22,13 @@ import { auth } from 'express-oauth2-jwt-bearer';
       password: process.env.POSTGRES_PASSWORD,
       database: 'marketsim',
       autoLoadEntities: true,
+      synchronize: true,
     }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-/* export class AppModule implements NestModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     const jwtCheck = auth({
       audience: process.env.AUTH0_AUDIENCE,
@@ -35,5 +36,5 @@ import { auth } from 'express-oauth2-jwt-bearer';
     });
     consumer.apply(jwtCheck).forRoutes('users', 'transactions');
   }
-} */
-export class AppModule {}
+}
+// export class AppModule {}

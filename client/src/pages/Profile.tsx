@@ -1,4 +1,4 @@
-import { FormEventHandler , useState } from "react";
+import { FormEventHandler, useState } from "react";
 import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -10,14 +10,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 import useProfileReducer from "../hooks/useProfileReducer";
 import Alert from "../components/Alert";
-import {useCurrentUser} from "../context/UserContext";
+import { useCurrentUser } from "../context/UserContext";
 
 export default function Profile() {
   const { getAccessTokenSilently, logout } = useAuth0();
   const { setLoading, success, errorMessage, dispatch, state } =
     useProfileReducer();
   const { formData, confirmed, error, loading } = state;
-  const { currentUser } = useCurrentUser(); 
+  const { currentUser } = useCurrentUser();
   const [open, setOpen] = useState(false);
   const { VITE_SERVER_URL } = import.meta.env;
 
@@ -26,21 +26,18 @@ export default function Profile() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(
-        `${VITE_SERVER_URL}/user/update`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch(`${VITE_SERVER_URL}/users`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${accessToken}`,
         },
-      );
-      const { status } = await response.json();
-      if (status === 200) {
-        const newUser = {...currentUser, ...formData};
-        return success(newUser);
+        body: JSON.stringify(formData),
+      });
+      if (response.status === 200) {
+        const data = await response.json();
+        success(data);
+        return;
       } else {
         errorMessage("Nothing to change");
       }
@@ -61,18 +58,18 @@ export default function Profile() {
     try {
       setLoading();
       const accessToken = await getAccessTokenSilently();
-      const response = await fetch(`${VITE_SERVER_URL}/user`, {
+      const response = await fetch(`${VITE_SERVER_URL}/users`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
-        }
+        },
       });
-      const data = await response.json();
-      if (data.status === 200) {
+      if (response.status === 200) {
         window.sessionStorage.clear();
         return logout({ logoutParams: { returnTo: "http://localhost:3000" } });
       } else {
+        const data = await response.json();
         errorMessage(data.message);
       }
     } catch (error: any) {

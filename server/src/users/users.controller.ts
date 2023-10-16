@@ -8,57 +8,59 @@ import {
   Req,
   HttpCode,
   InternalServerErrorException,
-  NotFoundException,
-  HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { User } from './entities/user.entity';
+import { ToggleWatchListDto } from './dto/toggle-watchList.dto';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      const user = await this.usersService.create(createUserDto);
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException('Internal server error', {
-        cause: error,
-        description: error.message,
-      });
+  @ApiOperation({ summary: 'Get user if exists, create new user if not' })
+  @ApiOkResponse({ type: User, description: 'Existing user' })
+  @ApiCreatedResponse({ type: User, description: 'New user' })
+  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    let user = await this.usersService.findOne(createUserDto.sub);
+    if (user) {
+      res.status(200).json(user);
     }
+    user = await this.usersService.create(createUserDto);
+    return user;
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get a specific user' })
   async findOne(@Req() req: Request): Promise<User> {
     const id = req.auth.payload.sub;
-    try {
-      const user = await this.usersService.findOne(id);
-      return user;
-    } catch (error) {
-      throw new NotFoundException();
-    }
+    const user = await this.usersService.findOneOrFail(id);
+    return user;
   }
 
-  @Get('/toggleWatchList')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch('/toggleWatchList')
+  @ApiOperation({ summary: 'Add or remove item from watch list' })
+  @ApiOkResponse({
+    description: 'Returns watch list array containing 0-n ticker symbols',
+  })
   async toggleWatchList(
-    @Body() toggleDto: { ticker: string; isWatched: boolean },
+    @Body() toggleDto: ToggleWatchListDto,
     @Req() req: Request,
-  ) {
+  ): Promise<string[]> {
     const id = req.auth.payload.sub;
-    const { isWatched, ticker } = toggleDto;
     try {
-      const watchList = await this.usersService.toggleWatchList(
-        id,
-        isWatched,
-        ticker,
-      );
+      const watchList = await this.usersService.toggleWatchList(id, toggleDto);
       return watchList;
     } catch (error) {
       throw new InternalServerErrorException('Failure to update watch list');
@@ -66,28 +68,17 @@ export class UsersController {
   }
 
   @Patch()
+  @ApiOperation({ summary: 'Update user' })
   async update(@Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
     const id = req.auth.payload.sub;
-    const updateResult = await this.usersService.update(id, updateUserDto);
-    if (updateResult.affected < 1) {
-      throw new InternalServerErrorException('Failure to update user');
-    }
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete()
-  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete user' })
   async remove(@Req() req: Request) {
     const id = req.auth.payload.sub;
-    try {
-      const deleteResult = await this.usersService.remove(id);
-      if (deleteResult.affected === 0) {
-        throw new InternalServerErrorException('Failure to delete user');
-      }
-    } catch (error) {
-      throw new InternalServerErrorException('Failure to delete user', {
-        cause: error,
-        description: error.message,
-      });
-    }
+    const user = await this.usersService.findOneOrFail(id);
+    await this.usersService.remove(user);
   }
 }

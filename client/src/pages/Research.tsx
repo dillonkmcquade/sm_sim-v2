@@ -84,8 +84,8 @@ export default function Research() {
         },
       );
       const response = await request.json();
-      if (response.status === 200) {
-        success(response.results);
+      if (request.status === 200) {
+        success(response);
         clearTimeout(timeout);
       } else {
         errorMessage(response.message);
