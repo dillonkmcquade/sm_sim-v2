@@ -15,8 +15,6 @@ import { dataSourceOptions } from './data-source';
     StockModule,
     TypeOrmModule.forRoot(dataSourceOptions),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
