@@ -6,10 +6,12 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { StockModule } from './stock/stock.module';
 import { auth } from 'express-oauth2-jwt-bearer';
 import { dataSourceOptions } from './data-source';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    CacheModule.register({ isGlobal: true, ttl: 1000, max: 10000 }),
     UsersModule,
     TransactionsModule,
     StockModule,

@@ -5,17 +5,21 @@ import {
   NotFoundException,
   Param,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { Ticker } from './entities/ticker.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('stock')
 @Controller('stock')
+@UseInterceptors(CacheInterceptor)
 export class StockController {
   constructor(private readonly stockService: StockService) {}
 
   @Get('candle/:ticker')
+  @CacheTTL(360000)
   @ApiOperation({ summary: 'Get candle data for a specific ticker' })
   async candle(
     @Param('ticker') ticker: string,
@@ -35,6 +39,7 @@ export class StockController {
   }
 
   @Get('news/:ticker')
+  @CacheTTL(1000000)
   @ApiOperation({ summary: 'Get related news articles' })
   async news(@Param('ticker') ticker: string) {
     if (!ticker) {
@@ -50,6 +55,7 @@ export class StockController {
   }
 
   @Get('quote/:ticker')
+  @CacheTTL(1000000)
   @ApiOperation({ summary: 'Get the latest price' })
   async quote(@Param('ticker') ticker: string) {
     if (!ticker) {
@@ -65,6 +71,7 @@ export class StockController {
   }
 
   @Get('search')
+  @CacheTTL(2800000)
   @ApiOperation({ summary: 'Search for companies' })
   async search(@Query('name') name: string): Promise<Ticker[]> {
     if (!name) {
