@@ -1,7 +1,12 @@
 import { DataSourceOptions, DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 
-ConfigModule.forRoot();
+ConfigModule.forRoot({
+  envFilePath:
+    process.env.NODE_ENV === 'production'
+      ? '.env.production'
+      : '.env.development',
+});
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
