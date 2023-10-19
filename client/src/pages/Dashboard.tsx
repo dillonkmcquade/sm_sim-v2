@@ -14,7 +14,6 @@ import PieChart from "../components/PieChart";
 import { CircularProgress } from "@mui/material";
 import { useCurrentUser } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
-import type { User } from "../types";
 
 const TickerCard = lazy(() => import("../components/TickerCard"));
 
@@ -41,13 +40,12 @@ export default function Dashboard() {
           });
         }
         const total = await getTotalValue(holdings); //potentially expensive function call
-        const modifiedObj: User = {
+        setCurrentUser({
           ...currentUser,
           holdings,
           total,
           timestamp: Date.now(),
-        };
-        setCurrentUser(modifiedObj);
+        });
       } catch (err) {
         console.log(err);
       }

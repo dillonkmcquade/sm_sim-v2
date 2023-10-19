@@ -101,14 +101,14 @@ export function debounce(fn: (...args: any[]) => void, t: number) {
 export async function getHoldings(accessToken: string) {
   try {
     const { VITE_SERVER_URL } = import.meta.env;
-    const response = await fetch(`${VITE_SERVER_URL}/user/holdings`, {
+    const response = await fetch(`${VITE_SERVER_URL}/transactions`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    const { data } = await response.json();
+    const data = await response.json();
     return data;
   } catch (err) {
     if (err instanceof Error) {

@@ -11,4 +11,4 @@ ENV PATH="${PATH}:${PNPM_HOME}"
 RUN npm install --global pnpm
 
 RUN pnpm install && pnpm build
-CMD ["node", "dist/index.js"]
+CMD ["pnpm", "start:prod"]

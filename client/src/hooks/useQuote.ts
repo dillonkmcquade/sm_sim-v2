@@ -26,12 +26,12 @@ export default function useQuote(ticker: string) {
           `${import.meta.env.VITE_SERVER_URL}/stock/quote/${ticker}`,
         );
         const parsed = await response.json();
-        if (parsed.data.c) {
-          setQuote(parsed["data"]);
+        if (parsed.c) {
+          setQuote(parsed);
           window.sessionStorage.setItem(
             ticker,
             JSON.stringify({
-              ...parsed["data"],
+              ...parsed,
               t: Math.floor(Date.now() / 1000),
             }),
           );

@@ -80,8 +80,8 @@ export default function useHistoricalData(ticker: string) {
             import.meta.env.VITE_SERVER_URL
           }/stock/candle/${ticker}?resolution=${resolution}&from=${from}`,
         );
-        const parsed = await response.json();
-        setData(parsed.data);
+        const data = await response.json();
+        setData(data);
 
         dispatch({ type: "finished" });
       } catch (error) {

@@ -22,7 +22,7 @@ import Alert from "../components/Alert";
 export default function StockDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   //custom hooks
   const { quote } = useQuote(id!);
@@ -47,17 +47,17 @@ export default function StockDetails() {
     try {
       const accessToken = await getAccessTokenSilently();
       const { VITE_SERVER_URL } = import.meta.env;
-      const response = await fetch(`${VITE_SERVER_URL}/user/toggleWatchList`, {
+      const response = await fetch(`${VITE_SERVER_URL}/users/toggleWatchList`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ _id: user?.sub, ticker: id, isWatched }),
+        body: JSON.stringify({ ticker: id, isWatched }),
       });
       const parsed = await response.json();
-      if (parsed.status === 200) {
-        setCurrentUser({ ...currentUser, watch_list: parsed.data });
+      if (response.status === 200) {
+        setCurrentUser({ ...currentUser, watch_list: parsed });
         return;
       }
     } catch (error) {

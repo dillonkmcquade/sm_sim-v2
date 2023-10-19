@@ -14,7 +14,7 @@ import Alert from "../components/Alert";
 import { useCurrentUser } from "../context/UserContext";
 import { getHoldings } from "../utils/utils";
 
-import type { User, Holding } from "../types";
+import type { Holding } from "../types";
 
 export default function Transaction() {
   const { id, transactionType } = useParams();
@@ -99,25 +99,23 @@ export default function Transaction() {
       setLoading();
       const accessToken = await getAccessTokenSilently();
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/transaction/${action}/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/transactions`,
         {
-          method: "PATCH",
+          method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            quantity: Number(quantity),
+            quantity: +quantity,
+            symbol: id,
+            type: transactionType,
           }),
         },
       );
-      const parsed = await response.json();
-      if (parsed.status === 200) {
-        const newUserObj: User = {
-          ...currentUser,
-          balance: parsed.balance,
-        };
-        setCurrentUser(newUserObj);
+      const newBalance = await response.json();
+      if (response.status === 201) {
+        setCurrentUser({ ...currentUser, balance: newBalance });
         success();
         setTimeout(() => {
           navigate(`/dashboard`);
