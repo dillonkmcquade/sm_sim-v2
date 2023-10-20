@@ -31,10 +31,10 @@ export async function getPrices(
         `${import.meta.env.VITE_SERVER_URL}/stock/quote/${ticker}`,
       );
       const parsed = await response.json();
-      if (!parsed.data.c) {
+      if (!parsed.c) {
         throw new Error(`Error fetching ${ticker} quote`);
       }
-      prices.set(ticker, parsed.data.c);
+      prices.set(ticker, parsed.c);
     });
 
     await Promise.all(priceRequests);

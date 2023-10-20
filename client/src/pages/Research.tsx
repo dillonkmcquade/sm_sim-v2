@@ -69,24 +69,12 @@ export default function Research() {
     startSearch();
     try {
       const { VITE_SERVER_URL } = import.meta.env;
-      const controller = new AbortController();
-      const timeout = setTimeout(() => {
-        controller.abort("Timeout");
-        errorMessage(
-          "Please be patient, it may take a moment for the server to boot up after inactivity.",
-        );
-        return;
-      }, 5000);
       const request = await fetch(
         `${VITE_SERVER_URL}/stock/search?name=${inputText}`,
-        {
-          signal: controller.signal,
-        },
       );
       const response = await request.json();
       if (request.status === 200) {
         success(response);
-        clearTimeout(timeout);
       } else {
         errorMessage(response.message);
       }
