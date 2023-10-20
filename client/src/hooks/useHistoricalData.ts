@@ -1,7 +1,7 @@
 //Fetch historical data given the specified date range, changes based on user selected range toggle
 //Range options are defined in reducer below
 
-import { useEffect, useState, useReducer, Reducer } from "react";
+import { useEffect, useState, useReducer, type Reducer } from "react";
 import type { Candle } from "../types";
 
 const currentTime = Date.now() / 1000;
