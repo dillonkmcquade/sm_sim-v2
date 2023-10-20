@@ -7,9 +7,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import { CircularProgress, styled } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import useProfileReducer from "../hooks/useProfileReducer";
+import useProfileReducer, { ReducerType } from "../hooks/useProfileReducer";
 import Alert from "../components/Alert";
-import { useCurrentUser } from "../context/UserContext";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export default function Profile() {
   const { getAccessTokenSilently, logout } = useAuth0();
@@ -40,15 +40,16 @@ export default function Profile() {
       } else {
         errorMessage("Nothing to change");
       }
-    } catch (error: any) {
-      errorMessage(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        errorMessage(error.message);
+      }
     }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({
-      type: "field",
-      field: "formData",
+      type: ReducerType.formData,
       payload: { ...formData, [event.target.id]: event.target.value },
     });
   };
@@ -71,8 +72,10 @@ export default function Profile() {
         const data = await response.json();
         errorMessage(data.message);
       }
-    } catch (error: any) {
-      errorMessage(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        errorMessage(error.message);
+      }
     }
   };
 

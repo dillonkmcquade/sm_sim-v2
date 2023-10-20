@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { Reducer, useReducer } from "react";
 
 export enum ActionType {
   quantity = "quantity",
@@ -8,6 +8,13 @@ export enum ActionType {
   action = "action",
 }
 
+type Action =
+  | { type: ActionType.loading }
+  | { type: ActionType.success }
+  | { type: ActionType.error; payload: string }
+  | { type: ActionType.quantity; payload: number }
+  | { type: ActionType.action; payload: string };
+
 export default function usePurchaseReducer(transactionType: string) {
   const initialState = {
     quantity: 1,
@@ -16,10 +23,7 @@ export default function usePurchaseReducer(transactionType: string) {
     error: "",
     confirmed: false,
   };
-  const reducer = (
-    state: any,
-    action: { type: ActionType; payload?: string | number },
-  ) => {
+  const reducer: Reducer<typeof initialState, Action> = (state, action) => {
     switch (action.type) {
       case ActionType.quantity:
         return { ...state, quantity: action.payload, error: "" };

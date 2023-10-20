@@ -1,4 +1,4 @@
-import React, { SetStateAction } from "react";
+import React, { MouseEventHandler, SetStateAction } from "react";
 
 interface MenuContent {
   menuVisible: boolean;
@@ -17,7 +17,6 @@ interface User {
   name: string;
   nickname: string;
   email: string;
-  [key: string]: any;
 }
 interface UserContent {
   currentUser: User;
@@ -77,7 +76,7 @@ interface Quote {
   dp: string;
 }
 interface ButtonProps {
-  handler?: MouseEvent | any;
+  handler?: MouseEventHandler<HTMLButtonElement>;
   hovercolor?: string;
   children: React.ReactNode;
   bg?: string;

@@ -6,7 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import { CircularProgress, CssBaseline } from "@mui/material";
-import { useCurrentUser } from "./context/UserContext";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 
 const Menu = lazy(() => import("./components/Menu"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));

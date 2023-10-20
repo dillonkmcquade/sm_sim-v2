@@ -15,7 +15,7 @@ import useQuote from "../hooks/useQuote";
 import useNewsData from "../hooks/useTickerNewsData";
 import { useDebounce } from "../hooks/useDebounce";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useCurrentUser } from "../context/UserContext";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import Alert from "../components/Alert";
 
 export default function StockDetails() {

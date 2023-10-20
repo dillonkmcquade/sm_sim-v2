@@ -1,17 +1,26 @@
-import { useReducer } from "react";
+import { Reducer, useReducer } from "react";
 import { Result } from "../types";
 
 const initialState = {
-  results: null,
+  results: [] as Result[],
   error: "",
   loading: false,
   inputText: "",
   isSelected: 0,
 };
-const reducer = (
-  state: typeof initialState,
-  action: { type: string; field?: any; payload?: any },
-) => {
+
+type Action =
+  | { type: "search" }
+  | { type: "clear" }
+  | {
+      type: "field";
+      field: "inputText" | "isSelected";
+      payload: string | number;
+    }
+  | { type: "success"; payload: Result[] }
+  | { type: "error"; payload: string };
+
+const reducer: Reducer<typeof initialState, Action> = (state, action) => {
   switch (action.type) {
     case "field":
       return { ...state, [action.field]: action.payload };
@@ -20,7 +29,7 @@ const reducer = (
     case "success":
       return { ...state, results: action.payload, loading: false };
     case "error":
-      return { ...state, results: null, loading: false, error: action.payload };
+      return { ...state, results: [], loading: false, error: action.payload };
     case "clear":
       return initialState;
     default:
@@ -46,7 +55,10 @@ export default function useSearchReducer() {
     dispatch({ type: "clear" });
   };
 
-  const updateField = (field: string, value: string | number) => {
+  const updateField = (
+    field: "inputText" | "isSelected",
+    value: string | number,
+  ) => {
     dispatch({ type: "field", field: field, payload: value });
   };
 

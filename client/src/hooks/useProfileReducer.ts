@@ -1,5 +1,5 @@
-import { useReducer } from "react";
-import { useCurrentUser } from "../context/UserContext";
+import { Reducer, useReducer } from "react";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import type { Update, User } from "../types";
 
 const initialState = {
@@ -8,23 +8,34 @@ const initialState = {
   error: "",
   confirmed: false,
 };
-const reducer = (
-  state: typeof initialState,
-  action: { type: string; payload?: any; field?: any },
-) => {
+
+export enum ReducerType {
+  formData = "formData",
+  loading = "loading",
+  success = "success",
+  error = "error",
+}
+
+type Action =
+  | { type: ReducerType.formData; payload: Update }
+  | { type: ReducerType.error; payload: string }
+  | { type: ReducerType.success; payload: User }
+  | { type: ReducerType.loading };
+
+const reducer: Reducer<typeof initialState, Action> = (state, action) => {
   switch (action.type) {
-    case "field":
+    case ReducerType.formData:
       return {
         ...state,
-        [action.field]: action.payload,
+        formData: action.payload,
         confirmed: false,
         loading: false,
       };
-    case "loading":
+    case ReducerType.loading:
       return { ...state, loading: true, error: "" };
-    case "success":
+    case ReducerType.success:
       return { ...state, loading: false, confirmed: true, formData: {} };
-    case "error":
+    case ReducerType.error:
       return {
         ...state,
         loading: false,
@@ -33,7 +44,7 @@ const reducer = (
         confirmed: false,
       };
     default:
-      throw new Error("Error");
+      throw new Error("Invalid dispatch type");
   }
 };
 export default function usePurchaseReducer() {
@@ -41,16 +52,16 @@ export default function usePurchaseReducer() {
   const { setCurrentUser } = useCurrentUser();
 
   const setLoading = () => {
-    dispatch({ type: "loading" });
+    dispatch({ type: ReducerType.loading });
   };
 
   const success = (value: User) => {
     setCurrentUser(value);
-    dispatch({ type: "success", payload: value });
+    dispatch({ type: ReducerType.success, payload: value });
   };
 
   const errorMessage = (message: string) => {
-    dispatch({ type: "error", payload: message });
+    dispatch({ type: ReducerType.error, payload: message });
   };
 
   return {

@@ -79,8 +79,10 @@ export function getUniques(holdings: Holding[]) {
   return uniqueValues;
 }
 
+// eslint-disable-next-line
 export function debounce(fn: (...args: any[]) => void, t: number) {
   let timer: NodeJS.Timeout;
+  // eslint-disable-next-line
   return function (...args: any[]) {
     if (timer !== undefined) {
       clearTimeout(timer);

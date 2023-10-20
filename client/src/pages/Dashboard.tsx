@@ -12,7 +12,7 @@ import {
 
 import PieChart from "../components/PieChart";
 import { CircularProgress, styled } from "@mui/material";
-import { useCurrentUser } from "../context/UserContext";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import FourOhFour from "../components/FourOhFour";
 
 const TickerCard = lazy(() => import("../components/TickerCard"));
@@ -56,7 +56,7 @@ export default function Dashboard() {
       }
     }
     setTotalValue();
-  }, [isAuthenticated, getAccessTokenSilently]);
+  }, [setCurrentUser, isAuthenticated, getAccessTokenSilently]);
 
   const investedValue =
     currentUser.holdings && currentUser.holdings?.length

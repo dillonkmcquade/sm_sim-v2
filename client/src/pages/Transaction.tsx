@@ -10,7 +10,7 @@ import useQuote from "../hooks/useQuote";
 import Button from "../components/Button";
 import Alert from "../components/Alert";
 
-import { useCurrentUser } from "../context/UserContext";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { getHoldings } from "../utils/utils";
 
 import type { Holding } from "../types";
@@ -120,8 +120,10 @@ export default function Transaction() {
           navigate(`/dashboard`);
         }, 1000);
       }
-    } catch (error: any) {
-      errorMessage(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
     }
   };
 

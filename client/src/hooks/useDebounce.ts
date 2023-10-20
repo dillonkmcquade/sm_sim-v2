@@ -2,6 +2,7 @@
 import { useRef, useMemo, useEffect } from "react";
 import { debounce } from "../utils/utils";
 
+// eslint-disable-next-line
 export const useDebounce = (callback: (...args: any[]) => void, t: number) => {
   const ref = useRef<typeof callback>();
 
