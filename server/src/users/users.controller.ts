@@ -33,12 +33,11 @@ export class UsersController {
   @ApiCreatedResponse({ type: User, description: 'New user' })
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     let user = await this.usersService.findOne(createUserDto.sub);
-    if (user) {
-      res.status(200).json(user);
-      return;
+    if (!user || user === null) {
+      user = await this.usersService.create(createUserDto);
+      res.statusCode = 201;
     }
-    user = await this.usersService.create(createUserDto);
-    return user;
+    res.status(200).send(user);
   }
 
   @Get()

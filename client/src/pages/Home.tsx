@@ -1,13 +1,12 @@
-import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import { Box, styled } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
-
 import Button from "../components/Button";
 
 export default function Home() {
   const { loginWithRedirect } = useAuth0();
   return (
-    <Wrapper>
+    <Box sx={{ width: "100vw" }}>
       <Hero>
         <GreetingHead>Practice your investing skills without risk</GreetingHead>
         <GreetingText>
@@ -45,14 +44,10 @@ export default function Home() {
           Sign up
         </Button>
       </StackedCoins>
-    </Wrapper>
+    </Box>
   );
 }
-const Wrapper = styled.div`
-  width: 100vw;
-`;
-
-const Hero = styled.div`
+const Hero = styled("div")`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,7 +65,7 @@ const Hero = styled.div`
   }
 `;
 
-const GreetingHead = styled.h1`
+const GreetingHead = styled("h1")`
   font-size: 2.25rem;
   margin: 1rem 0;
   color: #e5e9f0;
@@ -78,14 +73,14 @@ const GreetingHead = styled.h1`
     font-size: 2.4rem;
   }
 `;
-const GreetingText = styled.h2`
+const GreetingText = styled("h2")`
   margin: 1rem 0;
   font-size: 1rem;
   line-height: 2;
   max-width: 80vw;
 `;
 
-const StackedCoins = styled.div`
+const StackedCoins = styled("div")`
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -106,7 +101,7 @@ const StackedCoins = styled.div`
   }
 `;
 
-const ResearchStocks = styled.div`
+const ResearchStocks = styled("div")`
   display: flex;
   flex-direction: column;
   justify-content: center;

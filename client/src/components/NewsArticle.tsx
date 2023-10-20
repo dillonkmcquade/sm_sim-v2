@@ -1,7 +1,7 @@
-import { styled } from "styled-components";
-import {Article} from "../types";
+import { styled } from "@mui/material";
+import { Article } from "../types";
 
-export default function NewsArticle({ article }: {article: Article}) {
+export default function NewsArticle({ article }: { article: Article }) {
   return (
     <StyledLink href={article.article_url}>
       <Wrapper>
@@ -14,14 +14,14 @@ export default function NewsArticle({ article }: {article: Article}) {
         </ArticleMain>
         <hr />
         <ArticleFooter>
-          <Author>{article.author}</Author>
+          <p>{article.author}</p>
         </ArticleFooter>
       </Wrapper>
     </StyledLink>
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   margin: 1rem auto;
   width: 85vw;
   display: flex;
@@ -36,39 +36,38 @@ const Wrapper = styled.div`
   }
 `;
 
-const ArticleMain = styled.div`
+const ArticleMain = styled("div")`
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin: 0.2rem 0 1rem 0;
 `;
 
-const ArticleImage = styled.img`
+const ArticleImage = styled("img")`
   height: 100px;
   width: 100px;
   object-fit: cover;
   border-radius: 1rem;
   align-self: flex-end;
 `;
-const Publisher = styled.img`
+const Publisher = styled("img")`
   height: 30px;
   object-fit: cover;
   margin-bottom: 1rem;
 `;
 
-const Title = styled.p`
+const Title = styled("p")`
   margin-right: 1rem;
   font-weight: bold;
   max-height: 65px;
   overflow: hidden;
 `;
 
-const ArticleFooter = styled.div`
+const ArticleFooter = styled("div")`
   padding: 0.2rem;
 `;
-const Author = styled.p``;
 
-const StyledLink = styled.a`
+const StyledLink = styled("a")`
   text-decoration: none;
   color: #ced1d6;
 `;

@@ -1,10 +1,16 @@
 import LineChart from "../components/LineChart";
-import { styled } from "styled-components";
 import useQuote from "../hooks/useQuote";
 import useHistoricalData from "../hooks/useHistoricalData";
 import { MouseEventHandler } from "react";
+import { styled } from "@mui/material";
 
-export default function TickerCard({ handler, ticker}: {ticker: string; handler: MouseEventHandler}) {
+export default function TickerCard({
+  handler,
+  ticker,
+}: {
+  ticker: string;
+  handler: MouseEventHandler;
+}) {
   const { quote } = useQuote(ticker);
   const { data } = useHistoricalData(ticker);
   return (
@@ -19,7 +25,7 @@ export default function TickerCard({ handler, ticker}: {ticker: string; handler:
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   height: 35vh;
   width: 80vw;
   min-width: 80vw;
@@ -35,10 +41,10 @@ const Wrapper = styled.div`
   }
 `;
 
-const Title = styled.h1`
+const Title = styled("h1")`
   font-size: 1.1rem;
   color: white;
 `;
-const Price = styled.p`
+const Price = styled("p")`
   color: ${(props) => props.color};
 `;

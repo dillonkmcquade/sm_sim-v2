@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import {Props, UserContent , User} from "../types";  
+import { Props, UserContent, User } from "../types";
 
-const UserContext = createContext<UserContent | null>(null);
+export const UserContext = createContext<UserContent | null>(null);
 
 export const UserProvider = ({ children }: Props) => {
   const [currentUser, setCurrentUser] = useState<User>(() => {
@@ -24,10 +24,10 @@ export const UserProvider = ({ children }: Props) => {
   );
 };
 
-export const useCurrentUser = () => { 
+export const useCurrentUser = () => {
   const currentUserContext = useContext(UserContext);
   if (!currentUserContext) {
-    throw new Error("useCurrentUser must be used within the UserProvider")
+    throw new Error("useCurrentUser must be used within the UserProvider");
   }
-  return currentUserContext
-}
+  return currentUserContext;
+};

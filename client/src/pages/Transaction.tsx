@@ -1,10 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { styled } from "styled-components";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, styled } from "@mui/material";
 
 import usePurchaseReducer from "../hooks/usePurchaseReducer";
 import useQuote from "../hooks/useQuote";
@@ -54,11 +53,11 @@ export default function Transaction() {
 
       if (numOfShares >= 0) {
         setShares(numOfShares);
-        setCurrentUser({ ...currentUser, holdings });
+        setCurrentUser((currentUser) => ({ ...currentUser, holdings }));
       }
     }
     getShares();
-  }, [id, getAccessTokenSilently, getHoldings, setCurrentUser]);
+  }, [id, getAccessTokenSilently, setCurrentUser]);
 
   //toggling buy/sell buttons
   const toggleAction = (
@@ -207,7 +206,7 @@ export default function Transaction() {
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   position: relative;
   top: 56px;
   display: flex;
@@ -237,16 +236,16 @@ const Sell = styled(Buy)`
   }
 `;
 
-const Detail = styled.div`
+const Detail = styled("div")`
   display: flex;
   justify-content: space-between;
 `;
-const QtySelect = styled.input`
+const QtySelect = styled("input")`
   margin: 1rem 0;
   max-width: 15vw;
 `;
 
-const TransactionDetails = styled.div`
+const TransactionDetails = styled("div")`
   border-radius: 1rem;
   border: 1px solid gray;
   margin: 1rem 0;
@@ -255,7 +254,7 @@ const TransactionDetails = styled.div`
   max-width: 500px;
 `;
 
-const Bold = styled.span`
+const Bold = styled("span")`
   font-weight: bold;
   color: #dcf5e7;
 `;

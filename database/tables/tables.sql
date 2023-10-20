@@ -29,13 +29,13 @@ CREATE TABLE "transactions" (
   "price" double precision NOT NULL, 
   "type" character varying NOT NULL, 
   "created_at" TIMESTAMP NOT NULL DEFAULT now(), 
-  "userId" character varying, 
+  "user_id" character varying, 
   CONSTRAINT "PK_a219afd8dd77ed80f5a862f1db9" 
   PRIMARY KEY ("id"));
 
 ALTER TABLE "transactions" 
 ADD CONSTRAINT "FK_6bb58f2b6e30cb51a6504599f41" 
-FOREIGN KEY ("userId") 
+FOREIGN KEY ("user_id") 
 REFERENCES "users"("id") 
 ON DELETE CASCADE 
 ON UPDATE NO ACTION;

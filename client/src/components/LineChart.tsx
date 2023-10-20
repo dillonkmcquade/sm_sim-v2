@@ -2,11 +2,18 @@ import { useContext, useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { linearGradientDef } from "@nivo/core";
 import { WidthContext } from "../context/WidthContext";
-import { styled } from "styled-components";
-import type {Candle} from "../types";
+import type { Candle } from "../types";
+import { styled } from "@mui/material";
 
-
-export default function LineChart({ id, data, small }: {id: string; data: Candle; small: boolean}) {
+export default function LineChart({
+  id,
+  data,
+  small,
+}: {
+  id: string;
+  data: Candle;
+  small: boolean;
+}) {
   const { width } = useContext(WidthContext);
   const format = useMemo(() => {
     return data.c.map((idx: number, index: number) => {
@@ -122,7 +129,7 @@ export default function LineChart({ id, data, small }: {id: string; data: Candle
   );
 }
 
-const Tooltip = styled.div`
+const Tooltip = styled("div")`
   color: white;
   background: rgba(0, 0, 0, 0.8);
   padding: 9px 12px;
@@ -131,6 +138,6 @@ const Tooltip = styled.div`
   max-width: 150px;
 `;
 
-const Bold = styled.span`
+const Bold = styled("span")`
   font-weight: bold;
 `;

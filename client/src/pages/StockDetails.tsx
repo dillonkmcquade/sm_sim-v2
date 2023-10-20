@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { styled } from "styled-components";
 
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, styled } from "@mui/material";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { VisibilityOutlined } from "@mui/icons-material";
@@ -177,7 +176,7 @@ export default function StockDetails() {
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   position: relative;
   top: 56px;
   display: flex;
@@ -188,23 +187,23 @@ const Wrapper = styled.div`
     max-width: 1400px;
   }
 `;
-const TickerName = styled.h1`
+const TickerName = styled("h1")`
   color: white;
   font-size: 2.2rem;
   padding: 0.5rem;
 `;
 
-const CurrentPrice = styled.h1`
+const CurrentPrice = styled("h1")`
   color: ${(props) => props.color};
   font-size: 1.5rem;
   padding-left: 1rem;
 `;
 
-const SecondaryText = styled.span`
+const SecondaryText = styled("span")`
   font-size: 0.75rem;
 `;
 
-const NewsContainer = styled.div`
+const NewsContainer = styled("div")`
   @media (min-width: 1400px) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -212,11 +211,11 @@ const NewsContainer = styled.div`
   }
 `;
 
-const NewsTitle = styled.h3`
+const NewsTitle = styled("h3")`
   padding-left: 1rem;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled("div")`
   width: 100%;
   background-color: black;
   border-top: 1px solid white;
@@ -234,14 +233,14 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const RangeToggle = styled.div`
+const RangeToggle = styled("div")`
   position: relative;
   display: flex;
   width: 100%;
   margin: 0 auto;
   justify-content: space-evenly;
 `;
-const RangeOption = styled.div`
+const RangeOption = styled("div")`
   color: white;
   border-radius: 50%;
   padding: 0.5rem;
@@ -254,7 +253,7 @@ const RangeOption = styled.div`
   }
 `;
 
-const Back = styled.p`
+const Back = styled("p")`
   text-decoration: none;
   margin: 0.3rem 0 0 0.3rem;
   color: #b48ead;
@@ -266,7 +265,7 @@ const Back = styled.p`
   }
 `;
 
-const ChartWrapper = styled.div`
+const ChartWrapper = styled("div")`
   display: flex;
   justify-content: center;
   align-items: center;

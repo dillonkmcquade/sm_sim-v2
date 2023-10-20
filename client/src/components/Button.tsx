@@ -1,6 +1,5 @@
-import { styled } from "styled-components";
-import type {ButtonProps} from "../types";
-
+import { styled } from "@mui/material";
+import type { ButtonProps } from "../types";
 
 export default function Button({
   handler,
@@ -31,10 +30,11 @@ export default function Button({
   );
 }
 
-const StyledButton = styled.button<ButtonProps>`
+const StyledButton = styled("button")<ButtonProps>`
   background: ${(props) =>
-    props.bg ? props.bg : 
-    "linear-gradient(90deg,rgba(152, 148, 230, 1) 0%,rgba(121, 9, 119, 1) 100%)"};
+    props.bg
+      ? props.bg
+      : "linear-gradient(90deg,rgba(152, 148, 230, 1) 0%,rgba(121, 9, 119, 1) 100%)"};
   color: ${(props) => props.color || "#000000"};
   font-size: 1.2rem;
   border: ${(props) => props.border || "none"};

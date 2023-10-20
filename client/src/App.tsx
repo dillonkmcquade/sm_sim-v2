@@ -1,14 +1,12 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { GlobalStyles } from "./GlobalStyles";
-
 import { useAuth0 } from "@auth0/auth0-react";
-import { useCurrentUser } from "./context/UserContext";
 
 import Header from "./components/Header";
 import Home from "./pages/Home";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, CssBaseline } from "@mui/material";
+import { useCurrentUser } from "./context/UserContext";
 
 const Menu = lazy(() => import("./components/Menu"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -31,6 +29,7 @@ export default function App() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
           },
           body: JSON.stringify(user),
         });
@@ -55,7 +54,7 @@ export default function App() {
 
   return (
     <>
-      <GlobalStyles />
+      <CssBaseline />
       <Header />
       <Menu />
       <Suspense fallback={<CircularProgress sx={{ color: "#027326" }} />}>

@@ -1,11 +1,10 @@
 import { FormEventHandler, useState } from "react";
-import { styled } from "styled-components";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, styled } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import useProfileReducer from "../hooks/useProfileReducer";
@@ -83,9 +82,9 @@ export default function Profile() {
         <Head>
           <ProfilePhoto src={currentUser.picture} />
         </Head>
-        <ProfileDetails onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <UnstyledFieldSet>
-            <NameField>
+            <Field>
               <label htmlFor="name">Full Name: </label>
               <input
                 type="text"
@@ -93,8 +92,8 @@ export default function Profile() {
                 defaultValue={currentUser.name}
                 onChange={handleChange}
               />
-            </NameField>
-            <NickNameField>
+            </Field>
+            <Field>
               <label htmlFor="nickname">Nickname: </label>
               <input
                 type="text"
@@ -102,8 +101,8 @@ export default function Profile() {
                 defaultValue={currentUser.nickname}
                 onChange={handleChange}
               />
-            </NickNameField>
-            <EmailField>
+            </Field>
+            <Field>
               <label htmlFor="email">Email: </label>
               <input
                 type="email"
@@ -113,8 +112,8 @@ export default function Profile() {
                 defaultValue={currentUser.email}
                 onChange={handleChange}
               />
-            </EmailField>
-            <EmailField>
+            </Field>
+            <Field>
               <label htmlFor="address">Address: </label>
               <input
                 type="address"
@@ -123,8 +122,8 @@ export default function Profile() {
                 defaultValue={currentUser.address}
                 onChange={handleChange}
               />
-            </EmailField>
-            <EmailField>
+            </Field>
+            <Field>
               <label htmlFor="phone">Phone: </label>
               <input
                 type="tel"
@@ -133,7 +132,7 @@ export default function Profile() {
                 defaultValue={currentUser.telephone}
                 onChange={handleChange}
               />
-            </EmailField>
+            </Field>
           </UnstyledFieldSet>
           <ButtonContainer>
             <Button
@@ -184,14 +183,14 @@ export default function Profile() {
               </Button>
             </DialogActions>
           </Dialog>
-        </ProfileDetails>
+        </form>
         {error && <Alert severity="error">{error}</Alert>}
       </Wrapper>
     )
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   position: relative;
   top: 56px;
   width: 85vw;
@@ -201,7 +200,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const ProfilePhoto = styled.img`
+const ProfilePhoto = styled("img")`
   width: 50px;
   height: 50px;
   overflow: hidden;
@@ -209,29 +208,26 @@ const ProfilePhoto = styled.img`
   border-radius: 50%;
 `;
 
-const Head = styled.div`
+const Head = styled("div")`
   display: flex;
   justify-content: center;
   padding: 1rem;
 `;
 
-const ProfileDetails = styled.form``;
-const UnstyledFieldSet = styled.fieldset`
+const UnstyledFieldSet = styled("fieldset")`
   border: none;
   padding: 0;
   margin: 0;
 `;
 
-const NameField = styled.div`
+const Field = styled("div")`
   display: flex;
   width: 100%;
   justify-content: space-between;
   margin: 1rem 0;
 `;
-const NickNameField = styled(NameField)``;
-const EmailField = styled(NameField)``;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled("div")`
   display: flex;
   justify-content: space-evenly;
 `;

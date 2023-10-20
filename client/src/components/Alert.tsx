@@ -1,6 +1,11 @@
-import { AlertColor, Alert as AlertComponent } from "@mui/material";
-import { styled } from "styled-components";
-export default function Alert({ severity, children }: {severity: AlertColor, children: React.ReactNode | string}) {
+import { AlertColor, Alert as AlertComponent, styled } from "@mui/material";
+export default function Alert({
+  severity,
+  children,
+}: {
+  severity: AlertColor;
+  children: React.ReactNode | string;
+}) {
   return (
     <MyAlert
       severity={severity}

@@ -25,8 +25,12 @@ export class UsersService {
     return this.usersRepository.findOneByOrFail({ id: id });
   }
 
-  findOne(id: string): Promise<User> {
-    return this.usersRepository.findOneBy({ id: id });
+  async findOne(id: string): Promise<User | undefined> {
+    const user = await this.usersRepository.findOneBy({ id: id });
+    if (this.usersRepository.hasId(user)) {
+      return user;
+    }
+    return;
   }
 
   findOneWithRelations(id: string): Promise<User> {

@@ -3,9 +3,9 @@ import {
   CircularProgress,
   IconButton,
   TextField,
+  styled,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { styled } from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDebounce } from "../hooks/useDebounce";
@@ -171,7 +171,7 @@ export default function Research() {
     </Wrapper>
   );
 }
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   position: relative;
   color: #d8dee9;
   top: 56px;
@@ -182,7 +182,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const Title = styled.h1`
+const Title = styled("h1")`
   font-size: 1.5rem;
   margin-bottom: 1rem;
 `;
@@ -214,7 +214,7 @@ const WhiteBorderTextField = styled<typeof TextField>(TextField)`
   }
 `;
 
-const SearchResult = styled.div`
+const SearchResult = styled("div")`
   animation: none;
   margin: 0 auto;
   padding: 0.2rem;
@@ -234,18 +234,18 @@ const SearchResult = styled.div`
   }
 `;
 
-const Ticker = styled.div`
+const Ticker = styled("div")`
   font-style: italic;
   color: gray;
   animation: none !important;
   transition: none !important;
 `;
-const Name = styled.div`
+const Name = styled("div")`
   animation: none !important;
   transition: none !important;
 `;
 
-const RecentlyViewed = styled.div`
+const RecentlyViewed = styled("div")`
   display: flex;
   overflow: auto;
 `;

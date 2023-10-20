@@ -1,7 +1,7 @@
-import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { Props } from "../types";
+import { styled } from "@mui/material";
 
 export default function FourOhFour({ children }: Props) {
   return (
@@ -14,7 +14,7 @@ export default function FourOhFour({ children }: Props) {
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   width: 85vw;
   margin: 1rem auto;
   display: flex;

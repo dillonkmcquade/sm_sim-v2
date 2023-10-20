@@ -5,12 +5,11 @@ interface MenuContent {
   setMenuVisible: React.Dispatch<SetStateAction<boolean>>;
 }
 interface User {
-  _id: string;
+  id: string;
   balance: number;
   holdings: Holding[];
   watch_list: string[];
   telephone?: string;
-  timestamp?: number;
   total?: number;
   sub: string;
   address?: string;

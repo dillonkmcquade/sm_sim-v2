@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { styled } from "styled-components";
 import MenuIcon from "@mui/icons-material/Menu";
 import { MenuContext } from "../context/MenuContext";
 import { useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { styled } from "@mui/material";
 
 export default function Header() {
   const { menuVisible, setMenuVisible } = useContext(MenuContext);
@@ -26,7 +26,7 @@ export default function Header() {
   );
 }
 
-const Wrapper = styled.header`
+const Wrapper = styled("header")`
   display: flex;
   position: fixed;
   justify-content: center;
@@ -36,7 +36,7 @@ const Wrapper = styled.header`
   background-color: #000000;
   z-index: 10;
 `;
-const NavContainer = styled.nav`
+const NavContainer = styled("nav")`
   height: 100%;
   width: 100%;
   display: flex;

@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { styled } from "styled-components";
 import { MenuContext } from "../context/MenuContext";
 import { useAuth0 } from "@auth0/auth0-react";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DataSaverOffIcon from "@mui/icons-material/DataSaverOff";
+import { styled } from "@mui/material";
 
 export default function Menu() {
   const { menuVisible } = useContext(MenuContext);
@@ -58,7 +58,7 @@ export default function Menu() {
   );
 }
 
-const Nav = styled.nav<{ display: string }>`
+const Nav = styled("nav")<{ display: string }>`
   position: fixed;
   top: 56px;
   background-color: #000000;
@@ -112,17 +112,13 @@ const MenuOption = styled(NavLink)`
     }
   }
 
-  /* &:hover {
-    border: 1px solid white;
-  } */
-
   &.active {
     background-color: white;
     color: black;
   }
 `;
 
-const AuthRedirect = styled.button`
+const AuthRedirect = styled("button")`
   font-size: 1.6rem;
   padding: 0.5rem 1rem;
   text-decoration: none;
@@ -139,16 +135,12 @@ const AuthRedirect = styled.button`
     }
   }
 
-  /* &:hover {
-    border: 1px solid white;
-  } */
-
   &.active {
     border-bottom: 2px solid white;
   }
 `;
 
-const Image = styled.img`
+const Image = styled("img")`
   width: 85%;
   padding: 1rem;
   margin: 0 auto;

@@ -1,6 +1,5 @@
 import { useEffect, lazy, Suspense } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -8,10 +7,11 @@ import {
   getUniques,
   getHoldings,
   getTotalValue,
+  getPrices,
 } from "../utils/utils";
 
 import PieChart from "../components/PieChart";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, styled } from "@mui/material";
 import { useCurrentUser } from "../context/UserContext";
 import FourOhFour from "../components/FourOhFour";
 
@@ -32,26 +32,31 @@ export default function Dashboard() {
         const accessToken = await getAccessTokenSilently();
         const holdings = await getHoldings(accessToken);
         if (holdings.length === 0) {
-          return setCurrentUser({
+          setCurrentUser((currentUser) => ({
             ...currentUser,
             total: 0,
             holdings: [],
             timestamp: Date.now(),
-          });
+          }));
+          return;
         }
-        const total = await getTotalValue(holdings); //potentially expensive function call
-        setCurrentUser({
+
+        const prices = await getPrices(holdings); //potentially expensive function call
+
+        const total = await getTotalValue(holdings, prices);
+
+        setCurrentUser((currentUser) => ({
           ...currentUser,
           holdings,
           total,
           timestamp: Date.now(),
-        });
+        }));
       } catch (err) {
         console.log(err);
       }
     }
     setTotalValue();
-  }, [getHoldings, setCurrentUser, isAuthenticated, getAccessTokenSilently]);
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const investedValue =
     currentUser.holdings && currentUser.holdings?.length
@@ -64,16 +69,16 @@ export default function Dashboard() {
     </Wrapper>
   ) : (
     <Wrapper>
-      <Title>
+      <h1>
         {" "}
         Hello, <Name>{currentUser.nickname || currentUser.name}</Name>!
-      </Title>
-      <PortfolioValue>
+      </h1>
+      <h1>
         {Number(currentUser.total! + currentUser.balance).toLocaleString(
           "en-US",
           { style: "currency", currency: "USD" },
         )}
-      </PortfolioValue>
+      </h1>
       <Profit
         color={currentUser.total! - investedValue > 0 ? "#027326" : "#b5050e"}
       >
@@ -91,7 +96,7 @@ export default function Dashboard() {
           <PieChart data={currentUser} />
         )}
       </div>
-      <Title>Account Details</Title>
+      <h1>Account Details</h1>
       <AccountDetails>
         <Detail>
           <div>Total Value of all holdings: </div>
@@ -116,21 +121,21 @@ export default function Dashboard() {
           </p>
         </Detail>
       </AccountDetails>
-      <Title>Holdings</Title>
+      <h1>Holdings</h1>
       <Holdings>
         {!currentUser.holdings?.length ? (
           <FourOhFour>Nothing here yet.</FourOhFour>
         ) : (
-          getUniques(currentUser.holdings).map((holding) => (
+          [...getUniques(currentUser.holdings)].map((holding) => (
             <TickerCard
-              handler={() => navigate(`/research/${holding.ticker}`)}
-              key={holding.ticker}
-              ticker={holding.ticker}
+              handler={() => navigate(`/research/${holding[0]}`)}
+              key={holding[0]}
+              ticker={holding[0]}
             />
           ))
         )}
       </Holdings>
-      <Title>Watch List</Title>
+      <h1>Watch List</h1>
       <WatchList>
         {currentUser.watch_list.length > 0 ? (
           currentUser.watch_list.map((item) => (
@@ -149,7 +154,7 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
-const Wrapper = styled.div`
+const Wrapper = styled("div")`
   position: relative;
   top: 56px;
   width: 85vw;
@@ -161,20 +166,17 @@ const Wrapper = styled.div`
   }
 `;
 
-const Title = styled.h1``;
-const PortfolioValue = styled(Title)``;
-
-const Profit = styled.p`
+const Profit = styled("p")`
   color: ${(props) => props.color};
   margin: 0 0 1rem 1rem;
 `;
 
-const Holdings = styled.div`
+const Holdings = styled("div")`
   display: flex;
   overflow: auto;
 `;
 
-const AccountDetails = styled.div`
+const AccountDetails = styled("div")`
   border-radius: 1rem;
   border: 2px solid white;
   margin: 1rem 0;
@@ -183,17 +185,17 @@ const AccountDetails = styled.div`
   max-width: 500px;
 `;
 
-const Detail = styled.div`
+const Detail = styled("div")`
   display: flex;
   justify-content: space-between;
 `;
 
-const Bold = styled.span`
+const Bold = styled("span")`
   font-weight: bold;
   color: #dcf5e7;
 `;
 
-const Name = styled.span`
+const Name = styled("span")`
   color: #ebcb8b;
 `;
 
