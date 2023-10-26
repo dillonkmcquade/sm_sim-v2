@@ -56,11 +56,15 @@ export class UsersController {
   async toggleWatchList(
     @Body() toggleDto: ToggleWatchListDto,
     @Req() req: Request,
-  ): Promise<string[]> {
+    @Res() res: Response,
+  ) {
     const id = req.auth.payload.sub;
     try {
       const watchList = await this.usersService.toggleWatchList(id, toggleDto);
-      return watchList;
+      if (!watchList || watchList.length === 0) {
+        res.sendStatus(204);
+      }
+      res.json(watchList);
     } catch (error) {
       throw new InternalServerErrorException('Failure to update watch list');
     }

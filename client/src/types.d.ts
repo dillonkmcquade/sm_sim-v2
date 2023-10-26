@@ -8,7 +8,7 @@ interface User {
   id: string;
   balance: number;
   holdings: Holding[];
-  watch_list: string[];
+  watch_list: Ticker[];
   telephone?: string;
   total?: number;
   sub: string;
@@ -36,7 +36,8 @@ interface Holding {
 interface WidthContent {
   width: number;
 }
-interface Result {
+interface Ticker {
+  id: number;
   symbol: string;
   description: string;
 }

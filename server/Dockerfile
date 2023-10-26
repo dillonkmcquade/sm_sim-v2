@@ -11,4 +11,4 @@ ENV PATH="${PATH}:${PNPM_HOME}"
 RUN npm install --global pnpm
 
 RUN pnpm install && pnpm build
-CMD ["pnpm", "start:prod"]
+CMD ["pnpm", "start:dev"]

@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ToggleWatchListDto } from './dto/toggle-watchList.dto';
+import { Ticker } from 'src/stock/entities/ticker.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private dataSource: DataSource,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -22,11 +24,17 @@ export class UsersService {
   }
 
   findOneOrFail(id: string): Promise<User> {
-    return this.usersRepository.findOneByOrFail({ id: id });
+    return this.usersRepository.findOneOrFail({
+      where: { id: id },
+      relations: { watch_list: true },
+    });
   }
 
   async findOne(id: string): Promise<User | undefined> {
-    const user = await this.usersRepository.findOneBy({ id: id });
+    const user = await this.usersRepository.findOne({
+      where: { id: id },
+      relations: { watch_list: true },
+    });
     if (this.usersRepository.hasId(user)) {
       return user;
     }
@@ -35,7 +43,7 @@ export class UsersService {
 
   findOneWithRelations(id: string): Promise<User> {
     return this.usersRepository.findOneOrFail({
-      relations: { transactions: true },
+      relations: { transactions: true, watch_list: true },
       where: { id: id },
     });
   }
@@ -53,14 +61,17 @@ export class UsersService {
   async toggleWatchList(
     id: string,
     { isWatched, ticker }: ToggleWatchListDto,
-  ): Promise<string[]> {
+  ): Promise<Ticker[] | undefined> {
     const user = await this.findOneOrFail(id);
-    if (isWatched && !user.watch_list.includes(ticker)) {
+    if (isWatched && !user.watch_list.some((t) => t.symbol === ticker)) {
       //Add
-      user.watch_list.push(ticker);
-    } else if (!isWatched && user.watch_list?.includes(ticker)) {
+      const tickerToAdd = await this.dataSource.manager.findOneBy(Ticker, {
+        symbol: ticker,
+      });
+      user.watch_list.push(tickerToAdd);
+    } else if (!isWatched && user.watch_list.some((t) => t.symbol === ticker)) {
       //Remove
-      user.watch_list.splice(user.watch_list.indexOf(ticker));
+      user.watch_list = user.watch_list.filter((t) => t.symbol !== ticker);
     } else {
       //Do nothing
       return;

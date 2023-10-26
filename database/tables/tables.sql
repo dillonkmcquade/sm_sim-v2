@@ -16,7 +16,6 @@ CREATE TABLE "users" (
   "nickname" character varying, 
   "address" character varying, 
   "picture" character varying NOT NULL, 
-  "watch_list" text NOT NULL, 
   "created_on" TIMESTAMP NOT NULL DEFAULT now(), 
   "updated_on" TIMESTAMP NOT NULL DEFAULT now(), 
   CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" 
@@ -33,6 +32,15 @@ CREATE TABLE "transactions" (
   CONSTRAINT "PK_a219afd8dd77ed80f5a862f1db9" 
   PRIMARY KEY ("id"));
 
+CREATE TABLE "users_tickers" (
+  "user_id" character varying NOT NULL, 
+  "ticker_id" integer NOT NULL, 
+  CONSTRAINT "PK_a96627e09ec058553dc786dddb3" 
+  PRIMARY KEY ("user_id", "ticker_id"));
+
+CREATE INDEX "IDX_499f274c0cc0b0c64bb9dc5654" ON "users_tickers" ("user_id"); 
+CREATE INDEX "IDX_0d63b580cbbe36698aba16e6dc" ON "users_tickers" ("ticker_id");
+
 ALTER TABLE "transactions" 
 ADD CONSTRAINT "FK_6bb58f2b6e30cb51a6504599f41" 
 FOREIGN KEY ("user_id") 
@@ -40,4 +48,9 @@ REFERENCES "users"("id")
 ON DELETE CASCADE 
 ON UPDATE NO ACTION;
 
+ALTER TABLE "users_tickers" ADD CONSTRAINT "FK_499f274c0cc0b0c64bb9dc56542" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "users_tickers" ADD CONSTRAINT "FK_0d63b580cbbe36698aba16e6dc6" FOREIGN KEY ("ticker_id") REFERENCES "tickers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;
+

@@ -35,8 +35,8 @@ export default function StockDetails() {
   const { range } = state;
   const [error, setError] = useState("");
   const [isWatched, setIsWatched] = useState(() => {
-    if (currentUser) {
-      return currentUser.watch_list.includes(id!);
+    if (currentUser && currentUser.watch_list) {
+      return currentUser.watch_list.some((ticker) => ticker.symbol === id);
     } else {
       return false;
     }
@@ -54,9 +54,12 @@ export default function StockDetails() {
         },
         body: JSON.stringify({ ticker: id, isWatched }),
       });
-      const parsed = await response.json();
       if (response.status === 200) {
+        const parsed = await response.json();
         setCurrentUser({ ...currentUser, watch_list: parsed });
+        return;
+      } else if (response.status === 204) {
+        setCurrentUser({ ...currentUser, watch_list: [] });
         return;
       }
     } catch (error) {

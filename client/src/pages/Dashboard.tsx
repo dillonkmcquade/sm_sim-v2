@@ -137,13 +137,13 @@ export default function Dashboard() {
       </Holdings>
       <h1>Watch List</h1>
       <WatchList>
-        {currentUser.watch_list.length > 0 ? (
+        {currentUser.watch_list ? (
           currentUser.watch_list.map((item) => (
-            <Suspense fallback={<CircularProgress />} key={item}>
+            <Suspense fallback={<CircularProgress />} key={item.id}>
               <TickerCard
-                key={item}
-                ticker={item}
-                handler={() => navigate(`/research/${item}`)}
+                key={item.id}
+                ticker={item.symbol}
+                handler={() => navigate(`/research/${item.symbol}`)}
               />
             </Suspense>
           ))
