@@ -1,8 +1,8 @@
 import { Reducer, useReducer } from "react";
-import { Result } from "../types";
+import { Ticker } from "../types";
 
 const initialState = {
-  results: [] as Result[],
+  results: [] as Ticker[],
   error: "",
   loading: false,
   inputText: "",
@@ -17,7 +17,7 @@ type Action =
       field: "inputText" | "isSelected";
       payload: string | number;
     }
-  | { type: "success"; payload: Result[] }
+  | { type: "success"; payload: Ticker[] }
   | { type: "error"; payload: string };
 
 const reducer: Reducer<typeof initialState, Action> = (state, action) => {
@@ -43,7 +43,7 @@ export default function useSearchReducer() {
     dispatch({ type: "search" });
   };
 
-  const success = (results: Result[]) => {
+  const success = (results: Ticker[]) => {
     dispatch({ type: "success", payload: results });
   };
 

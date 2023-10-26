@@ -16,7 +16,7 @@ import {
   ChangeEventHandler,
   KeyboardEventHandler,
 } from "react";
-import { Result } from "../types";
+import { Ticker } from "../types";
 import Alert from "../components/Alert";
 
 const TickerCard = lazy(() => import("../components/TickerCard"));
@@ -124,7 +124,7 @@ export default function Research() {
         label="Search"
       />
       {results &&
-        results?.map((result: Result, index: number) => (
+        results?.map((result: Ticker, index: number) => (
           <SearchResult
             key={Math.random()}
             tabIndex={0}
