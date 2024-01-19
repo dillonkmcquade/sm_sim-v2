@@ -44,7 +44,7 @@ services:
       - ./server:/marketsim/server
 networks:
   marketsim:
-    name: marketsim
-    external: true
+    driver: bridge
 volumes:
   marketsim:
+    driver: local
