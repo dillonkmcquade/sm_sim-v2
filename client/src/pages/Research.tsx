@@ -16,7 +16,7 @@ import {
   ChangeEventHandler,
   KeyboardEventHandler,
 } from "react";
-import { Ticker } from "../types";
+import { Ticker as TickerContainer } from "../types";
 import Alert from "../components/Alert";
 
 const TickerCard = lazy(() => import("../components/TickerCard"));
@@ -124,7 +124,7 @@ export default function Research() {
         label="Search"
       />
       {results &&
-        results?.map((result: Ticker, index: number) => (
+        results?.map((result: TickerContainer, index: number) => (
           <SearchResult
             key={Math.random()}
             tabIndex={0}
@@ -133,7 +133,7 @@ export default function Research() {
               return navigate(result.symbol);
             }}
           >
-            <Ticker>{result.symbol}</Ticker>
+            <TickerContainer>{result.symbol}</TickerContainer>
             <Name>{result.description}</Name>
           </SearchResult>
         ))}
@@ -222,7 +222,7 @@ const SearchResult = styled("div")`
   }
 `;
 
-const Ticker = styled("div")`
+const TickerContainer = styled("div")`
   font-style: italic;
   color: gray;
   animation: none !important;

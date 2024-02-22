@@ -1,0 +1,10 @@
+dist/
+.env
+.env.*
+.env.development
+.env.production
+node_modules/
+**/.git
+test/
+README.md
+openapi/
