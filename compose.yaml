@@ -39,6 +39,8 @@ services:
       test: ["CMD-SHELL", "curl -f http://localhost:3001/"]
       timeout: 5s
       retries: 3
+    env_file:
+      - ./server/.env.development
     ports:
       - "3001:3001"
     networks:
